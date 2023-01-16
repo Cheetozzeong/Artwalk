@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="main">#FF07A794</color>
+
+    <color name="neutral01">#FFFFFFFF</color>
+    <color name="neutral02">#FFE5E5E5</color>
+    <color name="neutral03">#FFB9B9B9</color>
+    <color name="neutral04">#FF8A8A8A</color>
+    <color name="neutral05">#FF3C3C3C</color>
+    <color name="neutral06">#FF121212</color>
+
+    <color name="error01">#FFD32F2F</color>
+    <color name="warning01">#FFF9A825</color>
+    <color name="safe01">#FF4CAF50</color>
+    <color name="info01">#FF0091EA</color>
+</resources>
