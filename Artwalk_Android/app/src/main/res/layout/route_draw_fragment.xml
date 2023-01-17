@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.mapbox.maps.MapView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
+            android:id="@+id/mapView_routeDraw"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <ImageButton
+            android:id="@+id/textView_routeDraw_drawButton"
+            app:layout_constraintEnd_toEndOf="@id/mapView_routeDraw"
+            app:layout_constraintBottom_toBottomOf="@id/mapView_routeDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_24"
+            app:tint="@color/toggle_button_fg_tint"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/toggle_button_bg_tint"
+            android:checked="false" />
+
+        <ImageButton
+            android:id="@+id/textView_routeDraw_undoButton"
+            app:layout_constraintBottom_toBottomOf="@id/mapView_routeDraw"
+            app:layout_constraintEnd_toStartOf="@id/textView_routeDraw_drawButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_undo_24"
+            app:tint="@color/press_button_fg_tint"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/press_button_bg_tint"
+            />
+
+        <View
+            android:id="@+id/view_routeDraw_infoBox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/neutral01"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+        <TextView
+            android:id="@+id/textView_routeDraw_distanceTitle"
+            app:layout_constraintStart_toStartOf="@id/view_routeDraw_infoBox"
+            app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
+            app:layout_constraintEnd_toStartOf="@id/textView_routeDraw_durationTitle"
+            app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_distanceContent"
+            android:text="@string/route_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textView_routeDraw_durationTitle"
+            app:layout_constraintStart_toEndOf="@id/textView_routeDraw_distanceTitle"
+            app:layout_constraintEnd_toEndOf="@id/view_routeDraw_infoBox"
+            app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
+            app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_durationContent"
+            android:text="@string/route_duration_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textView_routeDraw_distanceContent"
+            app:layout_constraintTop_toBottomOf="@id/textView_routeDraw_distanceTitle"
+            app:layout_constraintStart_toStartOf="@id/textView_routeDraw_distanceTitle"
+            app:layout_constraintEnd_toEndOf="@id/textView_routeDraw_distanceTitle"
+            app:layout_constraintBottom_toBottomOf="@id/view_routeDraw_infoBox"
+            android:hint="4.14Km"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/textView_routeDraw_durationContent"
+            app:layout_constraintTop_toBottomOf="@id/textView_routeDraw_durationTitle"
+            app:layout_constraintEnd_toEndOf="@id/textView_routeDraw_durationTitle"
+            app:layout_constraintStart_toStartOf="@id/textView_routeDraw_durationTitle"
+            app:layout_constraintBottom_toBottomOf="@id/view_routeDraw_infoBox"
+            android:hint="1시간 8분 10초"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
