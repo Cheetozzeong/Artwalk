@@ -3,24 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    android:layout_height="match_parent">
 
     <com.mapbox.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
- />
+        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox" />
 
     <Button
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </Button>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <View
         android:id="@+id/view_routeDraw_infoBox"
@@ -36,7 +32,7 @@
         app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
         app:layout_constraintEnd_toStartOf="@id/textView_routeDraw_durationTitle"
         app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_distanceContent"
-        android:text="@string/route_distance_title"
+        android:text="@string/record_distance_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -46,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="@id/view_routeDraw_infoBox"
         app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
         app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_durationContent"
-        android:text="@string/route_duration_title"
+        android:text="@string/record_duration_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
