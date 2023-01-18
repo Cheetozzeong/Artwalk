@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="header_title_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_bold</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="header_menu_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="body_title_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="body_bold_text_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="body_regular_text_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="body_detail_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="body_more_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="button_common_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="button_small_font_style">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

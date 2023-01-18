@@ -7,9 +7,7 @@ import com.a401.artwalk.base.BaseActivity
 import com.a401.artwalk.databinding.SampleViewBinding
 import com.mapbox.maps.Style
 
-class SampleActivity : FragmentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.record_fragment)
-    }
+
+class SampleActivity: BaseActivity<SampleViewBinding>(R.layout.sample_view) {
+
 }
