@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.Record_fragment">
+    tools:context=".view.MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
+ />
 
-</FrameLayout>
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </Button>
+
+    <View
+        android:id="@+id/view_routeDraw_infoBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/neutral01"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
+    <TextView
+        android:id="@+id/textView_routeDraw_distanceTitle"
+        app:layout_constraintStart_toStartOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintEnd_toStartOf="@id/textView_routeDraw_durationTitle"
+        app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_distanceContent"
+        android:text="@string/route_distance_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/textView_routeDraw_durationTitle"
+        app:layout_constraintStart_toEndOf="@id/textView_routeDraw_distanceTitle"
+        app:layout_constraintEnd_toEndOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintTop_toTopOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintBottom_toTopOf="@id/textView_routeDraw_durationContent"
+        android:text="@string/route_duration_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/textView_routeDraw_distanceContent"
+        app:layout_constraintTop_toBottomOf="@id/textView_routeDraw_distanceTitle"
+        app:layout_constraintStart_toStartOf="@id/textView_routeDraw_distanceTitle"
+        app:layout_constraintEnd_toEndOf="@id/textView_routeDraw_distanceTitle"
+        app:layout_constraintBottom_toBottomOf="@id/view_routeDraw_infoBox"
+        android:hint="4.14Km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/textView_routeDraw_durationContent"
+        app:layout_constraintTop_toBottomOf="@id/textView_routeDraw_durationTitle"
+        app:layout_constraintEnd_toEndOf="@id/textView_routeDraw_durationTitle"
+        app:layout_constraintStart_toStartOf="@id/textView_routeDraw_durationTitle"
+        app:layout_constraintBottom_toBottomOf="@id/view_routeDraw_infoBox"
+        android:hint="1시간 8분 10초"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
