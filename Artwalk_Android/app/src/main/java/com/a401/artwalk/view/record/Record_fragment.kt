@@ -1,4 +1,4 @@
-package com.a401.artwalk.view
+package com.a401.artwalk.view.record
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

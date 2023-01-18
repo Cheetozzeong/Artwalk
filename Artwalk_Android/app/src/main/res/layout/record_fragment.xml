@@ -3,20 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".view.SampleActivity">
 
     <com.mapbox.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox" />
-
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
+        />
+
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:drawable="@drawable/start_icon"-->
+<!--        android:background="@drawable/bg_custom_button"-->
+<!--        android:textSize="50sp"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"/>-->
+
+    <ImageButton
+        android:id="@+id/textView_record_startbutton"
+        app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_circle_100"
+        android:background="@drawable/circle_button_bg_50"
+        android:checked="false"/>
 
     <View
         android:id="@+id/view_routeDraw_infoBox"
