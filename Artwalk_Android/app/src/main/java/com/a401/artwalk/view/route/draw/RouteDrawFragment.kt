@@ -16,10 +16,19 @@ class RouteDrawFragment : BaseFragment<RouteDrawFragmentBinding> (R.layout.route
         super.onViewCreated(view, savedInstanceState)
 
         setInitBinding()
+        changeDrawButtonState()
         binding.mapViewRouteDraw.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
     }
 
     private fun setInitBinding() {
         binding.vm = routeDrawViewModel
+    }
+
+    private fun changeDrawButtonState() {
+        routeDrawViewModel.drawButtonEvent.observe(requireActivity()) {
+            with(binding.textViewRouteDrawDrawButton) {
+                isSelected = !isSelected
+            }
+        }
     }
 }

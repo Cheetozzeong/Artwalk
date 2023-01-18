@@ -30,7 +30,7 @@
             android:background="@drawable/circle_ic_button_bg"
             android:backgroundTint="@color/toggle_button_bg_tint"
             android:checked="false"
-            android:onClick="@{(selected) -> vm.onClickDrawButton(selected)}"/>
+            android:onClick="@{() -> vm.onClickDrawButton()}"/>
 
         <ImageButton
             android:id="@+id/textView_routeDraw_undoButton"
