@@ -5,10 +5,10 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
-import com.a401.artwalk.databinding.RouteDrawFragmentBinding
+import com.a401.artwalk.databinding.FragmentRouteDrawBinding
 import com.mapbox.maps.Style
 
-class RouteDrawFragment : BaseFragment<RouteDrawFragmentBinding> (R.layout.route_draw_fragment) {
+class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
 
     private val routeDrawViewModel by viewModels<RouteDrawViewModel> { defaultViewModelProviderFactory }
 
