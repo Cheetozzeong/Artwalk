@@ -41,7 +41,10 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         mapboxMap = mapView.getMapboxMap()
 
         mapboxMap.addOnMapClickListener { point ->
-            addAnnotationToMap(point)
+
+            when(binding.textViewRouteDrawDrawButton.isSelected) {
+                true -> addAnnotationToMap(point)
+            }
             true
         }
         mapboxMap.loadStyleUri(Style.MAPBOX_STREETS)
