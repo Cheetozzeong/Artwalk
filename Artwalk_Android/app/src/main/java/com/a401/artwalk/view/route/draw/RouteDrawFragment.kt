@@ -14,10 +14,10 @@ import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRouteDrawBinding
 import com.mapbox.geojson.Point
-import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
@@ -26,7 +26,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
 
     private val routeDrawViewModel by viewModels<RouteDrawViewModel> { defaultViewModelProviderFactory }
     private lateinit var mapboxMap: MapboxMap
-    private lateinit var mapView: MapView
+    private lateinit var pointAnnotationManager: PointAnnotationManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,20 +34,30 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         setInitBinding()
         changeDrawButtonState()
         setMapBoxView()
+        deleteLastMarker()
     }
 
     private fun setMapBoxView() {
-        mapView = binding.mapViewRouteDraw
-        mapboxMap = mapView.getMapboxMap()
+        mapboxMap = binding.mapViewRouteDraw.getMapboxMap()
+        pointAnnotationManager = binding.mapViewRouteDraw.annotations.createPointAnnotationManager()
 
         mapboxMap.addOnMapClickListener { point ->
 
-            when(binding.textViewRouteDrawDrawButton.isSelected) {
-                true -> addAnnotationToMap(point)
+            if(binding.textViewRouteDrawDrawButton.isSelected) {
+                addAnnotationToMap(point)
             }
+
             true
         }
         mapboxMap.loadStyleUri(Style.MAPBOX_STREETS)
+    }
+
+    private fun deleteLastMarker() {
+        routeDrawViewModel.lastPointId.observe(requireActivity()) { lastId ->
+            pointAnnotationManager.delete(pointAnnotationManager.annotations.filter{
+                it.id == lastId
+            })
+        }
     }
 
     private fun addAnnotationToMap(point: Point) {
@@ -55,18 +65,20 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
             requireContext(),
             R.drawable.ic_route_draw_marker_16
         )?.let {
-            val annotationApi = mapView.annotations
-            val pointAnnotationManager = annotationApi.createPointAnnotationManager()
-
             val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
                 .withPoint(point)
                 .withIconImage(it)
 
-            pointAnnotationManager.create(pointAnnotationOptions)
+            val action = pointAnnotationManager.create(pointAnnotationOptions)
+
+            routeDrawViewModel.setPointId(action.id)
+            action
         }
     }
+
     private fun bitmapFromDrawableRes(context: Context, @DrawableRes resourceId: Int) =
         convertDrawableToBitmap(AppCompatResources.getDrawable(context, resourceId))
+
     private fun convertDrawableToBitmap(sourceDrawable: Drawable?): Bitmap? {
         if (sourceDrawable == null) {
             return null
