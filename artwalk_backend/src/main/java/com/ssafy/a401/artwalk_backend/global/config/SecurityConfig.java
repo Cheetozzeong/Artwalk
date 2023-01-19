@@ -51,6 +51,7 @@ public class SecurityConfig {
 			.antMatchers("/**").permitAll()
 			.anyRequest().authenticated()
 
+
 			.and()
 			.apply(new JwtSecurityConfig(tokenProvider));
 
