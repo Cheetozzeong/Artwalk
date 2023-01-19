@@ -1,6 +1,7 @@
 package com.ssafy.a401.artwalk_backend.domain.route;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +45,7 @@ public class Route {
 	@Column(nullable = false)
 	private double distance;
 
-	@Column(length = 255, columnDefinition = "default NULL")
+	@Column(columnDefinition = "default NULL")
 	private String route;
 
 	@Column(nullable = false)
@@ -55,6 +56,6 @@ public class Route {
 	@Column(length = 255, columnDefinition = "default NULL")
 	private String thumbnail;
 
-	@Column(length = 16, columnDefinition = "default 나의 경로'")
+	@Column(length = 16, columnDefinition = "default '나의 경로'")
 	private String title;
 }

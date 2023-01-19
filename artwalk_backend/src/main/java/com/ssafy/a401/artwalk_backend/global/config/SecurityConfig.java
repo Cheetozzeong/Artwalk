@@ -48,7 +48,7 @@ public class SecurityConfig {
 			// 로그인, 회원가입 API는 토큰 없이도 허용
 			.and()
 			.authorizeRequests()
-			.antMatchers("/*").permitAll()
+			.antMatchers("/**").permitAll()
 			.anyRequest().authenticated()
 
 			.and()
