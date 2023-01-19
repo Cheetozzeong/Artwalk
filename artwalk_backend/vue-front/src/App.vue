@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+<!--    <nav>-->
+<!--      <router-link :to="{ name: 'login' }">Login</router-link> |-->
+<!--      <router-link :to="{ name: 'recordBoard' }">게시글</router-link> |-->
+<!--      <router-link :to="{ name: 'userBoard' }">회원</router-link>-->
+<!--    </nav>-->
     <router-view/>
   </div>
 </template>
