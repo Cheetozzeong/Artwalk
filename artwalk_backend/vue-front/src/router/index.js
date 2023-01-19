@@ -22,7 +22,6 @@ const routes = [
     name: 'userBoard',
     component: UserBoardView
   },
-
 ]
 
 const router = new VueRouter({
