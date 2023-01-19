@@ -21,7 +21,7 @@ const routes = [
     path: '/admin/board/user',
     name: 'userBoard',
     component: UserBoardView
-  }
+  },
 ]
 
 const router = new VueRouter({

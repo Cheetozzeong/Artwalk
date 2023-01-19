@@ -13,5 +13,4 @@ public class UserRestController {
 		System.out.println("Hello User!");
 		return "Hello User";
 	}
-
 }

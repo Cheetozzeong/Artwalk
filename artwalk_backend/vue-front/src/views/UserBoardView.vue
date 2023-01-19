@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "UserBoardView"
+  name: "UserBoardView.vue"
 }
 </script>
 

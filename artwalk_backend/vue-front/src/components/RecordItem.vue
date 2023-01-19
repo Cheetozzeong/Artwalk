@@ -1,10 +1,12 @@
 <template>
-  <div></div>
+  <div>
+    레코드아이템...
+  </div>
 </template>
 
 <script>
 export default {
-  name: "RecordItem"
+  name: "RecordItem.vue"
 }
 </script>
 
