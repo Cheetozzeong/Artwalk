@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintlayout_record"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.SampleActivity">
+    >
 
     <com.mapbox.maps.MapView
-        android:id="@+id/mapView"
+        android:id="@+id/mapView_record"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
@@ -28,15 +28,27 @@
 <!--        app:layout_constraintStart_toStartOf="parent"/>-->
 
     <ImageButton
-        android:id="@+id/textView_record_startbutton"
+        android:id="@+id/imagebutton_record_startbutton"
         app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_circle_100"
         android:background="@drawable/circle_button_bg_50"
-        android:checked="false"/>
+        android:checked="false"
+        android:src="@drawable/toggle_startbutton" />
+
+    <ImageButton
+        android:id="@+id/imagebutton_record_quitbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_button_bg_50"
+        app:tint="#E5E5E5"
+        android:alpha="0.6"
+        app:layout_constraintStart_toStartOf="@id/constraintlayout_record"
+        app:layout_constraintTop_toTopOf="@id/constraintlayout_record"
+        android:src="@drawable/ic_quit_24"
+        />
 
     <View
         android:id="@+id/view_routeDraw_infoBox"
@@ -87,3 +99,4 @@
         android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
