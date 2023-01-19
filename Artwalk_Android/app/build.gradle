@@ -60,8 +60,12 @@ dependencies {
     // mapbox
     implementation 'com.mapbox.maps:android:10.10.0'
 
+    // by viewModel
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+
     // android gps api library
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
 }
 
 kapt {

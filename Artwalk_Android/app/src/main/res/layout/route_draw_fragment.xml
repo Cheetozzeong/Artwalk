@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.a401.artwalk.view.route.draw.RouteDrawViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,7 +29,8 @@
             app:tint="@color/toggle_button_fg_tint"
             android:background="@drawable/circle_ic_button_bg"
             android:backgroundTint="@color/toggle_button_bg_tint"
-            android:checked="false"/>
+            android:checked="false"
+            android:onClick="@{() -> vm.onClickDrawButton()}"/>
 
         <ImageButton
             android:id="@+id/textView_routeDraw_undoButton"
@@ -34,7 +41,8 @@
             android:src="@drawable/ic_undo_24"
             app:tint="@color/press_button_fg_tint"
             android:background="@drawable/circle_ic_button_bg"
-            android:backgroundTint="@color/press_button_bg_tint"/>
+            android:backgroundTint="@color/press_button_bg_tint"
+            android:onClick="@{() -> vm.onClickUndoButton()}"/>
 
         <View
             android:id="@+id/view_routeDraw_infoBox"
@@ -64,6 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{@string/distance_format(vm.distance)}"
                 android:hint="4.14Km"
                 style="@style/body_regular_text_font_style"/>
 
@@ -89,6 +98,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{@string/duration_format(vm.durationHour, vm.durationMinute, vm.durationSecond)}"
                 android:hint="1시간 8분 10초"
                 style="@style/body_regular_text_font_style"/>
 
