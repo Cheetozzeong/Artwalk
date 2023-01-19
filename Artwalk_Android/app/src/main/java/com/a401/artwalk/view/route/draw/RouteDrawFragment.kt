@@ -33,8 +33,28 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
 
         setInitBinding()
         changeDrawButtonState()
-        setMapBoxView()
         deleteLastMarker()
+        setMapBoxView()
+    }
+
+    private fun setInitBinding() {
+        binding.vm = routeDrawViewModel
+    }
+
+    private fun changeDrawButtonState() {
+        routeDrawViewModel.drawButtonEvent.observe(requireActivity()) {
+            with(binding.textViewRouteDrawDrawButton) {
+                isSelected = !isSelected
+            }
+        }
+    }
+
+    private fun deleteLastMarker() {
+        routeDrawViewModel.lastPointId.observe(requireActivity()) { lastId ->
+            pointAnnotationManager.delete(pointAnnotationManager.annotations.filter{
+                it.id == lastId
+            })
+        }
     }
 
     private fun setMapBoxView() {
@@ -50,14 +70,6 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
             true
         }
         mapboxMap.loadStyleUri(Style.MAPBOX_STREETS)
-    }
-
-    private fun deleteLastMarker() {
-        routeDrawViewModel.lastPointId.observe(requireActivity()) { lastId ->
-            pointAnnotationManager.delete(pointAnnotationManager.annotations.filter{
-                it.id == lastId
-            })
-        }
     }
 
     private fun addAnnotationToMap(point: Point) {
@@ -99,15 +111,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         }
     }
 
-    private fun setInitBinding() {
-        binding.vm = routeDrawViewModel
-    }
 
-    private fun changeDrawButtonState() {
-        routeDrawViewModel.drawButtonEvent.observe(requireActivity()) {
-            with(binding.textViewRouteDrawDrawButton) {
-                isSelected = !isSelected
-            }
-        }
-    }
+
+
 }
