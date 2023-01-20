@@ -26,5 +26,4 @@ class RecordViewModel : ViewModel() {
         _startButtonEvent.value = Unit
 
     }
-
 }

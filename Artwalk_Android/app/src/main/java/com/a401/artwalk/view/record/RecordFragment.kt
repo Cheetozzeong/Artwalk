@@ -2,14 +2,14 @@ package com.a401.artwalk.view.record
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
-import com.a401.artwalk.databinding.RecordFragmentBinding
+import com.a401.artwalk.databinding.FragmentRecordBinding
 import com.mapbox.maps.Style
 import androidx.fragment.app.viewModels
 
-class RecordFragment : BaseFragment<RecordFragmentBinding>(R.layout.record_fragment) {
+class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
 
@@ -30,14 +30,8 @@ class RecordFragment : BaseFragment<RecordFragmentBinding>(R.layout.record_fragm
         recordViewModel.startButtonEvent.observe(requireActivity()){
             with(binding.imagebuttonRecordStartbutton){
                 isSelected= !isSelected
-                quitbutton.isSelected = !quitbutton.isSelected
-                if (quitbutton.isSelected)
-                {
-                    quitbutton.setVisibility(View.GONE);
-                }
-                else{
-                    quitbutton.setVisibility(View.VISIBLE);
-                }
+                quitbutton.isEnabled = !quitbutton.isEnabled
+                quitbutton.isVisible = !quitbutton.isVisible
             }
         }
     }
