@@ -25,8 +25,11 @@ public class User {
 	@Id
 	private String userid;
 
-	@Column(nullable = false, length = 20)
-	private String token;
+	@Column(nullable = true, length = 20)
+	private String accessToken;
+
+	@Column(nullable = true, length = 20)
+	private String refreshToken;
 
 	@Enumerated(EnumType.STRING)
 	private UserAuthority userAuthority;
@@ -34,14 +37,18 @@ public class User {
 	@Column(nullable = false, length = 30)
 	private String nickname;
 
+	@Column
 	private String profile;
 	private int level;
 	private int exp;
 
 	@Builder
-	public User(String userid, String token, UserAuthority userAuthority) {
+	public User(String userid, String profile, String nickname) {
 		this.userid = userid;
-		this.token = token;
-		this.userAuthority = userAuthority;
+		this.profile = profile;
+		this.nickname = nickname;
+		// this.accessToken = accessToken;
+		// this.refreshToken = refreshToken;
+		// this.userAuthority = userAuthority;
 	}
 }
