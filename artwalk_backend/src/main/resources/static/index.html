@@ -1,1 +1,100 @@
-<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>vue-front</title><script defer="defer" src="/js/chunk-vendors.9fbfb0c5.js"></script><script defer="defer" src="/js/app.3631766a.js"></script><link href="/css/chunk-vendors.269fb860.css" rel="stylesheet"><link href="/css/app.bd071c00.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but vue-front doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+<!--<html>-->
+<!--<body>-->
+<!--<script src="https://accounts.google.com/gsi/client" async defer></script>-->
+<!--<script>-->
+<!--    function handleCredentialResponse(response) {-->
+<!--        console.log("Encoded JWT ID token: " + response.credential);-->
+
+<!--        let userData = {-->
+<!--            method: 'POST',-->
+<!--            headers: {-->
+<!--                'code': response.credential-->
+<!--            }-->
+<!--        }-->
+
+<!--        fetch("http://localhost:8080/auth/login/google", userData)-->
+<!--            .then((response) => console.log("success"))-->
+<!--            .catch((error) => console.log("fail"));-->
+<!--    }-->
+<!--    window.onload = function () {-->
+<!--        google.accounts.id.initialize({-->
+<!--            client_id: "471989663190-rgtthg8b9m0unah2vv17u28lrva953ef.apps.googleusercontent.com",-->
+<!--            callback: handleCredentialResponse-->
+<!--        });-->
+<!--        google.accounts.id.renderButton(-->
+<!--            document.getElementById("buttonDiv"),-->
+<!--            { theme: "outline", size: "large" }  // customization attributes-->
+<!--        );-->
+<!--        google.accounts.id.prompt(); // also display the One Tap dialog-->
+<!--    }-->
+<!--</script>-->
+<!--<div id="buttonDiv"></div>-->
+<!--</body>-->
+<!--</html>-->
+
+<html>
+<body>
+    <ul>
+        <li onclick="kakaoLogin();">
+            <a href="javascript:void(0)">
+                <span>Login Kakao</span>
+            </a>
+        </li>
+        <li onclick="kakaoLogout();">
+            <a href="javascript:void(0)">
+                <span>Logout Kakao</span>
+            </a>
+        </li>
+    </ul>
+</body>
+</html>
+
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+    Kakao.init('410480dc29fc7b0fc6996e16e71672d5'); //발급받은 키 중 javascript키를 사용해준다.
+    console.log(Kakao.isInitialized()); // sdk초기화여부판단
+    //카카오로그인
+    function kakaoLogin() {
+        Kakao.Auth.login({
+            success: function (response) {
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (response) {
+                        console.log(response)
+                        let userData = {
+                            method: 'POST',
+                            headers: {
+                                'code': response.id
+                            }
+                        }
+
+                        fetch("http://localhost:8080/auth/login/kakao", userData)
+                            .then((response) => console.log("success"))
+                            .catch((error) => console.log("fail"));
+                    },
+                    fail: function (error) {
+                        console.log(error)
+                    },
+                })
+            },
+            fail: function (error) {
+                console.log(error)
+            },
+        })
+    }
+    //카카오로그아웃
+    function kakaoLogout() {
+        if (Kakao.Auth.getAccessToken()) {
+            Kakao.API.request({
+                url: '/v1/user/unlink',
+                success: function (response) {
+                    console.log(response)
+                },
+                fail: function (error) {
+                    console.log(error)
+                },
+            })
+            Kakao.Auth.setAccessToken(undefined)
+        }
+    }
+</script>
