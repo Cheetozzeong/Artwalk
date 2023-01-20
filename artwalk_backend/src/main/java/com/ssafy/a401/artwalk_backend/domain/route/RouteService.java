@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +32,7 @@ public class RouteService {
 	private  RouteRepository routeRepository;
 	
 	// TODO: 임시 파일 경로
-	private static final String FILE_PATH = "C:/artwalk_resource";
+	private static final String FILE_PATH = "C:/artwalk_resource/";
 
 	/** 경로(route) 좌표 배열을 인코딩하여 문자열로 변환합니다. */
 	public static String encode(List<List<Double>> coordinates){
@@ -60,7 +64,7 @@ public class RouteService {
 		Route result = null;
 
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		String saveFolder = FILE_PATH + File.separator + today;
+		String saveFolder = today;
 		File folder = new File(saveFolder);
 		if (!folder.exists()){ // 경로 확인
 			folder.mkdirs();
@@ -74,7 +78,7 @@ public class RouteService {
 
 		try {
 			String saveFolderPath = folder + File.separator + saveFileName;
-			BufferedWriter fw = new BufferedWriter(new FileWriter(saveFolderPath, true));
+			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
 			fw.write(encodedRoute);
 			fw.flush();
 			fw.close();
@@ -101,7 +105,7 @@ public class RouteService {
 		Route result = null;
 
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		String saveFolder = FILE_PATH + File.separator + today;
+		String saveFolder = today;
 		File folder = new File(saveFolder);
 		if (!folder.exists()){ // 경로 확인
 			folder.mkdirs();
@@ -115,22 +119,24 @@ public class RouteService {
 
 		try {
 			String saveFolderPath = folder + File.separator + saveFileName;
-			BufferedWriter fw = new BufferedWriter(new FileWriter(saveFolderPath, true));
+			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
 			fw.write(encodedRoute);
 			fw.flush();
 			fw.close();
 
-			File originalFile = new File(route.getRoute());
-			if(originalFile.exists()){
-				originalFile.delete();
+			Path originalFilePath = Paths.get(FILE_PATH + route.getRoute());
+			try {
+				Files.delete(originalFilePath);
+			} catch (NoSuchFileException e) {
+				System.out.println("삭제하려는 파일이 없습니다");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
 			route.setRoute(saveFolderPath);
 
 			// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
 			route.setUserId("ssafy"); // 임시로 계정 정보 등록
-			// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
-			route.setMaker("ssafy"); // 임시로 등록자 정보 등록
 			// TODO: 썸네일 파일 생성 기능 추가
 			// TODO: 썸네일 파일 저장 기능 추가
 
@@ -139,6 +145,22 @@ public class RouteService {
 			e.printStackTrace();
 		}
 
+		return result;
+	}
+
+	/** 경로를 삭제합니다. */
+	public int removeRoute(Route route){
+		Path originalFilePath = Paths.get(FILE_PATH + route.getRoute());
+		try {
+			Files.delete(originalFilePath);
+		} catch (NoSuchFileException e) {
+			System.out.println("삭제하려는 파일이 없습니다");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		routeRepository.delete(route);
+		int result = routeRepository.countByRouteId(route.getRouteId());
 		return result;
 	}
 
@@ -166,19 +188,41 @@ public class RouteService {
 	}
 
 	/** 저장된 경로 중 route_id가 일치하는 경로를 반환합니다. */
-	public Route findByRouteId(int routeId){
+	public Map<String, Object> findByRouteId(int routeId){
 		Route route = routeRepository.findById(routeId).get();
+		String encodedRoute = "";
+
 		File file = new File(route.getRoute());
 		if(file.exists()){ // 파일이 존재하는 경우
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-				route.setRoute(reader.readLine());
+				BufferedReader in = new BufferedReader(new FileReader(file));
+				encodedRoute = in.readLine();
 			}catch (Exception e){
 				e.printStackTrace();
 			}
-		}else{
-			route.setRoute("");
 		}
-		return route;
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("route", route);
+		map.put("encodedRoute", encodedRoute);
+
+		return map;
+	}
+
+	/** 저장된 경로 중 user_id가 일치하는 경로를 반환합니다. */
+	public List<Map<String, Object>> findByUserId(String userId){
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> routeList = new ArrayList<>();
+
+		List<Route> routes = routeRepository.findByUserId(userId);
+		for (Route route : routes){
+			Map<String, Object> map = objectMapper.convertValue(route, Map.class);
+			map.remove("duration");
+			map.remove("distance");
+			map.remove("route");
+			routeList.add(map);
+		}
+
+		return routeList;
 	}
 }
