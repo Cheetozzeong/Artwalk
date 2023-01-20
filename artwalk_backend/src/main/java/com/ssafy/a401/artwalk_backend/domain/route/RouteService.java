@@ -1,11 +1,13 @@
 package com.ssafy.a401.artwalk_backend.domain.route;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +34,7 @@ import com.google.maps.model.LatLng;
 public class RouteService {
 	@Autowired
 	private  RouteRepository routeRepository;
-	
+
 	// TODO: 임시 파일 경로
 	private static final String FILE_PATH = "C:/artwalk_resource/";
 
@@ -57,6 +61,52 @@ public class RouteService {
 		}
 
 		return coordinates;
+	}
+
+	/** 인코딩된 경로(route)를 가지고 썸네일 이미지를 생성하고 저장한 후 저장 경로를 반환합니다. */
+	public static String makeThumbnail(String routePath, String encodedRoute) {
+		// TODO: API key 위치 변경하기
+		final String MAPBOX_API_KEY = "pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA";
+		int polyLineWidth = 5; // 경로 굵기
+		String polyLineColor = "ff0000"; // 경로 색상
+		int imageWidth = 400; // 이미지 가로 크기
+		int imageHeight = 300; // 이미지 세로 크기
+
+		StringBuilder imageURL = new StringBuilder();
+		imageURL.append("https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-")
+			.append(polyLineWidth)
+			.append("+")
+			.append(polyLineColor)
+			.append("(")
+			.append(encodedRoute)
+			.append(")/auto/")
+			.append(imageWidth)
+			.append("x")
+			.append(imageHeight)
+			.append("?access_token=")
+			.append(MAPBOX_API_KEY);
+
+		System.out.println("주소 : "+imageURL.toString());
+
+		String filePathName = "";
+		try {
+			URL imgURL = new URL(imageURL.toString());
+			String extension = "png";
+			StringTokenizer st = new StringTokenizer(routePath, ".");
+			filePathName = st.nextToken() + "." + extension;
+
+			BufferedImage image = ImageIO.read(imgURL);
+			File file = new File(FILE_PATH + filePathName);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+
+			ImageIO.write(image, extension, file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return filePathName;
 	}
 
 	/** 경로를 저장합니다. */
@@ -89,8 +139,8 @@ public class RouteService {
 			route.setUserId("ssafy"); // 임시로 계정 정보 등록
 			// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
 			route.setMaker("ssafy"); // 임시로 등록자 정보 등록
-			// TODO: 썸네일 파일 생성 기능 추가
-			// TODO: 썸네일 파일 저장 기능 추가
+
+			route.setThumbnail(makeThumbnail(saveFolderPath, encodedRoute));
 
 			result = routeRepository.save(route);
 		}catch (Exception e){
@@ -137,8 +187,8 @@ public class RouteService {
 
 			// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
 			route.setUserId("ssafy"); // 임시로 계정 정보 등록
-			// TODO: 썸네일 파일 생성 기능 추가
-			// TODO: 썸네일 파일 저장 기능 추가
+
+			route.setThumbnail(makeThumbnail(saveFolderPath, encodedRoute));
 
 			result = routeRepository.save(route);
 		}catch (Exception e){
