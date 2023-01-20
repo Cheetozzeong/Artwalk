@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>레코드보드</p>
+    <h1>RecordBoardView</h1>
     <RecordItem/>
   </div>
 </template>
