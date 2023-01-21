@@ -9,8 +9,8 @@ class GetRouteUseCase @Inject constructor(
     private val routeRepository: RouteRepository
 ) {
 
-    operator fun invoke(from: Marker, to: Marker, profile: String): Route {
-        return routeRepository.getRouteBetweenTwoMarker(from, to, profile)
+    operator fun invoke(from: Marker, to: Marker): Route {
+        return routeRepository.getRoute(from, to)
     }
 
 }
