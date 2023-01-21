@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -80,8 +81,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
     private fun addPolylineToMap() {
         routeDrawViewModel.lastRoute.observe(requireActivity()) { route ->
             val polylineOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-                .withGeometry(LineString.fromJson(route.lineString))
-
+                .withGeometry(LineString.fromPolyline(route.lineString, 5))
             polylineAnnotationManager.create(polylineOptions)
         }
     }
