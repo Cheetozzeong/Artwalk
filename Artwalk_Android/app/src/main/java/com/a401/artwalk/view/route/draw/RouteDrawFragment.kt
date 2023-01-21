@@ -20,7 +20,9 @@ import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
 
     private val routeDrawViewModel by viewModels<RouteDrawViewModel> { defaultViewModelProviderFactory }
