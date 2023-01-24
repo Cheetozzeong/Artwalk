@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 interface RepositoryModule {
 
     @Binds
-    fun bindFakeRouteRepo(routeRepository: RouteRepositoryImpl): RouteRepository
+    fun bindRouteRepository(routeRepository: RouteRepositoryImpl): RouteRepository
 
 }

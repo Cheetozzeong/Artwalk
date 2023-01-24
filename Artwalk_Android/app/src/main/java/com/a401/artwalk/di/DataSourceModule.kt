@@ -1,4 +1,4 @@
-package com.a401.data.di
+package com.a401.artwalk.di
 
 import com.a401.data.datasource.remote.RouteRemoteDataSource
 import com.a401.data.datasource.remote.RouteRemoteDataSourceImpl
