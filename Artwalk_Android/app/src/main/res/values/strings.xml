@@ -8,4 +8,8 @@
 
     <string name="distance_format">%,.2f Km</string>
     <string name="duration_format">%d시간 %d분 %d초</string>
+
+    <!--Kakao 네이티브 키-->
+    <string name="kakao_native_key">e91267783672fa57f9e0d9b02eb50c04</string>
+    <string name="kakao_key">kakaoe91267783672fa57f9e0d9b02eb50c04</string>
 </resources>
