@@ -15,6 +15,7 @@ android {
         consumerProguardFiles "consumer-rules.pro"
 
         buildConfigField("String", "MAPBOX_ACCESS_TOKEN", MAPBOX_PUBLIC_ACCESS_TOKEN)
+        buildConfigField("String", "MAPBOX_DIRECTIONS_URL", MAPBOX_DIRECTIONS_URL)
     }
 
     buildTypes {
