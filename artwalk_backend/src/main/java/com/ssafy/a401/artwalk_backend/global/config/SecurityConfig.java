@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.global.config;
 
+import com.ssafy.a401.artwalk_backend.global.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -49,11 +51,14 @@ public class SecurityConfig {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/**").permitAll()
+//				.antMatchers("/login").permitAll()
+//				.antMatchers("/members/").hasRole().
 			.anyRequest().authenticated()
 
 
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider));
+				.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+//			.apply(new JwtSecurityConfig(tokenProvider));
 
 		return http.build();
 	}

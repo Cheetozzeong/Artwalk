@@ -2,7 +2,12 @@ package com.ssafy.a401.artwalk_backend.domain.user;
 
 import javax.transaction.Transactional;
 
-import org.springframework.http.ResponseEntity;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import com.ssafy.a401.artwalk_backend.domain.token.Token;
+import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-	// private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final UserRepository userRepository;
 	// private final PasswordEncoder passwordEncoder;
-	// private final TokenProvider tokenProvider;
+	private final TokenProvider tokenProvider;
 
 	// 사용자의 구글 토큰 정보 가지고 오는 곳
 	private UserGoogleToken userGoogleToken;
@@ -59,11 +64,27 @@ public class UserService {
 					log.info("동일한 이메일이 존재합니다.");
 				} else {
 					User user = User.builder().userid(email).profile(picture).nickname(nickname).build();
+					// 새로운 사용자 계정을 등록한다.
 					userRepository.save(user);
 					log.info("New User -> ", email);
+
+//					Token token = tokenProvider.generateToken();
 				}
 
 				// ACCESS 토큰, REFRESH 토큰 발급
+				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(serviceType, idToken);
+				Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+				Token token = tokenProvider.generateToken(authentication);
+
+				// RefreshToken 저장 로직
+//				RefreshToken refreshToken = RefreshToken.builder()
+//						.key(authentication.getName())
+//						.value(tokenDto.getRefreshToken())
+//						.build();
+//
+//				refreshTokenRepository.save(refreshToken);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
