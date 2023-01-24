@@ -1,4 +1,12 @@
 package com.a401.data.mapper
 
-class MarkerMapper {
-}
+import com.a401.data.model.request.MarkerRequest
+import com.a401.domain.model.Marker
+
+fun markerToRequest(data: Marker): MarkerRequest =
+    with(data) {
+        MarkerRequest(
+            longitude,
+            latitude
+        )
+    }
