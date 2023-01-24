@@ -5,12 +5,12 @@ import com.a401.domain.model.Route
 import com.a401.domain.repository.RouteRepository
 import javax.inject.Inject
 
-class GetRouteUseCase @Inject constructor(
+class GetRouteForWalkingUseCase @Inject constructor(
     private val routeRepository: RouteRepository
 ) {
 
-    operator fun invoke(from: Marker, to: Marker): Route {
-        return routeRepository.getRoute(from, to)
+    suspend operator fun invoke(from: Marker, to: Marker): Result<Route> {
+        return routeRepository.getRouteForWalking(from, to)
     }
 
 }

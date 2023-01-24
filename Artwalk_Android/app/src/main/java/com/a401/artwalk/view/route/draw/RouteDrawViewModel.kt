@@ -3,19 +3,20 @@ package com.a401.artwalk.view.route.draw
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
 import com.a401.domain.model.Marker
 import com.a401.domain.model.Route
-import com.a401.domain.usecase.GetRouteUseCase
+import com.a401.domain.usecase.GetRouteForWalkingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class RouteDrawViewModel @Inject constructor(
-    private val getRouteUseCase: GetRouteUseCase,
+    private val getRouteForWalkingUseCase: GetRouteForWalkingUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider) {
 
@@ -60,28 +61,32 @@ class RouteDrawViewModel @Inject constructor(
     fun addPointEvent(id: Long, latitude: Double, longitude: Double) {
         val newMarker = Marker(id, latitude, longitude)
 
-        when(_markerStack.size) {
-            0 -> {
+        viewModelScope.launch {
 
-            }
-            1 -> {
-                val route = getRouteUseCase(_markerStack.peek(), newMarker)
-                _routeStack.push(
-                    route
-                )
-                _lastRoute.value = route
-            }
-            else -> {
-                val route = getRouteUseCase(_markerStack.peek(), newMarker)
-                _routeStack.push(
-                    route
-                )
-                _lastRoute.value = route
-                postDeleteLastMarkerEvent()
 
+            when (_markerStack.size) {
+                0 -> {
+
+                }
+                1 -> {
+                    val route = getRouteForWalkingUseCase(_markerStack.peek(), newMarker).getOrThrow()
+                    _routeStack.push(
+                        route
+                    )
+                    _lastRoute.value = route
+                }
+                else -> {
+                    val route = getRouteForWalkingUseCase(_markerStack.peek(), newMarker).getOrThrow()
+                    _routeStack.push(
+                        route
+                    )
+                    _lastRoute.value = route
+                    postDeleteLastMarkerEvent()
+
+                }
             }
+            _markerStack.push(newMarker)
+
         }
-        _markerStack.push(newMarker)
-
     }
 }

@@ -81,7 +81,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
     private fun addPolylineToMap() {
         routeDrawViewModel.lastRoute.observe(requireActivity()) { route ->
             val polylineOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-                .withGeometry(LineString.fromPolyline(route.lineString, 5))
+                .withGeometry(LineString.fromPolyline(route.geometry, 5))
             polylineAnnotationManager.create(polylineOptions)
         }
     }
