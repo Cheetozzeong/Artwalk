@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/View_login_intervene"
             tools:layout_editor_absoluteX="25dp" />
 
-
+        <!-- 카카오 로그인 버튼-->
         <ImageButton
             android:id="@+id/button_kakao_login"
             android:layout_width="300dp"
@@ -49,6 +49,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf= "@+id/view_login_loginBox"
             android:padding="1dp" />
+        <!-- 연결 종료 버튼-->
+        <Button
+            android:id="@+id/button_kakao_unlink"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#f9e000"
+            android:text="카카오 연결끊기"
+            android:textColor="@color/neutral01"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_kakao_logout" />
+        <!-- 로그아웃 버튼 -->
+        <Button
+            android:id="@+id/button_kakao_logout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#f9e000"
+            android:text="카카오 로그아웃"
+            android:textColor="@color/neutral01"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_kakao_login" />
+        <!-- 토큰 확인용 창 -->
+        <TextView
+            android:id="@+id/view_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textColor="@color/neutral06"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/button_kakao_login" />
 
         <com.google.android.gms.common.SignInButton
                 android:id="@+id/button_google_login"
@@ -71,7 +115,7 @@
             />
 
         <TextView
-            android:id="@+id/wordbox_big"
+            android:id="@+id/wordbox_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Artwalk,"
@@ -81,15 +125,16 @@
             app:layout_constraintTop_toBottomOf="@id/logo_main" />
 
         <TextView
+            android:id="@+id/wordbox_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="나만의 여정을 그려보세요."
             style="@style/button_common_font_style"
             android:includeFontPadding="false"
-            app:layout_constraintEnd_toEndOf="@+id/wordbox_big"
+            app:layout_constraintEnd_toEndOf="@+id/wordbox_title"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/wordbox_big"
-            app:layout_constraintTop_toBottomOf="@id/wordbox_big" />
+            app:layout_constraintStart_toStartOf="@+id/wordbox_title"
+            app:layout_constraintTop_toBottomOf="@id/wordbox_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
