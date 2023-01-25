@@ -3,6 +3,7 @@ package com.a401.artwalk.view.login
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentLoginBinding
@@ -19,7 +20,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        KakaoSdk.init(requireActivity(), this.getString(R.string.kakao_native_key))
+        KakaoSdk.init(requireActivity(), BuildConfig.KAKAO_NATIVE_KEY)
         setInitBinding()
         setClickListener()
 
@@ -28,6 +29,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private fun setInitBinding() {
         binding.vm = loginViewModel
     }
+
+    //TODO:VIEWMODEL로
     private fun setClickListener() {
         binding.buttonKakaoLogin.setOnClickListener {
             kakaoLogin() //로그인
@@ -39,6 +42,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             kakaoUnlink() //연결해제
         }
     }
+
+    //TODO: 데이터 모듈로 이동
     private fun kakaoLogin() {
         // 카카오계정으로 로그인 공통 callback 구성
         // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
@@ -50,11 +55,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 //TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
                 UserApiClient.instance.me { user, error ->
                     TextMsg(this, "카카오계정으로 로그인 성공 \n\n " +
-                            "token: ${token.accessToken} \n\n " +
+                            "token: ${token.idToken} \n\n " +
                             "me: ${user}")
                     setLogin(true)
                 }
             }
+
         }
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
@@ -72,7 +78,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                     UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
                 } else if (token != null) {
-                    TextMsg(this, "카카오톡으로 로그인 성공 ${token.accessToken}")
+                    TextMsg(this, "카카오톡으로 로그인 성공 ${token.idToken}")
                     setLogin(true)
                 }
             }
@@ -108,6 +114,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         binding.viewToken.text = msg
     }
 
+    //홈 프레그먼트 구성 완료 이후 삭제 예정
     private fun setLogin(bool: Boolean){
         binding.buttonKakaoLogin.visibility = if(bool) View.GONE else View.VISIBLE
         binding.buttonKakaoLogout.visibility = if(bool) View.VISIBLE else View.GONE
