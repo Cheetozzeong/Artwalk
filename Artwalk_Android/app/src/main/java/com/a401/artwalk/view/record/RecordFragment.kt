@@ -14,11 +14,12 @@ import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.PuckBearingSource
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
-import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
@@ -97,7 +98,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     }
 
     private fun initLocationComponent() {
-        val locationComponentPlugin = mapView.location
+        val locationComponentPlugin = mapView.location2
         locationComponentPlugin.updateSettings {
             this.enabled = true
             this.locationPuck = LocationPuck2D(
@@ -113,21 +114,22 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
         locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
+        headerTo()
     }
 
     private fun onCameraTrackingDismissed() {
-        mapView.location
+        mapView.location2
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
-        mapView.location
+        mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.location
+        mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        mapView.location
+        mapView.location2
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
@@ -139,5 +141,12 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    // 마커의 헤더가 원래 위치를 잘 찾지 못하는 버그 해결
+    fun headerTo(){
+        mapView.location2.updateSettings2 {
+            puckBearingSource = PuckBearingSource.HEADING
+        }
     }
 }
