@@ -1,11 +1,11 @@
 package com.a401.data.mapper
 
-import com.a401.data.model.response.RouteListResponse
-import com.a401.domain.model.Route
+import com.a401.data.model.response.RouteListForDrawResponse
+import com.a401.domain.model.RouteForDraw
 
-fun routeDataFromResponse(response: RouteListResponse): Route =
+fun routeDataFromResponse(response: RouteListForDrawResponse): RouteForDraw =
     with(response.routes[0]) {
-        Route(
+        RouteForDraw(
             duration.toInt(),
             distance.toFloat(),
             geometry

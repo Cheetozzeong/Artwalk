@@ -1,6 +1,6 @@
 package com.a401.domain.model
 
-data class Route(
+data class RouteForDraw(
     val duration: Int,
     val distance: Float,
     val geometry: String,
@@ -8,6 +8,6 @@ data class Route(
     constructor() : this(
         0,
         0.0f,
-        ""
+        "",
     )
 }
