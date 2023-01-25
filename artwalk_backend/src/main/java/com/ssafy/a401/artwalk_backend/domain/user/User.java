@@ -4,34 +4,31 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import lombok.AllArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@DynamicInsert
 @ToString
-@Entity(name="user")
+@Entity
 public class User {
 
 	@Id
 	private String userid;
 
-	@Column(nullable = true, length = 20)
-	private String accessToken;
-
-	@Column(nullable = true, length = 20)
+	@Column(nullable = true, length = 255)
 	private String refreshToken;
 
 	@Enumerated(EnumType.STRING)
+	@ColumnDefault("ROLE_USER")
 	private UserAuthority userAuthority;
 
 	@Column(nullable = false, length = 30)
@@ -43,12 +40,15 @@ public class User {
 	private int exp;
 
 	@Builder
-	public User(String userid, String profile, String nickname) {
+	public User(String userid, String profile, String nickname, String refreshToken, UserAuthority userAuthority) {
 		this.userid = userid;
 		this.profile = profile;
 		this.nickname = nickname;
-		// this.accessToken = accessToken;
-		// this.refreshToken = refreshToken;
-		// this.userAuthority = userAuthority;
+		this.refreshToken = refreshToken;
+		this.userAuthority = userAuthority;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 }

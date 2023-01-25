@@ -18,4 +18,5 @@ import lombok.ToString;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+	boolean existsByRefreshToken(String token);
 }

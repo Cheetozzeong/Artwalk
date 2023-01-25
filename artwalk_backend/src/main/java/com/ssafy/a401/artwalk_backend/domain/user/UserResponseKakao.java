@@ -13,7 +13,7 @@ public class UserResponseKakao {
 	public String iss;
 	public String aud;
 	public String sub;
-	public String lat;
+	public String iat;
 	public String auth_time;
 	public String exp;
 	public String nonce;
