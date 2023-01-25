@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.domain.user;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.tomcat.util.json.JSONParser;
@@ -8,9 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import net.minidev.json.JSONObject;
 
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkProvider;
@@ -23,17 +27,21 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Component
 @Slf4j
+@RequiredArgsConstructor
 public class UserKakaoToken {
 
 	RestTemplate restTemplate;
-	ObjectMapper objectMapper;
 
 	static final String KAKAO_USERINFO_REQUEST_URL = "https://kauth.kakao.com/oauth/token";
 
@@ -50,9 +58,17 @@ public class UserKakaoToken {
 			JWTVerifier verifier = JWT.require(algorithm).build();
 			DecodedJWT jwt = verifier.verify(idToken);
 
-			String payload = jwt.getPayload();
+			Base64.Decoder decoder = Base64.getUrlDecoder();
+			String payload = new String(decoder.decode(jwt.getPayload()));
 
+			System.out.println("payload -> " + payload);
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			// 2.8부터 JsonObject 따로 생성 안함
+			// JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
 			UserResponseKakao userResponseKakao = objectMapper.readValue(payload, UserResponseKakao.class);
+
+			System.out.println(userResponseKakao);
 			return userResponseKakao;
 		} catch (JWTVerificationException e) {
 			log.info("토큰이 만료되었거나 검증에 실패했습니다.");

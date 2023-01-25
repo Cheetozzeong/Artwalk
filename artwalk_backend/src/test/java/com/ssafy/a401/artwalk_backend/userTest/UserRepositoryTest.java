@@ -1,6 +1,7 @@
 package com.ssafy.a401.artwalk_backend.domain.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -26,5 +27,17 @@ public class UserRepositoryTest {
 		List<User> users = userRepository.findAll();
 		System.out.println(users.size());
 		// assertThat(users.size(), );
+	}
+
+	@Test
+	public void insertUser() {
+		String email = "aaa@example.com";
+		String nickname = "ssafy";
+
+		User user = User.builder().userid(email).profile("tmp_picture").nickname(nickname).refreshToken("tmp_token").build();
+		userRepository.save(user);
+
+		Optional<User> findUser = userRepository.findById(email);
+		System.out.println(findUser);
 	}
 }

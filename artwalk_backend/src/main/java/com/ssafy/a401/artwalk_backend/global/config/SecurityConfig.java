@@ -50,9 +50,7 @@ public class SecurityConfig {
 			// 로그인, 회원가입 API는 토큰 없이도 허용
 			.and()
 			.authorizeRequests()
-			.antMatchers("/**").permitAll()
-//				.antMatchers("/login").permitAll()
-//				.antMatchers("/members/").hasRole().
+			.antMatchers("/admin/**").hasRole("ADMIN") // 관리자 페이지 ADMIN 권한 확인
 			.anyRequest().authenticated()
 
 
@@ -63,12 +61,15 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// @Bean
-	// public WebSecurityCustomizer webSecurityCustomizer() {
-	//
-	// 	// // 관련 API 무시
-	// 	// return (web) -> web.ignoring()
-	// 	// 		.antMatchers("");
-	//
-	// }
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return web -> {
+			web.ignoring()
+				.antMatchers( // 관리자 로그인, 사용자 인증 패이지는 토큰 없이 접근 가능
+					"/**"
+					// "/admin/login",
+					// "/auth/**"
+					);
+		};
+	}
 }

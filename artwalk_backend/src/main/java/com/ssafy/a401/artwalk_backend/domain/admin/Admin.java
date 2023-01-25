@@ -4,12 +4,19 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
+import com.ssafy.a401.artwalk_backend.domain.user.UserAuthority;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@DynamicInsert
 @ToString
 @Entity(name = "admin")
 public class Admin {
@@ -20,4 +27,14 @@ public class Admin {
     @Column(nullable = false, length = 20)
     private String password;
 
+    @Column(nullable = true, length = 255)
+    private String refreshToken;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("ROLE_ADMIN")
+    private UserAuthority userAuthority;
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
