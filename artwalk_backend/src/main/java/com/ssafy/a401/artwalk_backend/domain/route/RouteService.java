@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -24,7 +24,14 @@ import java.util.StringTokenizer;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.support.ServletContextResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.internal.PolylineEncoding;
@@ -33,10 +40,20 @@ import com.google.maps.model.LatLng;
 @Service
 public class RouteService {
 	@Autowired
-	private  RouteRepository routeRepository;
+	private RouteRepository routeRepository;
 
-	// TODO: 임시 파일 경로
-	private static final String FILE_PATH = "C:/artwalk_resource/";
+	private static String FILE_PATH;
+	private static String MAPBOX_API_KEY;
+
+	@Value("${file.path}")
+	public void setFilePath(String filePath) {
+		FILE_PATH = filePath;
+	}
+
+	@Value("${mapbox.api.key}")
+	public void setMapboxApiKey(String mapboxApiKey) {
+		MAPBOX_API_KEY = mapboxApiKey;
+	}
 
 	/** 경로(route) 좌표 배열을 인코딩하여 문자열로 변환합니다. */
 	public static String encode(List<List<Double>> coordinates){
@@ -63,10 +80,62 @@ public class RouteService {
 		return coordinates;
 	}
 
+	/** 파일 읽고 값을 반환합니다. */
+	public static String readFile(String filePath){
+		String result = "";
+		File file = new File(FILE_PATH + filePath);
+		if(file.exists()){ // 파일이 존재하는 경우
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(file));
+				result = in.readLine();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	/** 파일 저장 후 경로를 반환합니다. */
+	public static String saveFile(String value){
+		String saveFolderPath = "";
+
+		String today = new SimpleDateFormat("yyMMdd").format(new Date());
+		String saveFolder = today;
+
+		File folder = new File(FILE_PATH + saveFolder);
+		if (!folder.exists()){ // 경로 확인
+			folder.mkdirs();
+		}
+
+		String time = Long.toString(System.currentTimeMillis());
+		String rand = Integer.toString((int)(Math.random()*1000000));
+		String saveFileName = time+rand+".txt";
+		try {
+			saveFolderPath = saveFolder + "/" + saveFileName;
+			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
+			fw.write(value);
+			fw.flush();
+			fw.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return saveFolderPath;
+	}
+
+	/** 파일을 삭제합니다. */
+	public static void removeFile(String filePath){
+		Path path = Paths.get(FILE_PATH + filePath);
+		try {
+			Files.delete(path);
+		} catch (NoSuchFileException e) {
+			System.out.println("삭제하려는 파일이 없습니다");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/** 인코딩된 경로(route)를 가지고 썸네일 이미지를 생성하고 저장한 후 저장 경로를 반환합니다. */
-	public static String makeThumbnail(String routePath, String encodedRoute) {
-		// TODO: API key 위치 변경하기
-		final String MAPBOX_API_KEY = "pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA";
+	public static String makeThumbnail(String routePath, String geometry) {
 		int polyLineWidth = 5; // 경로 굵기
 		String polyLineColor = "ff0000"; // 경로 색상
 		int imageWidth = 400; // 이미지 가로 크기
@@ -78,15 +147,13 @@ public class RouteService {
 			.append("+")
 			.append(polyLineColor)
 			.append("(")
-			.append(encodedRoute)
+			.append(geometry)
 			.append(")/auto/")
 			.append(imageWidth)
 			.append("x")
 			.append(imageHeight)
 			.append("?access_token=")
 			.append(MAPBOX_API_KEY);
-
-		System.out.println("주소 : "+imageURL.toString());
 
 		String filePathName = "";
 		try {
@@ -109,107 +176,73 @@ public class RouteService {
 		return filePathName;
 	}
 
-	/** 경로를 저장합니다. */
-	public Route addRoute(Route route, List<List<Double>> coordinates){
-		Route result = null;
+	/** 저장한 썸네일 이미지를 반환합니다. */
+	public static ResponseEntity<Resource> findThumbnail(String thumbnailPath) {
+		ResponseEntity<Resource> response = null;
 
-		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		String saveFolder = today;
-		File folder = new File(saveFolder);
-		if (!folder.exists()){ // 경로 확인
-			folder.mkdirs();
+		Resource resource = new FileSystemResource(FILE_PATH + thumbnailPath);
+		if(!resource.exists()){
+			response = new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
 		}
 
-		String time = Long.toString(System.currentTimeMillis());
-		String rand = Integer.toString((int)(Math.random()*1000000));
-		String saveFileName = time+rand+".txt";
-
-		String encodedRoute = encode(coordinates);
-
-		try {
-			String saveFolderPath = folder + File.separator + saveFileName;
-			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
-			fw.write(encodedRoute);
-			fw.flush();
-			fw.close();
-
-			route.setRoute(saveFolderPath);
-
-			// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
-			route.setUserId("ssafy"); // 임시로 계정 정보 등록
-			// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
-			route.setMaker("ssafy"); // 임시로 등록자 정보 등록
-
-			route.setThumbnail(makeThumbnail(saveFolderPath, encodedRoute));
-
-			result = routeRepository.save(route);
-		}catch (Exception e){
+		HttpHeaders header = new HttpHeaders();
+		Path filePath = null;
+		try{
+			filePath = Paths.get(FILE_PATH + thumbnailPath);
+			header.add("Content-type", Files.probeContentType(filePath));
+			response = new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		return response;
+	}
+
+	/** 경로를 저장합니다. */
+	public Route addRoute(Route route){
+		Route result = null;
+
+		String geometryPath = saveFile(route.getGeometry());
+		route.setGeometry(geometryPath);
+
+		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
+		route.setUserId("ssafy"); // 임시로 계정 정보 등록
+		// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
+		route.setMaker("ssafy"); // 임시로 등록자 정보 등록
+
+		String thumbPath = makeThumbnail(geometryPath, readFile(route.getGeometry()));
+		route.setThumbnail(thumbPath);
+
+		result = routeRepository.save(route);
 
 		return result;
 	}
 
 	/** 경로를 수정합니다. */
-	public Route modifyRoute(Route route, List<List<Double>> coordinates){
+	public Route modifyRoute(Route originRoute, Route newRoute){
 		Route result = null;
 
-		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-		String saveFolder = today;
-		File folder = new File(saveFolder);
-		if (!folder.exists()){ // 경로 확인
-			folder.mkdirs();
-		}
+		String updateGeometry = newRoute.getGeometry();
+		String geometryPath = saveFile(updateGeometry);
+		removeFile(originRoute.getGeometry());
+		originRoute.setGeometry(geometryPath);
 
-		String time = Long.toString(System.currentTimeMillis());
-		String rand = Integer.toString((int)(Math.random()*1000000));
-		String saveFileName = time+rand+".txt";
+		String thumbPath = makeThumbnail(geometryPath, updateGeometry);
+		removeFile(originRoute.getThumbnail());
+		originRoute.setThumbnail(thumbPath);
 
-		String encodedRoute = encode(coordinates);
+		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
+		originRoute.setUserId("ssafy"); // 임시로 계정 정보 등록
 
-		try {
-			String saveFolderPath = folder + File.separator + saveFileName;
-			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
-			fw.write(encodedRoute);
-			fw.flush();
-			fw.close();
-
-			Path originalFilePath = Paths.get(FILE_PATH + route.getRoute());
-			try {
-				Files.delete(originalFilePath);
-			} catch (NoSuchFileException e) {
-				System.out.println("삭제하려는 파일이 없습니다");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			route.setRoute(saveFolderPath);
-
-			// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
-			route.setUserId("ssafy"); // 임시로 계정 정보 등록
-
-			route.setThumbnail(makeThumbnail(saveFolderPath, encodedRoute));
-
-			result = routeRepository.save(route);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		result = routeRepository.save(originRoute);
 
 		return result;
 	}
 
 	/** 경로를 삭제합니다. */
 	public int removeRoute(Route route){
-		Path originalFilePath = Paths.get(FILE_PATH + route.getRoute());
-		try {
-			Files.delete(originalFilePath);
-		} catch (NoSuchFileException e) {
-			System.out.println("삭제하려는 파일이 없습니다");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		routeRepository.delete(route);
+		removeFile(route.getGeometry());
+		removeFile(route.getThumbnail());
 		int result = routeRepository.countByRouteId(route.getRouteId());
 		return result;
 	}
@@ -230,7 +263,7 @@ public class RouteService {
 			Map<String, Object> map = objectMapper.convertValue(route, Map.class);
 			map.remove("duration");
 			map.remove("distance");
-			map.remove("route");
+			map.remove("geometry");
 			routeList.add(map);
 		}
 
@@ -238,25 +271,9 @@ public class RouteService {
 	}
 
 	/** 저장된 경로 중 route_id가 일치하는 경로를 반환합니다. */
-	public Map<String, Object> findByRouteId(int routeId){
+	public Route findByRouteId(int routeId){
 		Route route = routeRepository.findById(routeId).get();
-		String encodedRoute = "";
-
-		File file = new File(route.getRoute());
-		if(file.exists()){ // 파일이 존재하는 경우
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(file));
-				encodedRoute = in.readLine();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		}
-
-		Map<String, Object> map = new HashMap<>();
-		map.put("route", route);
-		map.put("encodedRoute", encodedRoute);
-
-		return map;
+		return route;
 	}
 
 	/** 저장된 경로 중 user_id가 일치하는 경로를 반환합니다. */
@@ -269,7 +286,7 @@ public class RouteService {
 			Map<String, Object> map = objectMapper.convertValue(route, Map.class);
 			map.remove("duration");
 			map.remove("distance");
-			map.remove("route");
+			map.remove("geometry");
 			routeList.add(map);
 		}
 
