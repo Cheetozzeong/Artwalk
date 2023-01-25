@@ -10,11 +10,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UserResponseKakao {
-	public String token_type;
-	public String access_token;
-	public String id_token;
-	public Integer expire_in;
-	public String refresh_token;
-	public Integer refresh_token_expires_in;
-	public String scope;
+	public String iss;
+	public String aud;
+	public String sub;
+	public String lat;
+	public String auth_time;
+	public String exp;
+	public String nonce;
+	public String nickname;
+	public String picture;
+	public String email;
 }

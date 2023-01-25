@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginView from "@/views/LoginView.vue";
-import UserBoardView from "@/views/UserBoardView.vue";
 import RecordBoardView from "@/views/RecordBoardView.vue";
+import UserBoardView from "@/views/UserBoardView.vue";
 
 Vue.use(VueRouter)
 
@@ -22,7 +22,6 @@ const routes = [
     name: 'userBoard',
     component: UserBoardView
   },
-
 ]
 
 const router = new VueRouter({

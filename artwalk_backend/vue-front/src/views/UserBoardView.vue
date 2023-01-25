@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>유저보드입니다</p>
+    <h1>UserBoardView</h1>
   </div>
 </template>
 

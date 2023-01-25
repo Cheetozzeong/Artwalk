@@ -25,9 +25,12 @@ public class UserController {
 
 	@PostMapping("/login/{serviceType}")
 	public ResponseEntity<?> login(@PathVariable String serviceType, @RequestHeader Map<String, Object> header) {
-		String code = header.get("code").toString();
-		System.out.println(code);
-		// log.info("serviceType / code -> ", serviceType, code);
-		return ResponseEntity.ok(userService.login(serviceType, code));
+		// String code = header.get("code").toString();
+		// System.out.println(code);
+		// // log.info("serviceType / code -> ", serviceType, code);
+
+		String idToken = header.get("idToken").toString();
+
+		return ResponseEntity.ok(userService.login(serviceType, idToken));
 	}
 }

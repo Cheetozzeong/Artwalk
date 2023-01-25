@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -21,7 +22,7 @@ public class UserService {
 
 	// user email과 oAuth의 Token으로 AuthenticationToken 생성한다.
 	@Transactional
-	public boolean login(String serviceType, String code) {
+	public boolean login(String serviceType, String idToken) {
 		// 외부 accessToken이 구글인지 카카오인지 확인한다.
 		// api -> accessToken, type을 헤더에 담아 로그인 API를 호출한다.
 
@@ -30,24 +31,39 @@ public class UserService {
 			try {
 				// 일회성 idToken을 이용해 사용자 인증 정보를 받아온다.
 				// UserRequestGoogle googleRequestToken = userGoogleToken.getAccessToken(code);
-				// 받아온 사용자 인증 정보로 사용자 정보를 가져온다.
-				ResponseEntity<String> response = userGoogleToken.getRequestInfo(code);
-				// JSON 응답 객체 (String)을 자바 객체로 역직렬화한다.
-				UserResponseGoogle userResponseGoogle = userGoogleToken.getUserInfo(response);
-
-				System.out.println(userResponseGoogle.getId() + " " + userResponseGoogle.getEmail() + " " + userResponseGoogle.getPicture());
+				// // 받아온 사용자 인증 정보로 사용자 정보를 가져온다.
+				// ResponseEntity<String> response = userGoogleToken.getRequestInfo(code);
+				// // JSON 응답 객체 (String)을 자바 객체로 역직렬화한다.
+				// UserResponseGoogle userResponseGoogle = userGoogleToken.getUserInfo(response);
+				//
+				// System.out.println(userResponseGoogle.getId() + " " + userResponseGoogle.getEmail() + " " + userResponseGoogle.getPicture());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		else if (serviceType.equals("kakao")) {
 			try {
-				// 사용자 인증 정보를 받아온다.
-				String accessToken = userKakaoToken.getAccessToken(code);
-				// JSON 응답 객체 (String)을 자바 객체로 역직렬화한다.
-				String result = userKakaoToken.getUserInfo(accessToken);
 
-				System.out.println(result);
+				// // 사용자 인증 정보를 받아온다.
+				// String accessToken = userKakaoToken.getAccessToken(code);
+				// // JSON 응답 객체 (String)을 자바 객체로 역직렬화한다.
+				// String result = userKakaoToken.getUserInfo(accessToken);
+
+				UserResponseKakao userResponseKakao = userKakaoToken.validationToken(idToken);
+				String email = userResponseKakao.getEmail();
+				String picture = userResponseKakao.getPicture();
+				String nickname = userResponseKakao.getNickname();
+
+				// 사용자 이메일이 존재하지 않는다면
+				if (userRepository.findById(email).isPresent()) {
+					log.info("동일한 이메일이 존재합니다.");
+				} else {
+					User user = User.builder().userid(email).profile(picture).nickname(nickname).build();
+					userRepository.save(user);
+					log.info("New User -> ", email);
+				}
+
+				// ACCESS 토큰, REFRESH 토큰 발급
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
