@@ -19,7 +19,6 @@ import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
-import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 
@@ -99,7 +98,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     }
 
     private fun initLocationComponent() {
-        val locationComponentPlugin = mapView.location
+        val locationComponentPlugin = mapView.location2
         locationComponentPlugin.updateSettings {
             this.enabled = true
             this.locationPuck = LocationPuck2D(
@@ -119,18 +118,18 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     }
 
     private fun onCameraTrackingDismissed() {
-        mapView.location
+        mapView.location2
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
-        mapView.location
+        mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.location
+        mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        mapView.location
+        mapView.location2
             .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
