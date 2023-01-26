@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.global.config;
 
+import com.ssafy.a401.artwalk_backend.domain.token.TokenService;
 import com.ssafy.a401.artwalk_backend.global.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 	private final TokenProvider tokenProvider;
+	private final TokenService tokenService;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -55,7 +57,7 @@ public class SecurityConfig {
 
 
 			.and()
-				.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(new JwtFilter(tokenProvider, tokenService), UsernamePasswordAuthenticationFilter.class);
 //			.apply(new JwtSecurityConfig(tokenProvider));
 
 		return http.build();
@@ -66,9 +68,9 @@ public class SecurityConfig {
 		return web -> {
 			web.ignoring()
 				.antMatchers( // 관리자 로그인, 사용자 인증 패이지는 토큰 없이 접근 가능
-					"/**"
-					// "/admin/login",
-					// "/auth/**"
+					// "/**"
+					"/admin/login",
+					"/auth/**"
 					);
 		};
 	}
