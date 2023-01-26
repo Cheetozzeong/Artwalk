@@ -27,6 +27,12 @@ export default new Vuex.Store({
     GET_ROUTE(state, route) {
       state.route = route
     },
+    GET_RECORD(state, record) {
+      state.record = record
+    },
+    GET_USER(state, user) {
+      state.user = user
+    }
   },
   actions: {
     // login(context, payload) {
@@ -56,6 +62,32 @@ export default new Vuex.Store({
           .then((res) => {
             console.log(res)
             context.commit('GET_ROUTE', res.data.routes)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+    getUser(context) {
+      axios({
+        method: 'get',
+        url: `${API_URL}/route/list/`,
+        headers: {'Access-Control-Allow-Origin': '*'},
+      })
+          .then((res) => {
+            context.commit('GET_USER', res.data.routes)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+    getRecord(context) {
+      axios({
+        method: 'get',
+        url: `${API_URL}/route/list/`,
+        headers: {'Access-Control-Allow-Origin': '*'},
+      })
+          .then((res) => {
+            context.commit('GET_RECORD', res.data.routes)
           })
           .catch((err) => {
             console.log(err)

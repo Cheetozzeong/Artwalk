@@ -1,10 +1,14 @@
 <template>
-  <div></div>
+  <div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "RouteItem.vue"
+  name: "RouteItem.vue",
+  props: {
+    route: Object,
+  },
 }
 </script>
 
