@@ -9,7 +9,7 @@
         <variable name="hour" type="Integer" />
         <variable name="minute" type="Integer" />
         <variable name="second" type="Integer" />
-        <variable name="distance" type="Float" />
+        <variable name="distance" type="Double" />
 
     </data>
 

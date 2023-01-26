@@ -23,8 +23,8 @@ class RouteDrawViewModel @Inject constructor(
     private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
     val totalDuration: LiveData<Int> = _totalDuration
 
-    private val _distance: MutableLiveData<Float> = MutableLiveData(0f)
-    val distance: LiveData<Float> = _distance
+    private val _distance: MutableLiveData<Double> = MutableLiveData(0.0)
+    val distance: LiveData<Double> = _distance
 
     private val _drawButtonEvent: MutableLiveData<Unit> = MutableLiveData()
     val drawButtonEvent: LiveData<Unit> = _drawButtonEvent

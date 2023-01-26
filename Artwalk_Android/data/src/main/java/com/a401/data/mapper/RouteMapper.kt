@@ -6,8 +6,8 @@ import com.a401.domain.model.RouteForDraw
 fun routeDataFromResponse(response: RouteListResponse): RouteForDraw =
     with(response.routes[0]) {
         RouteForDraw(
-            (duration ?: 0) as Int,
-            (distance ?: 0) as Float,
+            duration?.toInt() ?: 0,
+            distance ?: 0.0,
             geometry ?: ""
         )
     }
