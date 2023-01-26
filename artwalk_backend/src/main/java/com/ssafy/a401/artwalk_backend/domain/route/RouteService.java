@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.support.ServletContextResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.internal.PolylineEncoding;
@@ -56,7 +54,7 @@ public class RouteService {
 	}
 
 	/** 경로(route) 좌표 배열을 인코딩하여 문자열로 변환합니다. */
-	public static String encode(List<List<Double>> coordinates){
+	/* public static String encode(List<List<Double>> coordinates){
 		List<LatLng> coordList = new ArrayList<>();
 		for (List<Double> lngLat : coordinates){
 			double lng = lngLat.get(0);
@@ -66,10 +64,10 @@ public class RouteService {
 
 		String encodedRoute = PolylineEncoding.encode(coordList);
 		return encodedRoute;
-	}
+	} */
 
 	/** 인코딩된 경로(route) 문자열을 디코딩하여 좌표 배열로 변환합니다. */
-	public static List<List<Double>> decode(String encodedRoute) {
+	/* public static List<List<Double>> decode(String encodedRoute) {
 		List<List<Double>> coordinates = new ArrayList<>();
 
 		List<LatLng> coordList = PolylineEncoding.decode(encodedRoute);
@@ -78,7 +76,7 @@ public class RouteService {
 		}
 
 		return coordinates;
-	}
+	} */
 
 	/** 파일 읽고 값을 반환합니다. */
 	public static String readFile(String filePath){
@@ -197,6 +195,12 @@ public class RouteService {
 		return response;
 	}
 
+	/** 썸네일 요청 경로를 반환합니다. */
+	public static String makeThumbnailUrl(int routeId) {
+		String thumbUrl = "/route/thumb/" + routeId;
+		return thumbUrl;
+	}
+
 	/** 경로를 저장합니다. */
 	public Route addRoute(Route route){
 		Route result = null;
@@ -254,19 +258,14 @@ public class RouteService {
 	}
 
 	/** 저장된 모든 경로를 반환합니다. */
-	public List<Map<String, Object>> findAllRoute(){
-		ObjectMapper objectMapper = new ObjectMapper();
-		List<Map<String, Object>> routeList = new ArrayList<>();
-
+	public List<Route> findAllRoute(){
+		List<Route> routeList = new ArrayList<>();
 		List<Route> routes = routeRepository.findAll();
 		for (Route route : routes){
-			Map<String, Object> map = objectMapper.convertValue(route, Map.class);
-			map.remove("duration");
-			map.remove("distance");
-			map.remove("geometry");
-			routeList.add(map);
+			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
+			route.setGeometry(readFile(route.getGeometry()));
+			routeList.add(route);
 		}
-
 		return routeList;
 	}
 
@@ -277,19 +276,14 @@ public class RouteService {
 	}
 
 	/** 저장된 경로 중 user_id가 일치하는 경로를 반환합니다. */
-	public List<Map<String, Object>> findByUserId(String userId){
-		ObjectMapper objectMapper = new ObjectMapper();
-		List<Map<String, Object>> routeList = new ArrayList<>();
-
+	public List<Route> findByUserId(String userId){
+		List<Route> routeList = new ArrayList<>();
 		List<Route> routes = routeRepository.findByUserId(userId);
 		for (Route route : routes){
-			Map<String, Object> map = objectMapper.convertValue(route, Map.class);
-			map.remove("duration");
-			map.remove("distance");
-			map.remove("geometry");
-			routeList.add(map);
+			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
+			route.setGeometry(readFile(route.getGeometry()));
+			routeList.add(route);
 		}
-
 		return routeList;
 	}
 }
