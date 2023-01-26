@@ -1,13 +1,27 @@
 package com.a401.data.mapper
 
 import com.a401.data.model.response.RouteListResponse
-import com.a401.domain.model.Route
+import com.a401.domain.model.RouteForDraw
+import com.a401.domain.model.RouteForList
+import java.util.*
 
-fun routeDataFromResponse(response: RouteListResponse): Route =
+fun routeForDrawFromResponse(response: RouteListResponse): RouteForDraw =
     with(response.routes[0]) {
-        Route(
-            duration.toInt(),
-            distance.toFloat(),
-            geometry
+        RouteForDraw(
+            duration?.toInt() ?: 0,
+            distance ?: 0.0,
+            geometry ?: ""
         )
+    }
+
+fun routeForListFromResponse(response: RouteListResponse): List<RouteForList> =
+    response.routes.map { routes ->
+        with(routes) {
+            RouteForList(
+                thumbnail?:"",
+                creation?: Date(),
+                title?:"",
+                routeId?:-1
+            )
+        }
     }

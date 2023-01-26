@@ -1,13 +1,13 @@
 package com.a401.domain.model
 
-data class Route(
+data class RouteForDraw(
     val duration: Int,
-    val distance: Float,
+    val distance: Double,
     val geometry: String,
 ) {
     constructor() : this(
         0,
-        0.0f,
-        ""
+        0.0,
+        "",
     )
 }

@@ -4,7 +4,7 @@ import com.a401.data.datasource.remote.RouteRemoteDataSource
 import com.a401.data.mapper.markerToRequest
 import com.a401.data.model.request.MarkerRequest
 import com.a401.domain.model.Marker
-import com.a401.domain.model.Route
+import com.a401.domain.model.RouteForDraw
 import com.a401.domain.repository.RouteRepository
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import java.lang.Exception
@@ -18,7 +18,7 @@ class RouteRepositoryImpl @Inject constructor(
     override suspend fun getRouteForWalking(
         from: Marker,
         to: Marker,
-    ): Result<Route> = try {
+    ): Result<RouteForDraw> = try {
 
         val coordinates: ArrayList<MarkerRequest> = ArrayList()
         coordinates.add(markerToRequest(from))

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
 import com.a401.domain.model.Marker
-import com.a401.domain.model.Route
+import com.a401.domain.model.RouteForDraw
 import com.a401.domain.usecase.GetRouteForWalkingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,8 +23,8 @@ class RouteDrawViewModel @Inject constructor(
     private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
     val totalDuration: LiveData<Int> = _totalDuration
 
-    private val _distance: MutableLiveData<Float> = MutableLiveData(0f)
-    val distance: LiveData<Float> = _distance
+    private val _distance: MutableLiveData<Double> = MutableLiveData(0.0)
+    val distance: LiveData<Double> = _distance
 
     private val _drawButtonEvent: MutableLiveData<Unit> = MutableLiveData()
     val drawButtonEvent: LiveData<Unit> = _drawButtonEvent
@@ -34,10 +34,10 @@ class RouteDrawViewModel @Inject constructor(
     private val _lastPointId: MutableLiveData<Long> = MutableLiveData()
     val lastPointId: LiveData<Long> = _lastPointId
 
-    private val _routeStack: Stack<Route> = Stack()
+    private val _routeStack: Stack<RouteForDraw> = Stack()
 
-    private val _lastRoute: MutableLiveData<Route> = MutableLiveData()
-    val lastRoute: LiveData<Route> = _lastRoute
+    private val _lastRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
+    val lastRoute: LiveData<RouteForDraw> = _lastRoute
 
     fun onClickDrawButton() {
         // TODO: 그리기 토글 버튼 클릭시 event
