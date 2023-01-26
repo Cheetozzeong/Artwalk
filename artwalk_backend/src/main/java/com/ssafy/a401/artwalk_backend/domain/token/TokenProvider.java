@@ -129,8 +129,8 @@ public class TokenProvider {
 		return false;
 	}
 
-	public boolean existsRefreshToken(String refreshToken) {
-		return userRepository.existsByRefreshToken(refreshToken);
+	public boolean findByRefreshToken(String refreshToken) {
+		return userRepository.countByRefreshToken(refreshToken) == 1;
 	}
 
 	public void setNewRefreshToken(String email, Token token) {

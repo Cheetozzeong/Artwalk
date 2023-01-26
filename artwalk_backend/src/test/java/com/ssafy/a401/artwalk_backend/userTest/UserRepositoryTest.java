@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.*;
 
+import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
@@ -21,6 +23,9 @@ public class UserRepositoryTest {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private TokenProvider tokenProvider;
 
 	@Test
 	public void findAll() {
@@ -39,5 +44,15 @@ public class UserRepositoryTest {
 
 		Optional<User> findUser = userRepository.findById(email);
 		System.out.println(findUser);
+	}
+
+	@Test
+	public void existsRefreshToken() {
+		String refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzUyOTY5NjJ9.Pku5m3pnfAn_zTDt-99UraWeJnQGXBNsIIW4uf8qfGY0YAYdy8DfHBr3XsSnIHCDPY8821nf71PadgKgbmrKGw";
+		String userid = "2007bae@naver.com";
+
+		int count = userRepository.countByRefreshToken(refreshToken);
+
+		System.out.println(count);
 	}
 }

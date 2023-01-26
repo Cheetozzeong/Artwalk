@@ -42,6 +42,8 @@ public class UserService {
 
 				// 사용자 idToken의 유효성을 검사한다.
 				UserResponseKakao userResponseKakao = userKakaoToken.validationToken(idToken);
+
+				log.info("userResponseKakao -> ", userResponseKakao);
 				String email = userResponseKakao.getEmail();
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
@@ -64,11 +66,11 @@ public class UserService {
 				} else {
 					// 새 사용자 객체
 					User user = User.builder()
-							.userid(email)
-							.profile(picture)
-							.nickname(nickname)
-							.refreshToken(token.getRefreshToken())
-							.build();
+						.userid(email)
+						.profile(picture)
+						.nickname(nickname)
+						.refreshToken(token.getRefreshToken())
+						.build();
 
 					// 새로운 사용자 계정을 등록한다.
 					userRepository.save(user);
@@ -76,7 +78,11 @@ public class UserService {
 				}
 
 				return token;
+			} catch (NullPointerException e) {
+				log.info("사용자의 idToken을 확인할 수 없습니다.");
+				e.printStackTrace();
 			} catch (Exception e) {
+				log.info("처리 중 에러 발생!");
 				e.printStackTrace();
 			}
 		}

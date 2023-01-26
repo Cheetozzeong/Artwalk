@@ -37,7 +37,6 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 
-		System.out.println("여기로 들어가면 안 되는데요");
 		// Request Header에서 토큰을 꺼내 파싱한다.
 		String accessToken = resolveToken(request);
 		String refreshToken = resolveRefreshToken(request);
@@ -49,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		}
 		// AccessToken은 만료됐지만 refreshToken이 유효하다면
 		else if (!tokenProvider.validateToken(accessToken) && refreshToken != null) {
-			boolean isRefreshToken = tokenProvider.existsRefreshToken(refreshToken);
+			boolean isRefreshToken = tokenProvider.findByRefreshToken(refreshToken);
 
 			// 사용자 RefreshToken이 존재한다면
 			if (isRefreshToken) {
