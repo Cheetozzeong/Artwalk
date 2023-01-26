@@ -3,15 +3,25 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+// const API_URL = 'http://localhost:8080'
+
 export default new Vuex.Store({
   state: {
-    token: null
+    token: null,
+    route: [],
+    record: [],
   },
   getters: {
   },
   mutations: {
     // SAVE_TOKEN(state, token) {
     //   state.token = token
+    // },
+    // GET_ROUTE(state, route) {
+    //   state.route = route
+    // },
+    // GET_RECORD(state, record) {
+    //   state.record = record
     // },
   },
   actions: {
