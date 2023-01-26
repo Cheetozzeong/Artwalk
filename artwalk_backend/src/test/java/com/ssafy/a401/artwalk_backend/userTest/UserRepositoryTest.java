@@ -39,7 +39,7 @@ public class UserRepositoryTest {
 		String email = "aaa@example.com";
 		String nickname = "ssafy";
 
-		User user = User.builder().userid(email).profile("tmp_picture").nickname(nickname).refreshToken("tmp_token").build();
+		User user = User.builder().userId(email).profile("tmp_picture").nickname(nickname).refreshToken("tmp_token").build();
 		userRepository.save(user);
 
 		Optional<User> findUser = userRepository.findById(email);
@@ -48,11 +48,10 @@ public class UserRepositoryTest {
 
 	@Test
 	public void existsRefreshToken() {
+		// 만료된 refreshToken으로 테스트
 		String refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzUyOTY5NjJ9.Pku5m3pnfAn_zTDt-99UraWeJnQGXBNsIIW4uf8qfGY0YAYdy8DfHBr3XsSnIHCDPY8821nf71PadgKgbmrKGw";
-		String userid = "2007bae@naver.com";
-
 		int count = userRepository.countByRefreshToken(refreshToken);
 
-		System.out.println(count);
+		System.out.println("count - " + count);
 	}
 }

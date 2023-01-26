@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
+	private final UserDeletedRepository userDeletedRepository;
 	private final TokenProvider tokenProvider;
 	private final UserKakaoToken userKakaoToken;
 
@@ -66,7 +67,7 @@ public class UserService {
 				} else {
 					// 새 사용자 객체
 					User user = User.builder()
-						.userid(email)
+						.userId(email)
 						.profile(picture)
 						.nickname(nickname)
 						.refreshToken(token.getRefreshToken())
@@ -89,6 +90,47 @@ public class UserService {
 
 		log.info("요청의 서비스 유형이 올바르지 않습니다.");
 		return null;
+	}
+
+	@Transactional
+	public Boolean logout(String accessToken) {
+		String email = tokenProvider.getUserEmail(accessToken);
+		Optional<User> user = userRepository.findById(email);
+
+		if (user.isPresent()) {
+			user.get().setRefreshToken("");
+			return true;
+		}
+		else {
+			log.info("사용자를 확인할 수 없습니다.");
+			return false;
+		}
+	}
+
+	@Transactional
+	public Boolean delete(String accessToken) {
+		String email = tokenProvider.getUserEmail(accessToken);
+		Optional<User> user = userRepository.findById(email);
+
+		if (user.isPresent()) {
+			User selectedUser = user.get();
+			UserDeleted userDeleted = UserDeleted.builder()
+				.userId(selectedUser.getUserId())
+				.profile(selectedUser.getProfile())
+				.nickname(selectedUser.getNickname())
+				.userAuthority(selectedUser.getUserAuthority())
+				.build();
+
+			// 탈퇴한 사용자 테이블 등록
+			userDeletedRepository.save(userDeleted);
+			// 유저 테이블에서 삭제
+			userRepository.deleteById(email);
+			return true;
+		}
+		else {
+			log.info("사용자를 확인할 수 없습니다.");
+			return false;
+		}
 	}
 
 	public Token getToken(String email, String password, String role) {

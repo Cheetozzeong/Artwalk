@@ -9,6 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,13 +19,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.ErrorResponse;
 import com.ssafy.a401.artwalk_backend.domain.token.Token;
 import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
-import com.ssafy.a401.artwalk_backend.domain.user.User;
-import com.ssafy.a401.artwalk_backend.domain.user.UserRepository;
+import com.ssafy.a401.artwalk_backend.domain.token.TokenService;
+import com.ssafy.a401.artwalk_backend.global.util.ErrorCode;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -31,42 +41,64 @@ public class JwtFilter extends OncePerRequestFilter {
 	public static final String BEARER_PREFIX = "Bearer ";
 
 	private final TokenProvider tokenProvider;
+	private final TokenService tokenService;
 
 	// 토큰의 인증 정보를 현재 스레드의 SecurityContext에 저장한다.
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
+		@NotNull FilterChain filterChain) throws ServletException, IOException {
 
-		// Request Header에서 토큰을 꺼내 파싱한다.
-		String accessToken = resolveToken(request);
-		String refreshToken = resolveRefreshToken(request);
+		try {
+			// Request Header에서 토큰을 꺼내 파싱한다.
+			String accessToken = resolveToken(request);
+			String refreshToken = resolveRefreshToken(request);
 
-		// 토큰 유효성 검사한다.
-		if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
-			Authentication authentication = tokenProvider.getAuthentication(accessToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
-		// AccessToken은 만료됐지만 refreshToken이 유효하다면
-		else if (!tokenProvider.validateToken(accessToken) && refreshToken != null) {
-			boolean isRefreshToken = tokenProvider.findByRefreshToken(refreshToken);
-
-			// 사용자 RefreshToken이 존재한다면
-			if (isRefreshToken) {
-				String email = tokenProvider.getUserEmail(refreshToken);
-				List<GrantedAuthority> roles = tokenProvider.getRoles(email);
-
-				Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, roles);
-				Token token = tokenProvider.generateToken(authentication);
-				
-				// DB에 토큰 세팅
-				tokenProvider.setNewRefreshToken(email, token);
-				
-				authentication = tokenProvider.getAuthentication(token.getAccessToken());
+			// 토큰 유효성 검사한다.
+			if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
+				Authentication authentication = tokenProvider.getAuthentication(accessToken);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
-			else {
-				// 권한 없음
+			// AccessToken은 만료됐지만 refreshToken이 유효하다면
+			else if (!tokenProvider.validateToken(accessToken) && refreshToken != null) {
+				boolean isRefreshToken = tokenService.findByRefreshToken(refreshToken);
+
+				// 사용자 RefreshToken이 존재한다면
+				if (isRefreshToken) {
+					String email = tokenProvider.getUserEmail(refreshToken);
+					List<GrantedAuthority> roles = tokenService.getRoles(email);
+
+					Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, roles);
+					Token token = tokenProvider.generateToken(authentication);
+
+					// DB에 토큰 세팅
+					tokenService.setNewRefreshToken(email, token);
+
+					// 헤더에 토큰 세팅
+					response.setHeader("accessToken", token.getAccessToken());
+					response.setHeader("refreshToken", token.getRefreshToken());
+					response.setStatus(HttpServletResponse.SC_CREATED);
+
+					authentication = tokenProvider.getAuthentication(token.getAccessToken());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				} else {
+					// accessToken, refreshToken이 모두 만료된 경우. 새 사용자 생성해야 함. -> 로그인 화면으로 보냄
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 재생성 권한이 없습니다.");
+					return;
+				}
 			}
+		}
+		catch (IllegalArgumentException e) {
+			log.info("잘못된 JWT 서명입니다.");
+			request.setAttribute("exception", ErrorCode.ILLEGAL_TOKEN);
+		} catch (ExpiredJwtException e) {
+			log.info("만료된 JWT 서명입니다.");
+			request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
+		} catch (SignatureException e) {
+			log.info("JWT 시그니처가 일치하지 않습니다.");
+			request.setAttribute("exception", ErrorCode.ILLEGAL_TOKEN);
+		} catch (UnsupportedJwtException e) {
+			log.info("지원되지 않는 JWT 토큰입니다.");
+			request.setAttribute("exception", ErrorCode.UNSUPPORTED_TOKEN);
 		}
 
 		filterChain.doFilter(request, response);

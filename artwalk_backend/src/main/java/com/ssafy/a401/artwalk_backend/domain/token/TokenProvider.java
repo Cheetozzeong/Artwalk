@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.ssafy.a401.artwalk_backend.domain.user.UserRepository;
+import com.ssafy.a401.artwalk_backend.domain.user.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,6 +30,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,8 +44,6 @@ public class TokenProvider {
 	private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 만료 7일
 
 	private static Key key;
-
-	private static UserRepository userRepository;
 
 	public TokenProvider(@Value("${jwt.secret}") String secretKey) {
 		byte[] keyBytes = Base64.getDecoder().decode(secretKey);
@@ -112,49 +111,15 @@ public class TokenProvider {
 
 	}
 
-	public boolean validateToken(String token) {
-		try {
-			System.out.println("key -> " + key);
-			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-			return true;
-		} catch (IllegalArgumentException e) {
-			log.info("잘못된 JWT 서명입니다.");
-		} catch (ExpiredJwtException e) {
-			log.info("만료된 JWT 서명입니다.");
-		} catch (SignatureException e) {
-			log.info("JWT 시그니처가 일치하지 않습니다.");
-		} catch (UnsupportedJwtException e) {
-			log.info("지원되지 않는 JWT 토큰입니다.");
-		}
-		return false;
-	}
-
-	public boolean findByRefreshToken(String refreshToken) {
-		return userRepository.countByRefreshToken(refreshToken) == 1;
-	}
-
-	public void setNewRefreshToken(String email, Token token) {
-		Optional<com.ssafy.a401.artwalk_backend.domain.user.User> users = userRepository.findById(email);
-
-		// 사용자 이메일이 이미 존재한다면
-		if (users.isPresent()) {
-			com.ssafy.a401.artwalk_backend.domain.user.User user = users.get();
-			user.setRefreshToken(token.getRefreshToken());
-			System.out.println("갱신 완료");
-		}
+	public boolean validateToken(String token) throws IllegalArgumentException, ExpiredJwtException, SignatureException, UnsupportedJwtException {
+		System.out.println("key -> " + key);
+		Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+		return true;
 	}
 
 	// 토큰에서 회원 정보 추출
 	public String getUserEmail(String token) {
 		return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
-	}
-
-	// Email로 권한 정보 가져오기
-	public List<GrantedAuthority> getRoles(String email) {
-		String role = userRepository.findById(email).get().getUserAuthority().toString();
-		List<GrantedAuthority> roles = new ArrayList<>();
-		roles.add(new SimpleGrantedAuthority(role));
-		return roles;
 	}
 
 	private Claims parseClaims(String accessToken) {

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,13 +20,11 @@ import lombok.ToString;
 @DynamicInsert
 @ToString
 @Entity
-public class User {
+@Table(name = "deleteuser")
+public class UserDeleted {
 
 	@Id
 	private String userId;
-
-	@Column(nullable = true, length = 255)
-	private String refreshToken;
 
 	@Enumerated(EnumType.STRING)
 	@ColumnDefault("ROLE_USER")
@@ -40,15 +39,10 @@ public class User {
 	private int exp;
 
 	@Builder
-	public User(String userId, String profile, String nickname, String refreshToken, UserAuthority userAuthority) {
+	public UserDeleted(String userId, String profile, String nickname, UserAuthority userAuthority) {
 		this.userId = userId;
 		this.profile = profile;
 		this.nickname = nickname;
-		this.refreshToken = refreshToken;
 		this.userAuthority = userAuthority;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
 	}
 }
