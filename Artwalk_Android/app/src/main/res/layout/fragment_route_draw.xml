@@ -17,6 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/button_routeDraw_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/saveButton_title"
+            android:onClick="@{() -> vm.onClickSaveButton()}"/>
+
         <com.mapbox.maps.MapView
             android:id="@+id/mapView_routeDraw"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +33,15 @@
             app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
             android:layout_width="match_parent"
             android:layout_height="0dp"/>
+
+        <View
+            android:id="@+id/view_routeDraw_paddingBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+
+        </View>
 
         <ImageButton
             android:id="@+id/textView_routeDraw_drawButton"

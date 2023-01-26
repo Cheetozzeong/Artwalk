@@ -48,6 +48,10 @@ class RouteDrawViewModel @Inject constructor(
         postDeleteLastMarkerEvent()
     }
 
+    fun onClickSaveButton() {
+        Log.d("RouteSave", "onClickSaveButton")
+    }
+
     private fun postDeleteLastMarkerEvent() {
         _lastPointId.value = _markerStack.pop().markerId
     }
