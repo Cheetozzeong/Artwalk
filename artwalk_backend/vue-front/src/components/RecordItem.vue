@@ -1,12 +1,20 @@
 <template>
   <div>
-    레코드아이템...
+    <b-skeleton-table
+        :rows="10"
+        :columns="6"
+        :table-props="{ bordered: true}"
+    ></b-skeleton-table>
+    {{ record }}
   </div>
 </template>
 
 <script>
 export default {
-  name: "RecordItem.vue"
+  name: "RecordItem.vue",
+  props: {
+    record: Object,
+  }
 }
 </script>
 

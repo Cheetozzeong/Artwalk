@@ -11,8 +11,7 @@
 
       <b-table :fields="fields" :items="allRecords">
         <template #cell(title)="data">
-          <router-link :to="{ name: 'recordDetail', params: { routeId: data.item.routeId } }"
-                       class="tdn maincolor">
+          <router-link :to="{ name: 'recordDetail', params: { routeId: data.item.routeId } }" class="tdn maincolor">
             {{ data.item.title }}
           </router-link>
         </template>

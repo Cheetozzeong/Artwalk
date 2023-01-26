@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>유저 디테일</div>
 </template>
 
 <script>
