@@ -33,7 +33,7 @@ public class Route {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
-	@Schema(description = "경로 ID", nullable = false, example = "17")
+	@Schema(description = "경로 ID", nullable = false, example = "6")
 	private int routeId;
 
 	@Column(nullable = false, length = 50)
@@ -53,7 +53,7 @@ public class Route {
 	private double distance;
 
 	@Column(columnDefinition = "default NULL")
-	@Schema(description = "인코딩된 경로가 저장되는 경로", example = "230125/1234353124.txt")
+	@Schema(description = "인코딩된 경로", example = "go%7bcFqkkfWoDaQEw%40UKw%40%5eI_%40_%40XqQdGyc%40l%60%40yf%40%7eA_%60%40pM%7dtCaTa%40_%40%3f%40yUzEUOMDePaU%7dVVjBmHMUBc%40Q%3f")
 	private String geometry;
 
 	@Column(nullable = false)
@@ -63,7 +63,7 @@ public class Route {
 	private Date creation;
 
 	@Column(length = 255, columnDefinition = "default NULL")
-	@Schema(description = "경로 썸네일이 저장되는 경로", example = "230125/1234353124.png")
+	@Schema(description = "경로 썸네일 요청 경로", example = "/route/thumb/6")
 	private String thumbnail;
 
 	@Column(length = 16, columnDefinition = "default '나의 경로'")
