@@ -6,8 +6,8 @@ import com.a401.domain.model.Route
 fun routeDataFromResponse(response: RouteListResponse): Route =
     with(response.routes[0]) {
         Route(
-            duration,
-            distance,
+            duration.toInt(),
+            distance.toFloat(),
             geometry
         )
     }

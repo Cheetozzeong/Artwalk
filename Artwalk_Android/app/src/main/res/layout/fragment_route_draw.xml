@@ -5,11 +5,26 @@
         <variable
             name="vm"
             type="com.a401.artwalk.view.route.draw.RouteDrawViewModel" />
+
+        <variable name="hour" type="Integer" />
+        <variable name="minute" type="Integer" />
+        <variable name="second" type="Integer" />
+        <variable name="distance" type="Float" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/button_routeDraw_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/saveButton_title"
+            android:onClick="@{() -> vm.onClickSaveButton()}"/>
 
         <com.mapbox.maps.MapView
             android:id="@+id/mapView_routeDraw"
@@ -18,6 +33,15 @@
             app:layout_constraintBottom_toTopOf="@id/view_routeDraw_infoBox"
             android:layout_width="match_parent"
             android:layout_height="0dp"/>
+
+        <View
+            android:id="@+id/view_routeDraw_paddingBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+
+        </View>
 
         <ImageButton
             android:id="@+id/textView_routeDraw_drawButton"
@@ -72,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{@string/distance_format(vm.distance)}"
+                android:text="@{@string/distance_format(distance)}"
                 android:hint="4.14Km"
                 style="@style/body_regular_text_font_style"/>
 
@@ -96,9 +120,10 @@
                 style="@style/body_title_font_style"/>
 
             <TextView
+                android:id="@+id/textView_durationBox_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{@string/duration_format(vm.durationHour, vm.durationMinute, vm.durationSecond)}"
+                android:text="@{@string/duration_format(hour, minute, second)}"
                 android:hint="1시간 8분 10초"
                 style="@style/body_regular_text_font_style"/>
 

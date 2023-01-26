@@ -18,6 +18,7 @@ import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
@@ -39,10 +40,26 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         deleteLastMarker()
         setMapBoxView()
         addPolylineToMap()
+        setDurationText()
+        setDistanceText()
     }
 
     private fun setInitBinding() {
         binding.vm = routeDrawViewModel
+    }
+
+    private fun setDurationText() {
+        routeDrawViewModel.totalDuration.observe(requireActivity()) { totalDuration ->
+            binding.hour = totalDuration/3600
+            binding.minute = (totalDuration % 3600) / 60
+            binding.second = totalDuration % 60
+        }
+    }
+
+    private fun setDistanceText() {
+        routeDrawViewModel.distance.observe(requireActivity()) { distance ->
+            binding.distance = distance / 1000
+        }
     }
 
     private fun changeDrawButtonState() {

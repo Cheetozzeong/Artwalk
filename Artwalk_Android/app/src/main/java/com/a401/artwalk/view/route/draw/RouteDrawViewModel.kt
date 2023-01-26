@@ -20,14 +20,8 @@ class RouteDrawViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider) {
 
-    private val _durationHour: MutableLiveData<Int> = MutableLiveData(1)
-    val durationHour: LiveData<Int> = _durationHour
-
-    private val _durationMinute: MutableLiveData<Int> = MutableLiveData(2)
-    val durationMinute: LiveData<Int> = _durationMinute
-
-    private val _durationSecond: MutableLiveData<Int> = MutableLiveData(3)
-    val durationSecond: LiveData<Int> = _durationSecond
+    private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
+    val totalDuration: LiveData<Int> = _totalDuration
 
     private val _distance: MutableLiveData<Float> = MutableLiveData(0f)
     val distance: LiveData<Float> = _distance
@@ -54,9 +48,14 @@ class RouteDrawViewModel @Inject constructor(
         postDeleteLastMarkerEvent()
     }
 
+    fun onClickSaveButton() {
+        Log.d("RouteSave", "onClickSaveButton")
+    }
+
     private fun postDeleteLastMarkerEvent() {
         _lastPointId.value = _markerStack.pop().markerId
     }
+
 
     fun addPointEvent(id: Long, latitude: Double, longitude: Double) {
         val newMarker = Marker(id, latitude, longitude)
@@ -74,6 +73,8 @@ class RouteDrawViewModel @Inject constructor(
                         route
                     )
                     _lastRoute.value = route
+                    _totalDuration.value = _totalDuration.value?.plus(route.duration)
+                    _distance.value = _distance.value?.plus(route.distance)
                 }
                 else -> {
                     val route = getRouteForWalkingUseCase(_markerStack.peek(), newMarker).getOrThrow()
@@ -81,6 +82,8 @@ class RouteDrawViewModel @Inject constructor(
                         route
                     )
                     _lastRoute.value = route
+                    _totalDuration.value = _totalDuration.value?.plus(route.duration)
+                    _distance.value = _distance.value?.plus(route.distance)
                     postDeleteLastMarkerEvent()
 
                 }
