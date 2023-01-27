@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.user;
+package com.ssafy.a401.artwalk_backend.domain.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

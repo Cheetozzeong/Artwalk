@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.user;
+package com.ssafy.a401.artwalk_backend.domain.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,16 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
-import com.ssafy.a401.artwalk_backend.domain.token.Token;
-import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
+import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
+import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
+import com.ssafy.a401.artwalk_backend.domain.user.model.User;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserDeleted;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserKakaoToken;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserResponseKakao;
+import com.ssafy.a401.artwalk_backend.domain.user.repository.UserDeletedRepository;
+import com.ssafy.a401.artwalk_backend.domain.user.repository.UserRepository;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

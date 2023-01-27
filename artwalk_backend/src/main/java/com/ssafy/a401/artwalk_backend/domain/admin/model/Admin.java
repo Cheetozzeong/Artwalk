@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.admin;
+package com.ssafy.a401.artwalk_backend.domain.admin.model;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
-import com.ssafy.a401.artwalk_backend.domain.user.UserAuthority;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserAuthority;
 
 @Getter
 @Setter

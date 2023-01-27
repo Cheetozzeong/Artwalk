@@ -1,17 +1,15 @@
-package com.ssafy.a401.artwalk_backend.domain.admin;
+package com.ssafy.a401.artwalk_backend.domain.admin.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.ssafy.a401.artwalk_backend.domain.token.Token;
-import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
-import com.ssafy.a401.artwalk_backend.domain.user.UserKakaoToken;
-import com.ssafy.a401.artwalk_backend.domain.user.UserService;
+import com.ssafy.a401.artwalk_backend.domain.admin.model.Admin;
+import com.ssafy.a401.artwalk_backend.domain.admin.repository.AdminRepository;
+import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
+import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

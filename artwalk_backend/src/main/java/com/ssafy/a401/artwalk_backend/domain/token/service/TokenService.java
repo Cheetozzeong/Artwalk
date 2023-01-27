@@ -1,6 +1,5 @@
-package com.ssafy.a401.artwalk_backend.domain.token;
+package com.ssafy.a401.artwalk_backend.domain.token.service;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.ssafy.a401.artwalk_backend.domain.user.User;
-import com.ssafy.a401.artwalk_backend.domain.user.UserRepository;
+import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
+import com.ssafy.a401.artwalk_backend.domain.user.model.User;
+import com.ssafy.a401.artwalk_backend.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
