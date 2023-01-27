@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.a401.artwalk.view.route.list.RouteListItem"/>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView_routeItem_thumbnail"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linearlayout_routeItem_contentBox"
+            app:layout_constraintHorizontal_weight="0.3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <LinearLayout
+            android:id="@id/linearlayout_routeItem_contentBox"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageView_routeItem_thumbnail"
+            app:layout_constraintEnd_toStartOf="@+id/button_routeItem_start"
+            app:layout_constraintHorizontal_weight="0.6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView_routeItem_title"
+                android:hint="TITLE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                style="@style/body_title_font_style"/>
+
+            <TextView
+                android:id="@+id/textView_routeItem_creation"
+                android:hint="1일전..?"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                style="@style/body_detail_font_style"/>
+
+            <LinearLayout
+                android:id="@+id/linearlayout_routeItem_buttonBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_routeItem_edit"
+                    android:hint="편집"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <Button
+                    android:id="@+id/button_routeItem_delete"
+                    android:hint="삭제"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@id/button_routeItem_start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/linearlayout_routeItem_contentBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="시작"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
