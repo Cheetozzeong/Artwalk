@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.route;
+package com.ssafy.a401.artwalk_backend.domain.route.service;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -14,10 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
@@ -31,9 +29,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.maps.internal.PolylineEncoding;
-import com.google.maps.model.LatLng;
+import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
+import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 
 @Service
 public class RouteService {

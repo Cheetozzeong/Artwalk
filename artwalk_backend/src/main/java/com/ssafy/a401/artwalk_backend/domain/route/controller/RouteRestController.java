@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.route;
+package com.ssafy.a401.artwalk_backend.domain.route.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.a401.artwalk_backend.domain.common.ResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
+import com.ssafy.a401.artwalk_backend.domain.route.service.RouteService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("route")
 public class RouteRestController {
 	@Autowired
-	private  RouteService routeService;
+	private RouteService routeService;
 
 	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다.")
 	@ApiResponses(value = {

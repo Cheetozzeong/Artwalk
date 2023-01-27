@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.token;
+package com.ssafy.a401.artwalk_backend.domain.token.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

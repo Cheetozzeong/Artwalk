@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.user;
+package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.route;
+package com.ssafy.a401.artwalk_backend.domain.route.model;
 
 import java.util.Date;
 import java.util.List;

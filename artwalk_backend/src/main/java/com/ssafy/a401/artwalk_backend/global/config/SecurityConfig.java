@@ -1,20 +1,16 @@
 package com.ssafy.a401.artwalk_backend.global.config;
 
-import com.ssafy.a401.artwalk_backend.domain.token.TokenService;
+import com.ssafy.a401.artwalk_backend.domain.token.service.TokenService;
 import com.ssafy.a401.artwalk_backend.global.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.ssafy.a401.artwalk_backend.domain.token.TokenProvider;
+import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -71,6 +67,7 @@ public class SecurityConfig {
 					// "/**"
 					"/admin/login",
 					"/auth/**"
+					// TODO: 공유 페이지 토큰 예외 처리
 					);
 		};
 	}

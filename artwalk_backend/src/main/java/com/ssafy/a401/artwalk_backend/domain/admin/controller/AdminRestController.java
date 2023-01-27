@@ -1,14 +1,12 @@
-package com.ssafy.a401.artwalk_backend.domain.admin;
+package com.ssafy.a401.artwalk_backend.domain.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.token.Token;
-import com.ssafy.a401.artwalk_backend.domain.user.UserService;
+import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
 

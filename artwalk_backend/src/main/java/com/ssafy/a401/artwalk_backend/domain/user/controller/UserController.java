@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.user;
+package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
 import java.util.Map;
 
@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.token.Token;
+import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
+import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
