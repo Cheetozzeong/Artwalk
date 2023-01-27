@@ -42,7 +42,7 @@ public class RouteService {
 
 	@Value("${file.path}")
 	public void setFilePath(String filePath) {
-		FILE_PATH = filePath;
+		FILE_PATH = filePath + "route/";
 	}
 
 	@Value("${mapbox.api.key}")
@@ -76,9 +76,9 @@ public class RouteService {
 	} */
 
 	/** 파일 읽고 값을 반환합니다. */
-	public static String readFile(String filePath){
+	public static String readFile(String filePath, String userId){
 		String result = "";
-		File file = new File(FILE_PATH + filePath);
+		File file = new File(FILE_PATH + userId.replace('@', '_') + "/" + filePath);
 		if(file.exists()){ // 파일이 존재하는 경우
 			try {
 				BufferedReader in = new BufferedReader(new FileReader(file));
@@ -91,13 +91,13 @@ public class RouteService {
 	}
 
 	/** 파일 저장 후 경로를 반환합니다. */
-	public static String saveFile(String value){
+	public static String saveFile(String value, String userId){
 		String saveFolderPath = "";
 
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
 		String saveFolder = today;
 
-		File folder = new File(FILE_PATH + saveFolder);
+		File folder = new File(FILE_PATH + userId.replace('@', '_') + "/" + saveFolder);
 		if (!folder.exists()){ // 경로 확인
 			folder.mkdirs();
 		}
@@ -107,7 +107,7 @@ public class RouteService {
 		String saveFileName = time+rand+".txt";
 		try {
 			saveFolderPath = saveFolder + "/" + saveFileName;
-			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + saveFolderPath, true));
+			BufferedWriter fw = new BufferedWriter(new FileWriter(FILE_PATH + userId.replace('@', '_') + "/" + saveFolderPath, true));
 			fw.write(value);
 			fw.flush();
 			fw.close();
@@ -118,8 +118,8 @@ public class RouteService {
 	}
 
 	/** 파일을 삭제합니다. */
-	public static void removeFile(String filePath){
-		Path path = Paths.get(FILE_PATH + filePath);
+	public static void removeFile(String filePath, String userId){
+		Path path = Paths.get(FILE_PATH + userId.replace('@', '_') + "/" + filePath);
 		try {
 			Files.delete(path);
 		} catch (NoSuchFileException e) {
@@ -129,8 +129,8 @@ public class RouteService {
 		}
 	}
 
-	/** 인코딩된 경로(route)를 가지고 썸네일 이미지를 생성하고 저장한 후 저장 경로를 반환합니다. */
-	public static String makeThumbnail(String routePath, String geometry) {
+	/** 인코딩된 경로(route)를 가지고 썸네일 이미지를 생성하고 저장한 후 저장된 경로를 반환합니다. */
+	public static String makeThumbnail(String geometryPath, String geometry, String userId) {
 		int polyLineWidth = 5; // 경로 굵기
 		String polyLineColor = "ff0000"; // 경로 색상
 		int imageWidth = 400; // 이미지 가로 크기
@@ -154,11 +154,11 @@ public class RouteService {
 		try {
 			URL imgURL = new URL(imageURL.toString());
 			String extension = "png";
-			StringTokenizer st = new StringTokenizer(routePath, ".");
+			StringTokenizer st = new StringTokenizer(geometryPath, ".");
 			filePathName = st.nextToken() + "." + extension;
 
 			BufferedImage image = ImageIO.read(imgURL);
-			File file = new File(FILE_PATH + filePathName);
+			File file = new File(FILE_PATH + userId.replace('@', '_') + "/" + filePathName);
 			if(!file.exists()) {
 				file.mkdirs();
 			}
@@ -172,10 +172,10 @@ public class RouteService {
 	}
 
 	/** 저장한 썸네일 이미지를 반환합니다. */
-	public static ResponseEntity<Resource> findThumbnail(String thumbnailPath) {
+	public static ResponseEntity<Resource> findThumbnail(String thumbnailPath, String userId) {
 		ResponseEntity<Resource> response = null;
 
-		Resource resource = new FileSystemResource(FILE_PATH + thumbnailPath);
+		Resource resource = new FileSystemResource(FILE_PATH + userId.replace('@', '_') + "/" + thumbnailPath);
 		if(!resource.exists()){
 			response = new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
 		}
@@ -202,15 +202,15 @@ public class RouteService {
 	public Route addRoute(Route route){
 		Route result = null;
 
-		String geometryPath = saveFile(route.getGeometry());
+		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
+		route.setUserId("2007bae@naver.com"); // 임시로 계정 정보 등록
+		// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
+		route.setMaker("2007bae@naver.com"); // 임시로 등록자 정보 등록
+
+		String geometryPath = saveFile(route.getGeometry(), route.getUserId());
 		route.setGeometry(geometryPath);
 
-		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
-		route.setUserId("ssafy"); // 임시로 계정 정보 등록
-		// TODO: 생성자 아이디 획득 및 저장하는 기능 추가
-		route.setMaker("ssafy"); // 임시로 등록자 정보 등록
-
-		String thumbPath = makeThumbnail(geometryPath, readFile(route.getGeometry()));
+		String thumbPath = makeThumbnail(geometryPath, readFile(route.getGeometry(), route.getUserId()), route.getUserId());
 		route.setThumbnail(thumbPath);
 
 		result = routeRepository.save(route);
@@ -222,17 +222,17 @@ public class RouteService {
 	public Route modifyRoute(Route originRoute, Route newRoute){
 		Route result = null;
 
+		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
+		originRoute.setUserId("2007bae@naver.com"); // 임시로 계정 정보 등록
+
 		String updateGeometry = newRoute.getGeometry();
-		String geometryPath = saveFile(updateGeometry);
-		removeFile(originRoute.getGeometry());
+		String geometryPath = saveFile(updateGeometry, originRoute.getUserId());
+		removeFile(originRoute.getGeometry(), originRoute.getUserId());
 		originRoute.setGeometry(geometryPath);
 
-		String thumbPath = makeThumbnail(geometryPath, updateGeometry);
-		removeFile(originRoute.getThumbnail());
+		String thumbPath = makeThumbnail(geometryPath, updateGeometry, originRoute.getUserId());
+		removeFile(originRoute.getThumbnail(), originRoute.getUserId());
 		originRoute.setThumbnail(thumbPath);
-
-		// TODO: 로그인 아이디 획득 및 저장하는 기능 추가
-		originRoute.setUserId("ssafy"); // 임시로 계정 정보 등록
 
 		result = routeRepository.save(originRoute);
 
@@ -242,8 +242,8 @@ public class RouteService {
 	/** 경로를 삭제합니다. */
 	public int removeRoute(Route route){
 		routeRepository.delete(route);
-		removeFile(route.getGeometry());
-		removeFile(route.getThumbnail());
+		removeFile(route.getGeometry(), route.getUserId());
+		removeFile(route.getThumbnail(), route.getUserId());
 		int result = routeRepository.countByRouteId(route.getRouteId());
 		return result;
 	}
@@ -260,7 +260,7 @@ public class RouteService {
 		List<Route> routes = routeRepository.findAll();
 		for (Route route : routes){
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
-			route.setGeometry(readFile(route.getGeometry()));
+			route.setGeometry(readFile(route.getGeometry(), route.getUserId()));
 			routeList.add(route);
 		}
 		return routeList;
@@ -278,7 +278,7 @@ public class RouteService {
 		List<Route> routes = routeRepository.findByUserId(userId);
 		for (Route route : routes){
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
-			route.setGeometry(readFile(route.getGeometry()));
+			route.setGeometry(readFile(route.getGeometry(), route.getUserId()));
 			routeList.add(route);
 		}
 		return routeList;

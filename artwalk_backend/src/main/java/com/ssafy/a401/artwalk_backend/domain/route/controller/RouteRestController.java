@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.common.ResponseDTO;
-import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
+import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.route.service.RouteService;
+import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -104,7 +104,7 @@ public class RouteRestController {
 		Route route = routeService.findByRouteId(routeId);
 		if(route != null){
 			route.setThumbnail(routeService.makeThumbnailUrl(route.getRouteId()));
-			route.setGeometry(routeService.readFile(route.getGeometry()));
+			route.setGeometry(routeService.readFile(route.getGeometry(), route.getUserId()));
 			response = new ResponseDTO("Ok", route);
 		}else{
 			response = new ResponseDTO("Fail", null);
@@ -170,7 +170,7 @@ public class RouteRestController {
 	@GetMapping("/thumb/{routeId}")
 	public ResponseEntity<Resource> displayRouteThumbnail(@Parameter(name = "routeId", description = "경로 ID") @PathVariable("routeId") int routeId) {
 		Route route = routeService.findByRouteId(routeId);
-		ResponseEntity<Resource> response = routeService.findThumbnail(route.getThumbnail());
+		ResponseEntity<Resource> response = routeService.findThumbnail(route.getThumbnail(), route.getUserId());
 		return response;
 	}
 }
