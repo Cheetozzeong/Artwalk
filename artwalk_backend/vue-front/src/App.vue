@@ -9,7 +9,7 @@
       <template #default="{ hide }">
         <div class="p-3 d-flex flex-column justify-content-between" style="display: block; height: 100%">
           <div>
-            <router-link to="/admin/main" id="sidebar-no-header-title" class="mb-4 tdn menulist" style="font-size: 2rem">ArtWalk</router-link>
+            <router-link to="/admin/main" id="sidebar-no-header-title" class="mb-4 tdn menulist p-3" style="font-size: 2rem">ArtWalk</router-link>
             <hr>
             <nav class="my-3">
               <b-nav vertical>

@@ -149,4 +149,9 @@ public class UserService {
 
 		return token;
 	}
+
+	// 전체 유저 목록 조회
+	public List<User> findAllUser() {
+		return userRepository.findAll();
+	}
 }

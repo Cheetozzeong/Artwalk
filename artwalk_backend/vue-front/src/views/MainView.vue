@@ -1,27 +1,27 @@
 <template>
-  <div>
-    <h1>차트</h1>
+  <div class="d-flex container-fluid vh-100 justify-content-center">
+    <h1 class="my-auto">차트</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "MainView.vuew",
+  name: "MainView.vue",
   created() {
+    this.getUser()
+    this.getRecord()
     this.getRoute()
-    // this.getUser()
-    // this.getRecord()
   },
   methods: {
+    getUser() {
+      this.$store.dispatch('getUser')
+    },
+    getRecord() {
+      this.$store.dispatch('getRecord')
+    },
     getRoute() {
       this.$store.dispatch('getRoute')
-    },
-    // getUser() {
-    //   this.$store.dispatch('getUser')
-    // },
-    // getRecord() {
-    //   this.$store.dispatch('getRecord')
-    // },
+    }
   },
 }
 

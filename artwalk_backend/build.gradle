@@ -2,11 +2,19 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.7'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "com.github.node-gradle.node" version "3.0.1"
 }
 
 group = 'com.ssafy.a401'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+node {
+	version = '18.13.0'
+	npmVersion = '8.19.3'
+	nodeProjectDir = file("${project.projectDir}/vue-front")
+	nodeProxySettings = ProxySettings.SMART
+}
 
 configurations {
 	compileOnly {
@@ -16,6 +24,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	gradlePluginPortal()
 }
 
 dependencies {
@@ -45,6 +54,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core:3.20.2'
 }
+
+apply plugin: 'com.github.node-gradle.node'
+
+task deleteVueBuildFiles(type: Delete) {
+	delete "src/main/resources/static/static", "src/main/resources/static/index.html", "${project.projectDir}/vue-project/node_modules"
+}
+
+task npmBuild(type: NpmTask, dependsOn: ['deleteVueBuildFiles', 'npmInstall']) {
+	args = ["run", "build"]
+}
+
+processResources.dependsOn 'npmBuild'
 
 tasks.named('test') {
 	useJUnitPlatform()

@@ -70,11 +70,12 @@ export default new Vuex.Store({
     getUser(context) {
       axios({
         method: 'get',
-        url: `${API_URL}/route/list/`,
+        url: `${API_URL}/user/list`,
         headers: {'Access-Control-Allow-Origin': '*'},
       })
           .then((res) => {
-            context.commit('GET_USER', res.data.routes)
+            console.log(res)
+            context.commit('GET_USER', res.data.data)
           })
           .catch((err) => {
             console.log(err)
