@@ -2,7 +2,7 @@ package com.a401.data.datasource.remote
 
 import com.a401.data.BuildConfig
 import com.a401.data.api.ApiClient
-import com.a401.data.mapper.routeDataFromResponse
+import com.a401.data.mapper.routeForDrawFromResponse
 import com.a401.data.model.request.MarkerRequest
 import com.a401.domain.model.RouteForDraw
 import javax.inject.Inject
@@ -13,7 +13,7 @@ class RouteRemoteDataSourceImpl @Inject constructor(
     private val api = ApiClient.getRouteApiService()
 
     override suspend fun getRouteData(profile: String, coordinates: ArrayList<MarkerRequest>, geometries: String, overview: String): RouteForDraw {
-        return routeDataFromResponse(api.getRoute(
+        return routeForDrawFromResponse(api.getRoute(
             profile,
             coordinates.convertCoordinatesToString(),
             geometries,
