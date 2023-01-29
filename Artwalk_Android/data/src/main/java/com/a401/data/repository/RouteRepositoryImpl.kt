@@ -5,6 +5,7 @@ import com.a401.data.mapper.markerToRequest
 import com.a401.data.model.request.MarkerRequest
 import com.a401.domain.model.Marker
 import com.a401.domain.model.RouteForDraw
+import com.a401.domain.model.RouteForList
 import com.a401.domain.repository.RouteRepository
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import java.lang.Exception
@@ -34,5 +35,9 @@ class RouteRepositoryImpl @Inject constructor(
         )
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    override suspend fun getRoutForList(): List<RouteForList> {
+        TODO("Not yet implemented")
     }
 }
