@@ -8,6 +8,7 @@ import com.a401.domain.model.RouteForDraw
 import com.a401.domain.model.RouteForList
 import com.a401.domain.repository.RouteRepository
 import com.mapbox.api.directions.v5.DirectionsCriteria
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ class RouteRepositoryImpl @Inject constructor(
         Result.failure(e)
     }
 
-    override suspend fun getRoutForList(): List<RouteForList> {
-        TODO("Not yet implemented")
+    override suspend fun getRoutForList(): Flow<List<RouteForList>> {
+        return routeRemoteDataSource.getRouteList()
     }
 }
