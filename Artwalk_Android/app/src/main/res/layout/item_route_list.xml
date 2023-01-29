@@ -11,6 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -20,25 +21,26 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/linearlayout_routeItem_contentBox"
-            app:layout_constraintHorizontal_weight="0.3"
+            app:layout_constraintEnd_toStartOf="@id/linearlayout_routeItem_contentBox"
+            app:layout_constraintWidth_percent="0.3"
             android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:contentDescription="경로에 이미지 썸네일" />
 
         <LinearLayout
-            android:id="@id/linearlayout_routeItem_contentBox"
+            android:id="@+id/linearlayout_routeItem_contentBox"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageView_routeItem_thumbnail"
-            app:layout_constraintEnd_toStartOf="@+id/button_routeItem_start"
-            app:layout_constraintHorizontal_weight="0.6"
+            app:layout_constraintEnd_toStartOf="@id/button_routeItem_start"
+            app:layout_constraintWidth_percent="0.5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textView_routeItem_title"
-                android:hint="TITLE"
+                android:text="@{item.routeForList.title}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -46,7 +48,7 @@
 
             <TextView
                 android:id="@+id/textView_routeItem_creation"
-                android:hint="1일전..?"
+                android:text="@{item.routeForList.creation.toLocaleString()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -75,12 +77,12 @@
         </LinearLayout>
 
         <Button
-            android:id="@id/button_routeItem_start"
+            android:id="@+id/button_routeItem_start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/linearlayout_routeItem_contentBox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintWidth_percent="0.2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="시작"/>
