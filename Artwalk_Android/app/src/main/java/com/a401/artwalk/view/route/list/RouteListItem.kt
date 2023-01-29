@@ -12,13 +12,12 @@ data class RouteListItem(
         val diffUtil by lazy {
             object : DiffUtil.ItemCallback<RouteListItem>() {
 
-                override fun areItemsTheSame(oldItem: RouteListItem, newItem: RouteListItem): Boolean {
-                    TODO("Not yet implemented")
-                }
+                override fun areItemsTheSame(oldItem: RouteListItem, newItem: RouteListItem): Boolean =
+                    oldItem.routeForList.routeId == newItem.routeForList.routeId
 
-                override fun areContentsTheSame(oldItem: RouteListItem, newItem: RouteListItem): Boolean {
-                    TODO("Not yet implemented")
-                }
+
+                override fun areContentsTheSame(oldItem: RouteListItem, newItem: RouteListItem): Boolean =
+                    oldItem == newItem
 
             }
         }

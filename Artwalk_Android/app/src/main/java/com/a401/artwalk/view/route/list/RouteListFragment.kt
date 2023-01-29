@@ -8,11 +8,13 @@ import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FrgmentRouteListBinding
 import com.mapbox.maps.Style
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RouteListFragment : BaseFragment<FrgmentRouteListBinding>(R.layout.frgment_route_list) {
 
-    private val routeListViewModel: RouteListViewModel by viewModels()
+    private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
     private val routeListAdapter = RouteListAdapter()
 
@@ -22,13 +24,13 @@ class RouteListFragment : BaseFragment<FrgmentRouteListBinding>(R.layout.frgment
         set()
         setupRecyclerView()
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             collectListItem()
         }
     }
 
     private fun set() {
-        binding.mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+        binding.mapViewRouteList.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
     }
 
     private fun setupRecyclerView() = with(binding.recyclerViewRouteList) {
