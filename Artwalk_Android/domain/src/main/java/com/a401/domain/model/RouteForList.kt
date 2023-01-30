@@ -6,5 +6,6 @@ data class RouteForList(
     val thumbnailUrl: String,
     val creation: Date,
     val title: String,
+    val geometry: String,
     val routeId: Int
 )
