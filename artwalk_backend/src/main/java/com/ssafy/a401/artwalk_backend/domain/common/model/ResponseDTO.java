@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.common;
+package com.ssafy.a401.artwalk_backend.domain.common.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
