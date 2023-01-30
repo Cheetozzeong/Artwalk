@@ -24,7 +24,6 @@
 
 <script>
 import UserItem from "@/components/UserItem.vue";
-
 export default {
   name: "UserBoardView.vue",
   components: {
@@ -58,6 +57,10 @@ export default {
           key: 'exp',
           label: 'Exp',
         },
+        {
+          key: 'userRouteCount',
+          label: "User's Route",
+        },
       ]
     }
   },
@@ -65,5 +68,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

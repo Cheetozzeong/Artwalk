@@ -2,10 +2,13 @@ package com.ssafy.a401.artwalk_backend.domain.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
 import com.ssafy.a401.artwalk_backend.domain.user.model.User;
@@ -19,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
+	private final RouteRepository routeRepository;
 	private final UserDeletedRepository userDeletedRepository;
 	private final TokenProvider tokenProvider;
 	private final UserKakaoToken userKakaoToken;
@@ -150,8 +155,32 @@ public class UserService {
 		return token;
 	}
 
-	// 전체 유저 목록 조회
-	public List<User> findAllUser() {
-		return userRepository.findAll();
+	/**
+	 * 모든 사용자 조회
+	 */
+	// 유저 별 경로 수, 기록 수 추가
+	public List<Map<String, Object>> findAllUser() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		List<User> users = userRepository.findAll();
+		for (User user : users) {
+			String userId = user.getUserId();
+			long userRouteCount = routeRepository.findByUserId(userId).size();
+			//			long userRecordCount = recordRepository.findByUserId(userId).size();
+			Map<String, Object>map = objectMapper.convertValue(user, Map.class);
+			map.put("userRouteCount", userRouteCount);
+			//			map.put("userRecordCount", userRecordCount);
+			response.add(map);
+		}
+		return response;
+	}
+
+	/** 특정 유저 정보 조회 */
+	public Optional<User> findUserDetail(String userId) {
+		Optional<User> users = userRepository.findById(userId);
+
+		if (users.isEmpty()) throw new UsernameNotFoundException("회원 정보를 찾지 못했습니다.");
+		return users;
 	}
 }

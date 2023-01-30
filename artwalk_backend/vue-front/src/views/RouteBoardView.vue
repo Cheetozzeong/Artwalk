@@ -5,19 +5,22 @@
     </div>
     <br>
     <div>
-      <b-dropdown id="dropdown-1" :text="selectedDropdownItem">
-        <b-dropdown-item v-for="option in options"
-                         :key="option"
-                         :value="option"
-                         @select="selectKeyword(option)">
-          {{ option }}
-        </b-dropdown-item>
-      </b-dropdown>
-      <b-form @submit.prevent="goSearch">
-        <b-form-input :placeholder="selectedDropdownItem" v-model="searchKeyword">
-        </b-form-input>
-        <b-button type="submit" variant="primary">Submit</b-button>
-      </b-form>
+      <!--   드롭 다운 버튼   -->
+      <div class="d-flex justify-content-end">
+        <b-dropdown id="dropdown-1" :text="selectedDropdownItem" class="m-1" style="height: 38px;">
+          <b-dropdown-item v-for="option in options" :key="option" :value="option" @click="changeCategory(option)">
+            {{ option }}
+          </b-dropdown-item>
+        </b-dropdown>
+        <b-form @submit.prevent="goSearch" @reset.prevent="doReset" class="d-block">
+          <b-form-input :placeholder="selectedDropdownItem" v-model="searchKeyword" class="w-100 d-inline-block m-1">
+          </b-form-input>
+          <div class="d-flex justify-content-end">
+            <b-button type="submit" style="background-color: #3c3c3c; border-color: #3c3c3c;" class="m-1">Submit</b-button>
+            <b-button type="reset" style="background-color: rgba(211,47,47,0.8); border-color: rgba(211,47,47,0.8);" class="m-1">Reset</b-button>
+          </div>
+        </b-form>
+      </div>
       <br>
 
       <b-table :fields="fields" :items="allRoutes" sticky-header responsive>
