@@ -10,4 +10,7 @@
 
     <string name="distance_format">%,.2f Km</string>
     <string name="duration_format">%d시간 %d분 %d초</string>
+
+    <string name="bottomNav_menu_route_title">경로</string>
+    <string name="bottomNav_menu_recordMain_title">기록</string>
 </resources>
