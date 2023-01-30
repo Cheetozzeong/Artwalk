@@ -119,15 +119,18 @@
 <!--        app:srcCompat="@drawable/ic_record_my_location"-->
 <!--        mapbox:fab_size="normal" />-->
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
             android:id="@+id/back_to_camera_tracking_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            app:srcCompat="@drawable/ic_record_my_location"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/neutral05"
+            android:src="@drawable/ic_record_my_location"
             app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"
-            app:layout_constraintStart_toEndOf="@id/view_record_durationBox" />
+            app:layout_constraintStart_toEndOf="@id/view_record_durationBox"
+            android:onClick="@{() -> vm.onClickCurButton()}"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </layout>
