@@ -33,8 +33,8 @@ public class UserRestController {
 	/** 전체 유저 조회 */
 	@Operation(summary = "모든 유저 목록 조회", description = "모든 유저 목록 조회 메서드입니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-		@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+		@ApiResponse(responseCode = OK, description = "모든 유저 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "모든 유저 목록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("/list")
 	public ResponseDTO userList(){
