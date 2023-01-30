@@ -14,14 +14,17 @@ fun routeForDrawFromResponse(response: RouteListResponse): RouteForDraw =
         )
     }
 
-fun routeForListFromResponse(response: RouteListResponse): List<RouteForList> =
-    response.routes.map { routes ->
-        with(routes) {
-            RouteForList(
-                thumbnail?:"",
-                creation?: Date(),
-                title?:"",
-                routeId?:-1
-            )
+fun routeForListsFromResponses(response: RouteListResponse): List<RouteForList> =
+        response.routes.map { routes ->
+            with(routes) {
+                RouteForList(
+                    thumbnail?:"",
+                    creation?: Date(),
+                    title?:"",
+                    geometry?:"",
+                    routeId?:-1
+                )
+            }
         }
-    }
+
+
