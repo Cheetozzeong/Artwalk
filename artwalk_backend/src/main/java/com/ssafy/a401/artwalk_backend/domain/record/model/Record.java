@@ -41,7 +41,7 @@ public class Record {
 
 	@Column(nullable = false)
 	@Schema(description = "소요 시간", nullable = false, example = "231.12")
-	private double taken;
+	private double duration;
 
 	@Column(nullable = false)
 	@Schema(description = "거리", nullable = false, example = "423.23")

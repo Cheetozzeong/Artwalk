@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.common.ResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.model.User;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
