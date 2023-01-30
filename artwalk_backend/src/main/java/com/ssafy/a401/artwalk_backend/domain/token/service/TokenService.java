@@ -31,13 +31,13 @@ public class TokenService {
 	}
 
 	@Transactional
-	public void setNewRefreshToken(String email, Token token) {
+	public void setNewRefreshToken(String email, String refreshToken) {
 		Optional<User> user = userRepository.findById(email);
 
 		// 사용자 이메일이 이미 존재한다면
 		if (user.isPresent()) {
 			User selectedUser = user.get();
-			selectedUser.setRefreshToken(token.getRefreshToken());
+			selectedUser.setRefreshToken(refreshToken);
 			log.info(selectedUser.getUserId(), " 새 토큰 생성");
 		}
 	}

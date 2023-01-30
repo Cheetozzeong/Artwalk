@@ -1,7 +1,9 @@
 package com.ssafy.a401.artwalk_backend.global.filter;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -50,44 +52,61 @@ public class JwtFilter extends OncePerRequestFilter {
 
 			// 토큰 유효성 검사한다.
 			if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken)) {
+
 				Authentication authentication = tokenProvider.getAuthentication(accessToken);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
+
 			// AccessToken은 만료됐지만 refreshToken이 유효하다면
 			else if (!tokenProvider.validateToken(accessToken) && refreshToken != null) {
 				boolean isRefreshToken = tokenService.findByRefreshToken(refreshToken);
 
-				// 사용자 RefreshToken이 존재한다면
-				if (isRefreshToken) {
-					String email = tokenProvider.getUserEmail(refreshToken);
-					List<GrantedAuthority> roles = tokenService.getRoles(email);
+				// 사용자 RefreshToken이 존재하고 유효하다면
+				if (isRefreshToken && tokenProvider.validateToken(refreshToken)) {
 
-					Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, roles);
-					Token token = tokenProvider.generateToken(authentication);
+					// 인증 객체 생성
+					Authentication authentication = tokenProvider.getAuthentication(accessToken);
 
-					// DB에 토큰 세팅
-					tokenService.setNewRefreshToken(email, token);
+					String newAccessToken = "";
+					String newRefreshToken = refreshToken;
+
+					// 7일 이내 토큰이 만료된다면 재발급
+					if (tokenProvider.isNeedToUpdateRefreshToken(refreshToken)) {
+						String email = tokenProvider.getUserEmail(refreshToken);
+						Token token = tokenProvider.generateToken(authentication);
+
+						newAccessToken = token.getAccessToken();
+						newRefreshToken = token.getRefreshToken();
+
+						// DB에 토큰 세팅
+						tokenService.setNewRefreshToken(email, newRefreshToken);
+
+					}
+					// 아니라면 AccssToken만 재발급 한다.
+					else {
+						long now = (new Date()).getTime();
+						newAccessToken = tokenProvider.generateAccessToken(authentication, now);
+					}
 
 					// 헤더에 토큰 세팅
-					response.setHeader("accessToken", token.getAccessToken());
-					response.setHeader("refreshToken", token.getRefreshToken());
+					response.setHeader("accessToken", newAccessToken);
+					response.setHeader("refreshToken", newRefreshToken);
 					response.setStatus(HttpServletResponse.SC_CREATED);
 
-					authentication = tokenProvider.getAuthentication(token.getAccessToken());
+					authentication = tokenProvider.getAuthentication(newAccessToken);
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 				} else {
-					// accessToken, refreshToken이 모두 만료된 경우. 새 사용자 생성해야 함. -> 로그인 화면으로 보냄
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 재생성 권한이 없습니다.");
-					return;
+					log.info("토큰 재발급 권한이 만료되었습니다.");
+					request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
 				}
+			} else {
+				log.info("접근 토큰 권한이 만료되었습니다.");
+				request.setAttribute("exception", ErrorCode.EXPIRED_ACCESS_TOKEN);
 			}
 		}
 		catch (IllegalArgumentException e) {
 			log.info("잘못된 JWT 서명입니다.");
 			request.setAttribute("exception", ErrorCode.ILLEGAL_TOKEN);
-		} catch (ExpiredJwtException e) {
-			log.info("만료된 JWT 서명입니다.");
-			request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
 		} catch (SignatureException e) {
 			log.info("JWT 시그니처가 일치하지 않습니다.");
 			request.setAttribute("exception", ErrorCode.ILLEGAL_TOKEN);

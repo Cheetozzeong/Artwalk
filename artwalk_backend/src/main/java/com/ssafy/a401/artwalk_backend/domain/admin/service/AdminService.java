@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.a401.artwalk_backend.domain.admin.model.Admin;
@@ -28,7 +29,8 @@ public class AdminService {
 		if (admins.isPresent()) {
 			Admin admin = admins.get();
 			if (password.equals(admin.getPassword())) {
-				Token token = userService.getToken(userid, password, "ROLE_ADMIN");
+				Authentication authentication = userService.getAuthentication(userid, password, "ROLE_ADMIN");
+				Token token = userService.getToken(authentication);
 				admin.setRefreshToken(token.getRefreshToken());
 				return token;
 			}
