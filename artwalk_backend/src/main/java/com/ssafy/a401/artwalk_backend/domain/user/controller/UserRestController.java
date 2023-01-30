@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
@@ -56,8 +57,8 @@ public class UserRestController {
 		@ApiResponse(responseCode = OK, description = "특정 유저 정보 조회 성공"),
 		@ApiResponse(responseCode = FAIL, description = "특정 유저 정보 조회 실패")
 	})
-	@GetMapping("/{userId}")
-	public ResponseDTO userDetail(@Parameter(name = "userId") @PathVariable("userId") String userId) {
+	@RequestMapping("")
+	public ResponseDTO userDetail(@RequestParam(name = "id", value = "userId") String userId) {
 		ResponseDTO response = null;
 		Optional<User> users = userService.findUserDetail(userId);
 

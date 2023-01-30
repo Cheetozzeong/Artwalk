@@ -23,7 +23,7 @@ export default {
     getUserDetail() {
       axios({
         method: 'get',
-        url: `${API_URL}/user/${this.$route.params.userId}`,
+        url: `${API_URL}/user?id=${this.$route.params.userId}`,
         headers: {'Access-Control-Allow-Origin': '*'},
       })
           .then((res) => {

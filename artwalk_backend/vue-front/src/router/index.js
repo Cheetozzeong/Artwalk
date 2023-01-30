@@ -48,7 +48,7 @@ const routes = [
     component: RecordDetailView
   },
   {
-    path: '/admin/board/user/:userId',
+    path: '/admin/board/user?id=:userId',
     name: 'userDetail',
     component: UserDetailView
   }
