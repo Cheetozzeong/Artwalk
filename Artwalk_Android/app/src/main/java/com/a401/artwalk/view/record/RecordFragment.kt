@@ -1,7 +1,10 @@
 package com.a401.artwalk.view.record
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import com.a401.artwalk.R
@@ -9,7 +12,9 @@ import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
 import com.mapbox.maps.Style
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.utils.LocationPermissionHelper
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -24,6 +29,7 @@ import java.lang.ref.WeakReference
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
+    private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var mapView: MapView
@@ -58,8 +64,14 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         locationPermissionHelper.checkPermissions {
             onMapReady()
         }
+        setRoute()
     }
 
+    private fun setRoute() {
+        arguments.routeArgument ?: return
+        Toast.makeText(context, arguments.routeArgument, Toast.LENGTH_SHORT).show()
+        // TODO: 받아온 geometry를 화면에 띄우기
+    }
 
     private fun setInitBinding(){
         binding.vm = recordViewModel
