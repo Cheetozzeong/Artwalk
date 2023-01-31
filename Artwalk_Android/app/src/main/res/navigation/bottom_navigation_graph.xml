@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/route_list"
+    android:id="@+id/bottom_navigation_graph">
+
+    <fragment
+        android:id="@+id/route_list"
+        android:name="com.a401.artwalk.view.route.list.RouteListFragment"
+        android:label=""
+        tools:layout="@layout/fragment_route_list">
+
+        <action
+            android:id="@+id/action_route_list_to_record_main"
+            app:destination="@id/record_main" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/record_main"
+        android:name="com.a401.artwalk.view.record.RecordFragment"
+        android:label=""
+        tools:layout="@layout/fragment_record">
+
+        <action
+            android:id="@+id/action_record_main_to_route_list"
+            app:destination="@id/route_list" />
+
+    </fragment>
+
+</navigation>
