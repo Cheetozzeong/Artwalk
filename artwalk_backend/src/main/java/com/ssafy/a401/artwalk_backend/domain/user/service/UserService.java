@@ -1,6 +1,7 @@
 package com.ssafy.a401.artwalk_backend.domain.user.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +60,8 @@ public class UserService {
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
 
-				Token token = getToken(email, null, "ROLE_USER");
+				Authentication authentication = getAuthentication(email, null, "ROLE_USER");
+				Token token = getToken(authentication);
 
 				Optional<User> users = userRepository.findById(email);
 
@@ -103,8 +105,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public Boolean logout(String accessToken) {
-		String email = tokenProvider.getUserEmail(accessToken);
+	public Boolean logout(String email) {
 		Optional<User> user = userRepository.findById(email);
 
 		if (user.isPresent()) {
@@ -118,8 +119,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public Boolean delete(String accessToken) {
-		String email = tokenProvider.getUserEmail(accessToken);
+	public Boolean delete(String email) {
 		Optional<User> user = userRepository.findById(email);
 
 		if (user.isPresent()) {
@@ -143,16 +143,44 @@ public class UserService {
 		}
 	}
 
-	public Token getToken(String email, String password, String role) {
+	public User getUserInfo(String email) {
+		Optional<User> user = userRepository.findById(email);
+
+		if (user.isPresent()) {
+			User selectedUser = user.get();
+
+			return User.builder()
+				.userId(email)
+				.profile(selectedUser.getProfile())
+				.nickname(selectedUser.getNickname())
+				.level(selectedUser.getLevel())
+				.exp(selectedUser.getExp())
+				.build();
+		}
+		return null;
+	}
+
+	public Authentication getAuthentication(String email, String password, String role) {
 		// ACCESS 토큰 발급한다. 사용자 권한 -> "ROLE_USER"
 		List<GrantedAuthority> roles = new ArrayList<>();
 		roles.add(new SimpleGrantedAuthority(role));
 
 		// 사용자 인증 객체 세팅한다.
-		Authentication authentication = new UsernamePasswordAuthenticationToken(email, password, roles);
-		Token token = tokenProvider.generateToken(authentication);
+		return new UsernamePasswordAuthenticationToken(email, password, roles);
+	}
 
-		return token;
+	// RefreshToken 포함해 새로 발급 받는다.
+	public Token getToken(Authentication authentication) {
+		return tokenProvider.generateToken(authentication);
+	}
+
+	// AccessToken만 발급 받는다.
+	public String getNewAccessToken(Authentication authentication) {
+		// 어차피 토큰이 여기까지 들어왔으면 유효하기 때문에 따로 확인 필요 없음
+
+		// 토큰 만료 시간 설정
+		long now = (new Date()).getTime();
+		return tokenProvider.generateAccessToken(authentication, now);
 	}
 
 	/**

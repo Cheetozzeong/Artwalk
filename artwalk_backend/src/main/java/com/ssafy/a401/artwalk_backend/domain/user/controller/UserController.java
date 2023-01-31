@@ -2,7 +2,9 @@ package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,8 +42,32 @@ public class UserController {
 		String idToken = header.get("id-token").toString();
 		Token token = userService.login(serviceType, idToken);
 
-		if (token != null) return ResponseEntity.ok(token);
+		// 헤더에 담는다.
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", token.getAccessToken());
+		headers.add("refreshToken", token.getRefreshToken());
+
+		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
 		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+	}
+
+	// 어플리케이션 접속 시 AccessToken 새로 발급한다.
+	@Operation(summary = "사용자 Access Token 갱신", description = "사용자가 어플리케이션 실행 시 토큰 갱신한다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "갱신 성공"),
+		@ApiResponse(responseCode = "400", description = "갱신 실패")
+	})
+	@PostMapping("/connect")
+	public ResponseEntity<?> connect(Authentication authentication) {
+		// 새 AccessToken 발급한다.
+		String newAccessToken = userService.getNewAccessToken(authentication);
+
+		// 헤더에 담는다.
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", newAccessToken);
+
+		if (newAccessToken != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
+		else return ResponseEntity.badRequest().body("사용자 접속 토큰 갱신 실패");
 	}
 
 	// 사용자 로그아웃
@@ -51,13 +77,11 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
 	})
 	@GetMapping("/logout")
-	public ResponseEntity<?> login(@RequestHeader Map<String, Object> header) {
-		String accessToken = header.get("accessToken").toString();
-		// 여기까지 접근했다는 건 이미 인증 토큰이 유효하다는 것이다. (JwtFilter에서 걸러졌음)
+	public ResponseEntity<?> login(Authentication authentication) {
 		// 사용자 DB의 refreshToken을 사용한다.
 		// 기존 인증 토큰은 블랙리스트로 저정해서 만료 확인해줘야 한다. (테이블을 하나 새로 두거나 Redis 사용 필요)
 
-		if(userService.logout(accessToken)) return ResponseEntity.ok("로그아웃 성공");
+		if(userService.logout(authentication.getName())) return ResponseEntity.ok("로그아웃 성공");
 		else return ResponseEntity.badRequest().body("사용자 정보 확인 실패");
 	}
 
@@ -68,10 +92,9 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "사용자 탈퇴 실패")
 	})
 	@DeleteMapping("/delete")
-	public ResponseEntity<?> delete(@RequestHeader Map<String, Object> header) {
-		String accessToken = header.get("accessToken").toString();
+	public ResponseEntity<?> delete(Authentication authentication) {
 
-		if(userService.delete(accessToken)) return ResponseEntity.ok("로그아웃 성공");
+		if(userService.delete(authentication.getName())) return ResponseEntity.ok("탈퇴 성공");
 		else return ResponseEntity.badRequest().body("사용자 정보 확인 실패");
 	}
 }

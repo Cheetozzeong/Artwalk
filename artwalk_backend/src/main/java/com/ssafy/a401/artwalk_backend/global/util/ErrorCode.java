@@ -8,7 +8,8 @@ public enum ErrorCode {
 	REISSUE_TOKEN(301, "T001", "New token is Issued"),
 	ILLEGAL_TOKEN(402, "T002", "Token is Invalid"),
 	EXPIRED_TOKEN(402, "T003", "Token is Expired"),
-	UNSUPPORTED_TOKEN(402, "T004", "Token is not supported");
+	EXPIRED_ACCESS_TOKEN(402, "T004", "Access Token is Expired"),
+	UNSUPPORTED_TOKEN(402, "T005", "Token is not supported");
 
 	private final String code;
 	private final String message;

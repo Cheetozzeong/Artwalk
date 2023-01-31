@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/admin/login',
+    path: '/admin/login/',
     name: 'login',
     component: LoginView
   },

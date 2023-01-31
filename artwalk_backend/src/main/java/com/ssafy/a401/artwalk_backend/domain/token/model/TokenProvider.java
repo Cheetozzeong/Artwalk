@@ -3,6 +3,7 @@ package com.ssafy.a401.artwalk_backend.domain.token.model;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -15,6 +16,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,8 +37,8 @@ public class TokenProvider {
 
 	private static final String AUTHORITIES_KEY = "auth";
 	private static final String BEARER_TYPE = "Bearer";
-	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 만료 30분
-	private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 만료 7일
+	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 12; // 만료 12시간
+	private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 24 * 60; // 만료 60일
 
 	private static Key key;
 
@@ -44,43 +49,54 @@ public class TokenProvider {
 
 	// 토큰 생성
 	public Token generateToken(Authentication authentication) {
-		// 권한 목록을 String 형태로
-		String authorities = authentication.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.collect(Collectors.joining(","));
 
 		// 토큰 만료 시간 설정
 		long now = (new Date()).getTime();
-		Date accessTokenExpireTime = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
-		// Access Token 생성
-		String accessToken = Jwts.builder()
-			.setSubject(authentication.getName())
-			.claim(AUTHORITIES_KEY, authorities)
-			.signWith(key, SignatureAlgorithm.HS512)
-			.setExpiration(accessTokenExpireTime)
-			.compact();
-
-		// Refresh Token 생성
-		String refreshToken = Jwts.builder()
-			.setSubject(authentication.getName())
-			.claim(AUTHORITIES_KEY, authorities)
-			.signWith(key, SignatureAlgorithm.HS512)
-			.setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-			.compact();
+		String accessToken = generateAccessToken(authentication, now);
+		String refreshToken = generateRefreshToken(authentication, now);
 
 		// 생성한 Token 객체 반환
 		return Token.builder()
 				.grantType(BEARER_TYPE)
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
-			.accessTokenExpireTime(accessTokenExpireTime.getTime())
 			.build();
 	}
 
+	public String getAuthorities(Authentication authentication) {
+		return authentication.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority)
+			.collect(Collectors.joining(","));
+	}
+
+	public String generateAccessToken(Authentication authentication, Long now) {
+		String authorities = getAuthorities(authentication);
+
+		// 생성한 Token 객체 반환
+		return Jwts.builder()
+			.setSubject(authentication.getName())
+			.claim(AUTHORITIES_KEY, authorities)
+			.signWith(key, SignatureAlgorithm.HS512)
+			.setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
+			.compact();
+	}
+
+	public String generateRefreshToken(Authentication authentication, Long now) {
+		String authorities = getAuthorities(authentication);
+
+		// 생성한 Token 객체 반환
+		return Jwts.builder()
+			.setSubject(authentication.getName())
+			.claim(AUTHORITIES_KEY, authorities)
+			.signWith(key, SignatureAlgorithm.HS512)
+			.setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+			.compact();
+	}
+
 	// 받은 토큰으로 사용자 인증 권한 가져오기
-	public Authentication getAuthentication(String accessToken) {
-		Claims claims = parseClaims(accessToken);
+	public Authentication getAuthentication(String token) {
+		Claims claims = parseClaims(token);
 
 		if (claims.get(AUTHORITIES_KEY) == null) {
 			throw new RuntimeException("권한 정보가 없습니다.");
@@ -100,16 +116,40 @@ public class TokenProvider {
 
 		// 인증 토큰을 만들어서 반환한다 -> 이 인증 객체를 AuthenticationManager의 구현체인 AuthenticationProvider에 전달한다.
 		return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-
 	}
 
-	public boolean validateToken(String token) throws IllegalArgumentException, ExpiredJwtException, SignatureException, UnsupportedJwtException {
-		System.out.println("key -> " + key);
-		Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-		return true;
+	public boolean validateToken(String token) throws IllegalArgumentException, SignatureException, UnsupportedJwtException {
+		try {
+			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+			return true;
+		} catch (ExpiredJwtException e) {
+			log.info("토큰이 만료되었습니다.");
+			return false;
+		}
 	}
 
-	// 토큰에서 회원 정보 추출
+	public boolean isNeedToUpdateRefreshToken(String token) {
+		try {
+			Date expireDate = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration();
+
+			Date now = new Date();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(now);
+			calendar.add(Calendar.DATE, 7);
+
+			Date after7dayFromToday = calendar.getTime();
+
+			// 토큰이 7일 이내 만료된다면
+			if (expireDate.before(after7dayFromToday)) {
+				log.info("토큰이 7일 이내 만료됩니다.");
+				return true;
+			}
+		} catch (TokenExpiredException e) {
+			return true;
+		}
+		return false;
+	}
+
 	public String getUserEmail(String token) {
 		return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
 	}

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,11 @@ import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @DynamicInsert
 @ToString
 @Entity
+@Builder
 public class User {
 
 	@Id
@@ -39,7 +42,14 @@ public class User {
 	private int level;
 	private int exp;
 
-	@Builder
+	public User(String userId, String profile, String nickname, int level, int exp) {
+		this.userId = userId;
+		this.profile = profile;
+		this.nickname = nickname;
+		this.level = level;
+		this.exp = exp;
+	}
+
 	public User(String userId, String profile, String nickname, String refreshToken, UserAuthority userAuthority) {
 		this.userId = userId;
 		this.profile = profile;
