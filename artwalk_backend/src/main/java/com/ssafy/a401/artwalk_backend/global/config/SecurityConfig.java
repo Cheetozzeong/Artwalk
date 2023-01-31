@@ -64,9 +64,9 @@ public class SecurityConfig {
 		return web -> {
 			web.ignoring()
 				.antMatchers( // 관리자 로그인, 사용자 인증 패이지는 토큰 없이 접근 가능
-					"/**",
-					// "/admin/login",
-					// "/auth/login/*"
+					// "/**"
+					"/admin/login",
+					"/auth/login/*"
 					// TODO: 공유 페이지 토큰 예외 처리
 					);
 		};

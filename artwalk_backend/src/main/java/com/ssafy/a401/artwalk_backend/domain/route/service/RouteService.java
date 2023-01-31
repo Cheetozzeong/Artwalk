@@ -16,7 +16,10 @@ import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 public class RouteService {
 	@Autowired
 	private RouteRepository routeRepository;
-	private FileService fileService = new FileService("route");
+	@Autowired
+	private FileService fileService;
+
+	private static String fileOption = "route";
 
 	public Route addRoute(Route route, String userId) {
 		Route result = null;
@@ -24,10 +27,11 @@ public class RouteService {
 		route.setUserId(userId);
 		route.setMaker(userId); // TODO: 경로 사용자/최초생성자 관련 기능 추후 추가 예정
 
-		String geometryPath = fileService.saveFile(route.getGeometry(), route.getUserId());
+		String geometry = route.getGeometry();
+		String geometryPath = fileService.saveFile(fileOption, geometry, userId);
 		route.setGeometry(geometryPath);
 
-		String thumbPath = fileService.saveThumbnail(geometryPath, fileService.readFile(route.getGeometry(), route.getUserId()), route.getUserId());
+		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
 		route.setThumbnail(thumbPath);
 
 		result = routeRepository.save(route);
@@ -41,12 +45,12 @@ public class RouteService {
 		originRoute.setUserId(userId);
 
 		String updateGeometry = newRoute.getGeometry();
-		String geometryPath = fileService.saveFile(updateGeometry, originRoute.getUserId());
-		fileService.removeFile(originRoute.getGeometry(), originRoute.getUserId());
+		String geometryPath = fileService.saveFile(fileOption, updateGeometry, userId);
+		fileService.removeFile(fileOption, originRoute.getGeometry(), userId);
 		originRoute.setGeometry(geometryPath);
 
-		String thumbPath = fileService.saveThumbnail(geometryPath, updateGeometry, originRoute.getUserId());
-		fileService.removeFile(originRoute.getThumbnail(), originRoute.getUserId());
+		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, updateGeometry, userId);
+		fileService.removeFile(fileOption, originRoute.getThumbnail(), userId);
 		originRoute.setThumbnail(thumbPath);
 
 		result = routeRepository.save(originRoute);
@@ -56,8 +60,8 @@ public class RouteService {
 
 	public int removeRoute(Route route) {
 		routeRepository.delete(route);
-		fileService.removeFile(route.getGeometry(), route.getUserId());
-		fileService.removeFile(route.getThumbnail(), route.getUserId());
+		fileService.removeFile(fileOption, route.getGeometry(), route.getUserId());
+		fileService.removeFile(fileOption, route.getThumbnail(), route.getUserId());
 		int result = routeRepository.countByRouteId(route.getRouteId());
 		return result;
 	}
@@ -74,7 +78,7 @@ public class RouteService {
 		List<Route> routes = routeRepository.findAll();
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
-			route.setGeometry(fileService.readFile(route.getGeometry(), route.getUserId()));
+			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));
 			routeList.add(route);
 		}
 		return routeList;
@@ -92,18 +96,18 @@ public class RouteService {
 		List<Route> routes = routeRepository.findByUserId(userId);
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
-			route.setGeometry(fileService.readFile(route.getGeometry(), route.getUserId()));
+			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), userId));
 			routeList.add(route);
 		}
 		return routeList;
 	}
 
 	public String readGeometryFile(Route route) {
-		return fileService.readFile(route.getGeometry(), route.getUserId());
+		return fileService.readFile(fileOption, route.getGeometry(), route.getUserId());
 	}
 
 	public ResponseEntity<Resource> getThumbnailImage(Route route) {
-		return fileService.findThumbnail(route.getThumbnail(), route.getUserId());
+		return fileService.findThumbnail(fileOption, route.getThumbnail(), route.getUserId());
 	}
 
 	/** 썸네일 요청 경로를 반환합니다. */

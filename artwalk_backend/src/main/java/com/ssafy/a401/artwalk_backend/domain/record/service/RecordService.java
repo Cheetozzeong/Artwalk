@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,21 @@ import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 public class RecordService {
 	@Autowired
 	private RecordRepository recordRepository;
-	private FileService fileService = new FileService("record");
+	@Autowired
+	private FileService fileService;
+
+	private static String fileOption = "record";
 
 	public Record addRecord(Record record, String userId) {
 		Record result = null;
 
 		record.setUserId(userId);
 
-		String geometryPath = fileService.saveFile(record.getGeometry(), record.getUserId());
+		String geometry = record.getGeometry();
+		String geometryPath = fileService.saveFile(fileOption, geometry, userId);
 		record.setGeometry(geometryPath);
 
-		String thumbPath = fileService.saveThumbnail(geometryPath, fileService.readFile(record.getGeometry(), record.getUserId()), record.getUserId());
+		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
 		record.setThumbnail(thumbPath);
 
 		result = recordRepository.save(record);
@@ -46,9 +51,9 @@ public class RecordService {
 
 	public int removeRecord(Record record) {
 		recordRepository.delete(record);
-		fileService.removeFile(record.getGeometry(), record.getUserId());
-		fileService.removeFile(record.getThumbnail(), record.getUserId());
-		fileService.removeFile(record.getRecentImage(), record.getUserId());
+		fileService.removeFile(fileOption, record.getGeometry(), record.getUserId());
+		fileService.removeFile(fileOption, record.getThumbnail(), record.getUserId());
+		fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		int result = recordRepository.countByRecordId(record.getRecordId());
 		return result;
 	}
@@ -66,7 +71,7 @@ public class RecordService {
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
-			record.setGeometry(fileService.readFile(record.getGeometry(), record.getUserId()));
+			record.setGeometry(fileService.readFile(fileOption, record.getGeometry(), record.getUserId()));
 			recordList.add(record);
 		}
 		return recordList;
@@ -85,22 +90,23 @@ public class RecordService {
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
-			record.setGeometry(fileService.readFile(record.getGeometry(), record.getUserId()));
+			record.setGeometry(fileService.readFile(fileOption, record.getGeometry(), userId));
 			recordList.add(record);
 		}
 		return recordList;
 	}
 
 	public String readGeometryFile(Record record) {
-		return fileService.readFile(record.getGeometry(), record.getUserId());
+		return fileService.readFile(fileOption, record.getGeometry(), record.getUserId());
 	}
 
 	public ResponseEntity<Resource> getThumbnailImage(Record record) {
-		return fileService.findThumbnail(record.getThumbnail(), record.getUserId());
+		return fileService.findThumbnail(fileOption, record.getThumbnail(), record.getUserId());
 	}
 
 	public ResponseEntity<Resource> getShareImage(Record record) {
-		return fileService.findImage(record.getRecentImage());
+		if(record.getRecentImage() == null) return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+		else return fileService.findImage(fileOption, record.getRecentImage(), record.getUserId());
 	}
 
 	/** 썸네일 요청 경로를 반환합니다. */
@@ -119,9 +125,9 @@ public class RecordService {
 	public Record saveRecordImage(Record record, Map<String, Object> request) {
 		Record result = null;
 
-		String imagePath = fileService.makeImage(record.getThumbnail(), fileService.readFile(record.getGeometry(), record.getUserId()), request, record.getUserId());
+		String imagePath = fileService.makeImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), request, record.getUserId());
 		if(record.getRecentImage() != null && !("").equals(record.getRecentImage())) {
-			fileService.removeFile(record.getRecentImage(), record.getUserId());
+			fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		}
 		record.setRecentImage(imagePath);
 		result = recordRepository.save(record);
