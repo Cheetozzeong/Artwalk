@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
-import com.mapbox.maps.Style
-import androidx.fragment.app.viewModels
 import com.a401.artwalk.utils.LocationPermissionHelper
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.PuckBearingSource
 import com.mapbox.maps.plugin.annotation.annotations
@@ -22,9 +22,11 @@ import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location2
+import kotlinx.coroutines.flow.*
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
-
+import java.util.*
+import kotlin.concurrent.timer
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
@@ -32,6 +34,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var mapView: MapView
+    private var time = 0
+    private var timerTask: Timer? = null
+    var flag = true
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
@@ -40,16 +45,13 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private val positionChangedListenerCenterCur = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
         mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
-        addPolylineToMap(it)
     }
 
     private val positionChangedListenerFree = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().build())
-        addPolylineToMap(it)
     }
 
     private fun addPolylineToMap(cur: Point) {
-        //현재 위치가 it을 기억 이 전 위치
         val lastLong = cur.longitude()+0.000001
         val lastLat = cur.latitude()+0.000001
         val points = listOf(
@@ -117,9 +119,38 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             with(binding.imagebuttonRecordStartbutton){
                 isSelected= !isSelected
             }
+            if(binding.imagebuttonRecordStartbutton.isSelected)
+            {
+                startRun()
+            } else {
+                stopRun()
+            }
+        }
+
+    }
+
+    private fun startRun(){
+        if(flag){
+            flag = false
+            timerTask = timer(period = 10){
+                time++
+                var sec = time/100
+                var milli = time%100
+
+                requireActivity().runOnUiThread(){
+                    binding.sec.text = "$sec"
+                    binding.millisec.text = "$milli"
+                }
+            }
         }
     }
 
+    private fun stopRun(){
+        if(!flag){
+            flag=true
+            timerTask?.cancel()
+        }
+    }
     private fun changeQuitButtonState(){
         val quitButton = binding.imagebuttonRecordQuitbutton
         recordViewModel.startButtonEvent.observe(requireActivity()){
