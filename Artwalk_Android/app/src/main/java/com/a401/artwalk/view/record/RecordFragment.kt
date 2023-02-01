@@ -1,7 +1,6 @@
 package com.a401.artwalk.view.record
 
 import android.os.Bundle
-<<<<<<< Artwalk_Android/app/src/main/java/com/a401/artwalk/view/record/RecordFragment.kt
 import android.view.LayoutInflater
 import android.util.Log
 import android.view.View
