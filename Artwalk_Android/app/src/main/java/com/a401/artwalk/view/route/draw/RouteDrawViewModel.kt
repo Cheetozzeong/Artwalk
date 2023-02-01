@@ -40,7 +40,7 @@ class RouteDrawViewModel @Inject constructor(
     val lastRoute: LiveData<RouteForDraw> = _lastRoute
 
     fun onClickDrawButton() {
-        // TODO: 그리기 토글 버튼 클릭시 event
+        // TODO: 그리기 토글 버튼 클릭시 event wrapper로 수정
         _drawButtonEvent.value = Unit
     }
 
@@ -48,14 +48,13 @@ class RouteDrawViewModel @Inject constructor(
         postDeleteLastMarkerEvent()
     }
 
-    fun onClickSaveButton() {
-        Log.d("RouteSave", "onClickSaveButton")
-    }
-
     private fun postDeleteLastMarkerEvent() {
         _lastPointId.value = _markerStack.pop().markerId
     }
 
+    fun saveDrawRoute(polyline: String) {
+        Log.d("polyline", polyline)
+    }
 
     fun addPointEvent(id: Long, latitude: Double, longitude: Double) {
         val newMarker = Marker(id, latitude, longitude)
