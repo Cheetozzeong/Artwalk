@@ -22,21 +22,32 @@ import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location2
-import kotlinx.coroutines.flow.*
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
+import java.lang.Math.cos
+import java.lang.Math.sin
 import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.concurrent.timer
+import kotlin.math.asin
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
+    var curPoint : Point = Point.fromLngLat(0.0,0.0)
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var mapView: MapView
+    private var timerPolyLine : Timer? = null
     private var time = 0
-    private var timerTask: Timer? = null
-    var flag = true
+    private var distance = 0.0
+    private var timerTaskforTime: Timer? = null
+    private var timerTaskforDistance: Timer? = null
+    private val r = 6372.8 * 1000
+
+    var flagForWalk = true
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
@@ -45,24 +56,12 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private val positionChangedListenerCenterCur = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
         mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
+        curPoint = it
     }
 
     private val positionChangedListenerFree = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().build())
-    }
-
-    private fun addPolylineToMap(cur: Point) {
-        val lastLong = cur.longitude()+0.000001
-        val lastLat = cur.latitude()+0.000001
-        val points = listOf(
-            Point.fromLngLat(cur.longitude(), cur.latitude()),
-            Point.fromLngLat(lastLong ,lastLat)
-        )
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(points)
-            .withLineColor("#ee4e8b")
-            .withLineWidth(5.0)
-        polylineAnnotationManager.create(polylineAnnotationOptions)
+        curPoint = it
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -85,6 +84,8 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         changeStartButtonState()
         changeQuitButtonState()
         changeCurButtonState()
+        setDistanceText()
+        setDurationText()
         locationPermissionHelper = LocationPermissionHelper(WeakReference(requireActivity()))
         locationPermissionHelper.checkPermissions {
             onMapReady()
@@ -103,7 +104,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private fun onMapReady() {
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
-                .zoom(18.0)
+                .zoom(14.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
@@ -130,27 +131,83 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     }
 
     private fun startRun(){
-        if(flag){
-            flag = false
-            timerTask = timer(period = 10){
+        if(flagForWalk){
+            addPolyLinetoMap()
+            flagForWalk = false
+            timerTaskforTime = timer(period = 1000){
                 time++
-                var sec = time/100
-                var milli = time%100
-
+                var hour = time/3600
+                var minute = (time % 3600) / 60
+                var sec = time%60
                 requireActivity().runOnUiThread(){
-                    binding.sec.text = "$sec"
-                    binding.millisec.text = "$milli"
+                    binding.second = sec
+                    binding.minute = minute
+                    binding.hour = hour
+                }
+            }
+            timerTaskforDistance = timer(period = 2000) {
+                requireActivity().runOnUiThread() {
+                    binding.distance = distance / 1000
                 }
             }
         }
     }
 
     private fun stopRun(){
-        if(!flag){
-            flag=true
-            timerTask?.cancel()
+        if(!flagForWalk){
+            flagForWalk=true
+            timerTaskforTime?.cancel()
+            timerTaskforDistance?.cancel()
+            timerPolyLine?.cancel()
+
         }
     }
+
+    private fun setPolyline(cur:Point, last:Point){
+        val points = listOf(
+            Point.fromLngLat(cur.longitude(), cur.latitude()),
+            Point.fromLngLat(last.longitude() ,last.latitude())
+        )
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(points)
+            .withLineColor("#ee4e8b")
+            .withLineWidth(7.0)
+        requireActivity().runOnUiThread() {
+            polylineAnnotationManager.create(polylineAnnotationOptions)
+        }
+    }
+
+    private fun addPolyLinetoMap(){
+        var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
+        timerPolyLine = timer(period = 2000){
+            setPolyline(curPoint,lastPoint)
+            distance += getDistance(curPoint,lastPoint)
+            lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
+        }
+    }
+
+    private fun getDistance(cur: Point, last:Point): Double {
+        val dLat = Math.toRadians(last.latitude() - cur.latitude())
+        val dLong = Math.toRadians(last.longitude() - cur.longitude())
+        val a = sin(dLat/2).pow(2.0) + sin(dLong/2).pow(2.0) * cos(Math.toRadians(cur.latitude()))
+        val c = 2 * asin(sqrt(a))
+        return (r*c)
+    }
+
+    private fun setDistanceText() {
+        recordViewModel.distance.observe(requireActivity()) { distance ->
+            binding.distance = distance / 1000
+        }
+    }
+
+    private fun setDurationText() {
+        recordViewModel.totalDuration.observe(requireActivity()) { totalDuration ->
+            binding.hour = totalDuration/3600
+            binding.minute = (totalDuration % 3600) / 60
+            binding.second = totalDuration % 60
+        }
+    }
+
     private fun changeQuitButtonState(){
         val quitButton = binding.imagebuttonRecordQuitbutton
         recordViewModel.startButtonEvent.observe(requireActivity()){
@@ -227,15 +284,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView.location2
             .removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
         mapView.gestures.removeOnMoveListener(onMoveListener)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun headerTo(){
