@@ -73,9 +73,12 @@ export default new Vuex.Store({
         method: 'get',
         url: `${API_URL}/route/list`,
         headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
+        params: {
+          user: false,
+        }
       })
           .then((res) => {
-            context.commit('GET_ROUTE', res.data.routes)
+            context.commit('GET_ROUTE', res.data.data)
           })
           .catch((err) => {
             console.log(err)
@@ -97,11 +100,14 @@ export default new Vuex.Store({
     getRecord(context) {
       axios({
         method: 'get',
-        url: `${API_URL}/route/list/`,
+        url: `${API_URL}/record/list/`,
         headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
+        params: {
+          user: false,
+        }
       })
           .then((res) => {
-            context.commit('GET_RECORD', res.data.routes)
+            context.commit('GET_RECORD', res.data.data)
           })
           .catch((err) => {
             console.log(err)

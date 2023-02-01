@@ -58,7 +58,7 @@ public class UserRestController {
 		@ApiResponse(responseCode = FAIL, description = "특정 유저 정보 조회 실패")
 	})
 	@RequestMapping("")
-	public ResponseDTO userDetail(@RequestParam(name = "id", value = "userId") String userId) {
+	public ResponseDTO userDetail(@RequestParam(name = "userId", value = "userId") String userId) {
 		ResponseDTO response = null;
 		Optional<User> users = userService.findUserDetail(userId);
 
