@@ -35,18 +35,17 @@ import kotlin.math.sqrt
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
-    var curPoint : Point = Point.fromLngLat(0.0,0.0)
+    private var curPoint : Point = Point.fromLngLat(0.0,0.0)
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var mapView: MapView
-    private var timerPolyLine : Timer? = null
-    private var time = 0
-    private var distance = 0.0
+    private var timerTaskforPolyLine : Timer? = null
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
-
-    var flagForWalk = true
+    private var time = 0
+    private var distance = 0.0
+    private var flagForWalk = true
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
@@ -156,7 +155,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             flagForWalk = true
             timerTaskforTime?.cancel()
             timerTaskforDistance?.cancel()
-            timerPolyLine?.cancel()
+            timerTaskforPolyLine?.cancel()
 
         }
     }
@@ -177,7 +176,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
 
     private fun addPolyLinetoMap() {
         var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
-        timerPolyLine = timer(period = 2000){
+        timerTaskforPolyLine = timer(period = 2000){
             setPolyline(curPoint,lastPoint)
             distance += getDistance(curPoint,lastPoint)
             lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())

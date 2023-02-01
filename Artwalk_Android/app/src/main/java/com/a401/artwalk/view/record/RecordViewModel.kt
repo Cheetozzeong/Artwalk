@@ -7,6 +7,12 @@ import androidx.lifecycle.ViewModel
 
 class RecordViewModel : ViewModel() {
 
+    private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
+    val totalDuration: LiveData<Int> = _totalDuration
+
+    private val _distance: MutableLiveData<Double> = MutableLiveData(0.0)
+    val distance: LiveData<Double> = _distance
+
     private val _startButtonEvent: MutableLiveData<Unit> = MutableLiveData()
     val startButtonEvent: LiveData<Unit> = _startButtonEvent
 
