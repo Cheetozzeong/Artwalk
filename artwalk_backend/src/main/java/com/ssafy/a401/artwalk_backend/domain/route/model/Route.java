@@ -59,7 +59,7 @@ public class Route {
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
-	@Schema(description = "작성 시간", nullable = false, example = "2023-01-25T04:44:46.761Z")
+	// @Schema(description = "작성 시간", nullable = false, example = "2023-01-25T04:44:46.761Z")
 	private Date creation;
 
 	@Column(length = 255, columnDefinition = "default NULL")

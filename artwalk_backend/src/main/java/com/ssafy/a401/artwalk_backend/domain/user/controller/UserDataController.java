@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Tag(name = "사용자", description = "Artwalk 사용자 API 입니다.")
+// @Tag(name = "사용자", description = "Artwalk 사용자 API 입니다.")
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
