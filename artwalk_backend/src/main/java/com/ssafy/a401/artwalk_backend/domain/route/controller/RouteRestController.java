@@ -86,6 +86,27 @@ public class RouteRestController {
 		return response;
 	}
 
+	@Operation(summary = "관리자용 사용자 경로 목록 조회", description = "관리자용 특정 사용자 경로 목록 조회 메서드입니다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공"),
+			@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패")
+	})
+	@GetMapping("/list/{userId}")
+	public ResponseDTO routeListByUserId(@Parameter(name = "userId", description = "사용자 ID") @PathVariable("userId") String userId){
+		ResponseDTO response = null;
+		List<Route> routes = null;
+
+		routes = routeService.findByUserId(userId);
+
+		if(routes != null) {
+			response = new ResponseDTO(OK, routes);
+		}else {
+			response = new ResponseDTO(FAIL, null);
+		}
+
+		return response;
+	}
+
 	@Operation(summary = "경로 조회", description = "경로 조회 메서드입니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "경로 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),

@@ -21,25 +21,32 @@
           </div>
         </b-form>
       </div>
+
       <br>
 
-      <b-table :fields="fields" :items="allRoutes" sticky-header responsive>
-        <template #cell(title)="data">
-          <router-link :to="{ name: 'routeDetail', params: { routeId: data.item.routeId } }"
-                       class="tdn maincolor">
-            {{ data.item.title }}
-          </router-link>
-        </template>
-        <template #cell(creation)="data">
-          {{ data.value }}
-        </template>
-      </b-table>
+      <!--   루트 리스트 카드 - RouteItem 으로 props   -->
+      <b-row v-if="searchedRoutes == null">
+        <RouteItem
+            v-for="allRoute in allRoutes"
+            :key="allRoute.routeId"
+            :route="allRoute"
+        />
+      </b-row>
 
-      <RouteItem
-          v-for="allRoute in allRoutes"
-          :key="allRoute.routeId"
-          :route="allRoute"
-      />
+      <!--   검색한 결과 경로가 1개 이상일 때   -->
+      <b-row v-else-if="searchedRoutes.length >= 1">
+        <RouteItem
+            v-for="searchedRoute in searchedRoutes"
+            :key="searchedRoute.routeId"
+            :route="searchedRoute"
+        />
+      </b-row>
+
+      <!--   검색한 결과 경로가 없을 때   -->
+      <div v-else-if="searchedRoutes.length < 1">
+        <p> 검색 결과 없음 </p>
+      </div>
+
     </div>
   </b-container>
 </template>
@@ -47,6 +54,9 @@
 <script>
 
 import RouteItem from "@/components/RouteItem.vue";
+import axios from "axios";
+
+const API_URL = 'http://localhost:8080'
 
 export default {
   name: "RouteBoardView.vue",
@@ -57,47 +67,32 @@ export default {
     return {
       selectedDropdownItem: "not Selected",
       searchKeyword: null,
+      searchedRoutes: null,
       options: ['userId', 'maker', 'routeId'],
-      fields: [
-        {
-          key: 'routeId',
-          label: 'Route Id'
-        },
-        {
-          key: 'title',
-          label: 'Title',
-        },
-        {
-          key: 'userId',
-          label: 'User Id'
-        },
-        {
-          key: 'maker',
-          label: 'Maker',
-        },
-        {
-          key: 'creation',
-          label: 'Creation',
-          formatter: value => {
-            return new Date(value).toLocaleString()
-          }
-        },
-        {
-          key: 'thumbnail',
-          label: 'Thumbnail',
-        },
-      ]
     }
   },
   methods: {
-    selectKeyword(e) {
+    changeCategory(e) {
       this.selectedDropdownItem = e
-      return
     },
     goSearch() {
-      console.log(this.searchKeyword)
-      return
-    }
+      axios({
+        method: 'get',
+        url: `${API_URL}/route/list/${this.searchKeyword}`,
+        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${this.$store.state.token}`},
+      })
+          .then((res) => {
+            this.searchedRoutes = res.data.data
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    },
+    doReset() {
+      this.selectedDropdownItem = "not Selected"
+      this.searchKeyword = null
+      this.searchedRoutes = null
+    },
   },
   computed: {
     allRoutes() {
