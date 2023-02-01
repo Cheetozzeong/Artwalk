@@ -23,8 +23,11 @@ export default {
     getUserDetail() {
       axios({
         method: 'get',
-        url: `${API_URL}/user?id=${this.$route.params.userId}`,
-        headers: {'Access-Control-Allow-Origin': '*'},
+        url: `${API_URL}/user`,
+        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${this.$store.state.token}`},
+        params: {
+          userId: this.$route.params.userId
+        }
       })
           .then((res) => {
             console.log(res)
