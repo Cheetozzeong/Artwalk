@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "경로", description = "Artwalk 경로 API 입니다.")
+// @Tag(name = "경로", description = "Artwalk 경로 API 입니다.")
 @RestController
 @RequestMapping("route")
 public class RouteRestController {

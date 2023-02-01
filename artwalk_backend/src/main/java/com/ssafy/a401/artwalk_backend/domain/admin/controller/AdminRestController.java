@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/admin")
+// @Tag(name = "관리자", description = "Artwalk 관리자 API 입니다.")
+@RequestMapping("admin")
 @RestController
 @RequiredArgsConstructor
 public class AdminRestController {
