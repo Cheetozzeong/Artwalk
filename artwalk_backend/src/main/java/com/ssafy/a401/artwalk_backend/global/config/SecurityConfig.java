@@ -48,7 +48,7 @@ public class SecurityConfig {
 			// 로그인, 회원가입 API는 토큰 없이도 허용
 			.and()
 			.authorizeRequests()
-			// .antMatchers("/admin/**").hasRole("ADMIN") // 관리자 페이지 ADMIN 권한 확인
+			// .antMatchers("/admin/**", "/css/**", "/js/**", "/favicon.ico").permitAll() // 관리자 페이지 토큰 없이 접근 허용
 			.anyRequest().authenticated()
 
 
@@ -65,8 +65,8 @@ public class SecurityConfig {
 			web.ignoring()
 				.antMatchers( // 관리자 로그인, 사용자 인증 패이지는 토큰 없이 접근 가능
 					// "/**"
-					"/admin/login",
-					"/auth/login/*"
+					"/admin/**", "/css/**", "/js/**", "/favicon.ico"
+//					"/auth/login/*"
 					// TODO: 공유 페이지 토큰 예외 처리
 					);
 		};

@@ -7,14 +7,14 @@
       <br>
       <b-form bg-variant="light" @submit.prevent="login" class="mt-5">
         <b-form-group
-            id="group-userid"
+            id="group-userId"
             label="ID :"
-            label-for="userid"
+            label-for="userId"
             label-align="left"
         >
           <b-form-input
-              id="userid"
-              v-model="form.userid"
+              id="userId"
+              v-model="form.userId"
               placeholder="Enter id"
               required
               class="mt-1"
@@ -40,33 +40,36 @@
           <b-button type="submit" style="background-color: #07A794; border: #07A794" class="px-3">LOGIN</b-button>
         </div>
       </b-form>
-
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: "LoginView.vue",
   data() {
     return {
       form: {
-        userid: '',
+        userId: '',
         password: '',
       }
     }
   },
-  // methods: {
-  //   login() {
-  //     const userid = this.userid
-  //     const password = this.password
-  //     const payload = {
-  //       userid,
-  //       password,
-  //     }
-  //     this.$store.dispatch('login', payload)
-  //   },
-  // }
+  methods: {
+    login() {
+      const userId = this.form.userId
+      const password = this.form.password
+      const payload = {
+        userId,
+        password
+      }
+      this.$store.dispatch('login', payload)
+    },
+  },
+  created() {
+    this.$store.dispatch('logout')
+  },
 }
 </script>
 

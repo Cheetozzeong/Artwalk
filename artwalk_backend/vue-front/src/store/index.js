@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from "axios";
 import createPersistedState from 'vuex-persistedstate'
+import router from "@/router";
 
 Vue.use(Vuex)
 
@@ -17,13 +18,23 @@ export default new Vuex.Store({
     token: null,
     route: [],
     record: [],
+    user: [],
+    isLogin: false
   },
   getters: {
   },
   mutations: {
-    // SAVE_TOKEN(state, token) {
-    //   state.token = token
-    // },
+    SAVE_TOKEN(state, token) {
+      state.token = token
+      router.push({ name: 'main' })
+    },
+    LOG_IN(state) {
+      state.isLogin = true
+    },
+    LOG_OUT(state) {
+      state.isLogin = false
+      state.token = null
+    },
     GET_ROUTE(state, route) {
       state.route = route
     },
@@ -35,32 +46,35 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    // login(context, payload) {
-    //   axios({
-    //     method: 'post',
-    //     url: '',
-    //     data: {
-    //       username: payload.username,
-    //       password: payload.password,
-    //     }
-    //   })
-    //       .then((res) => {
-    //         // console.log(res)
-    //         context.commit('SAVE_TOKEN', res.data.key)
-    //       })
-    //       .catch((err) => {
-    //         console.log(err)
-    //         alert('아이디 혹은 비밀번호를 확인해주세요.')
-    //       })
-    // },
+    login(context, payload) {
+      axios({
+        method: 'post',
+        url: `${API_URL}/admin/login`,
+        headers: {'Content-Type': 'multipart/form-data', 'Access-Control-Allow-Origin': '*'},
+        data: {
+          userId: `${payload.userId}`,
+          password: `${payload.password}`
+        }
+      })
+          .then((res) => {
+            context.commit('LOG_IN')
+            context.commit('SAVE_TOKEN', res.headers.accesstoken)
+          })
+          .catch((err) => {
+            console.log(err)
+            alert('아이디 혹은 비밀번호를 확인해주세요.')
+          })
+    },
+    logout(context) {
+      context.commit('LOG_OUT')
+    },
     getRoute(context) {
       axios({
         method: 'get',
         url: `${API_URL}/route/list`,
-        headers: {'Access-Control-Allow-Origin': '*'},
+        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
       })
           .then((res) => {
-            console.log(res)
             context.commit('GET_ROUTE', res.data.routes)
           })
           .catch((err) => {
@@ -71,10 +85,9 @@ export default new Vuex.Store({
       axios({
         method: 'get',
         url: `${API_URL}/user/list`,
-        headers: {'Access-Control-Allow-Origin': '*'},
+        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
       })
           .then((res) => {
-            console.log(res)
             context.commit('GET_USER', res.data.data)
           })
           .catch((err) => {
@@ -85,7 +98,7 @@ export default new Vuex.Store({
       axios({
         method: 'get',
         url: `${API_URL}/route/list/`,
-        headers: {'Access-Control-Allow-Origin': '*'},
+        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
       })
           .then((res) => {
             context.commit('GET_RECORD', res.data.routes)
