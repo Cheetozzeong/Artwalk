@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRouteListBinding
@@ -16,7 +17,10 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
 
     private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
-    private val routeListAdapter = RouteListAdapter()
+    private val routeListAdapter = RouteListAdapter(StartButtonClickListener { geometry ->
+        val action = RouteListFragmentDirections.actionRouteListToRecordMain(geometry)
+        findNavController().navigate(action)
+    })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

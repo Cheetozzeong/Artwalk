@@ -27,7 +27,7 @@ class RouteListViewModel @Inject constructor(
         val temp: ArrayList<RouteForList> = ArrayList()
         temp.add(
             RouteForList(
-                "",Date(),"aaa","", 1
+                "",Date(),"aaa","eb{cFqbjfWMFyF{X|CiA",1
             )
         )
         temp.add(

@@ -4,8 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.a401.domain.model.RouteForList
 
 data class RouteListItem(
-    val routeForList: RouteForList,
-//    val onClick: () -> Unit
+    val routeForList: RouteForList
 ) {
 
     companion object {

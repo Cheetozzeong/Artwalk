@@ -13,7 +13,7 @@
 
         <action
             android:id="@+id/action_route_list_to_record_main"
-            app:destination="@id/record_main" />
+            app:destination="@id/record_main"/>
 
     </fragment>
 
@@ -25,7 +25,13 @@
 
         <action
             android:id="@+id/action_record_main_to_route_list"
-            app:destination="@id/route_list" />
+            app:destination="@id/route_list"/>
+
+        <argument
+            android:name="routeArgument"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
 
     </fragment>
 
