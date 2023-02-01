@@ -1,7 +1,9 @@
 package com.a401.artwalk.view.record
 
 import android.os.Bundle
+<<<<<<< Artwalk_Android/app/src/main/java/com/a401/artwalk/view/record/RecordFragment.kt
 import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -20,27 +22,56 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.PuckBearingSource
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
+import com.mapbox.geojson.Point
+
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
+    private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var mapView: MapView
-
+    lateinit var curPoint : Point
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
     }
 
-    private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
+    private val PositionChangedListenerCentercur = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
         mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
+        // it은 현재 위치이고, onIndicatorPositionChangedListner는 위치가 변경될 때마다 호출되는 친구이다.
+        addPolylineToMap(it)
+        curPoint = it
+    }
+
+    private val PositionChangedListenerFree = OnIndicatorPositionChangedListener {
+        mapView.getMapboxMap().setCamera(CameraOptions.Builder().build())
+        addPolylineToMap(it)
+        curPoint = it
+    }
+
+    private fun addPolylineToMap(cur: Point) {
+        //현재 위치가 it을 기억 이 전 위치
+        val lastlong = cur.longitude()+0.000001
+        val lastlat = cur.latitude()+0.000001
+        val points = listOf(
+            Point.fromLngLat(cur.longitude(), cur.latitude()),
+            Point.fromLngLat(lastlong ,lastlat)
+        )
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(points)
+            .withLineColor("#ee4e8b")
+            .withLineWidth(5.0)
+        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -52,14 +83,16 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             return false
         }
 
-        override fun onMoveEnd(detector: MoveGestureDetector) {}
+        override fun onMoveEnd(detector: MoveGestureDetector) {
+        }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setInitBinding()
         setMapView()
         changeStartButtonState()
+        changeCurButtonState()
         locationPermissionHelper = LocationPermissionHelper(WeakReference(requireActivity()))
         locationPermissionHelper.checkPermissions {
             onMapReady()
@@ -76,7 +109,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private fun setInitBinding(){
         binding.vm = recordViewModel
     }
-
     private fun changeStartButtonState(){
         var quitbutton = binding.imagebuttonRecordQuitbutton
         recordViewModel.startButtonEvent.observe(requireActivity()){
@@ -87,14 +119,32 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             }
         }
     }
+
+    private fun changeCurButtonState(){
+        val Trackingbutton = binding.backToCameraTrackingMode
+        recordViewModel.curButtonEvent.observe(requireActivity()){
+            with(Trackingbutton){
+                isSelected= !isSelected
+            }
+            if (Trackingbutton.isSelected) {
+                //TODO: 현재위치 버튼 클릭시 시점 토글 기능 구현
+                Log.d("isSelected", "isSelected")
+
+            } else {
+                Log.d("isUnSelected", "isUnSelected")
+            }
+        }
+    }
+
     private fun setMapView() {
+        polylineAnnotationManager = binding.mapViewRecord.annotations.createPolylineAnnotationManager()
         mapView = binding.mapViewRecord
     }
 
     private fun onMapReady() {
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
-                .zoom(14.0)
+                .zoom(32.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
@@ -124,14 +174,16 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
                 )
             )
         }
-        locationComponentPlugin.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+        locationComponentPlugin.addOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
         locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         headerTo()
     }
 
     private fun onCameraTrackingDismissed() {
         mapView.location2
-            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+            .removeOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
+        mapView.location2
+            .addOnIndicatorPositionChangedListener(PositionChangedListenerFree)
         mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
@@ -142,7 +194,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.location2
-            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+            .removeOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
@@ -151,7 +203,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 

@@ -32,17 +32,17 @@ class RouteListViewModel @Inject constructor(
         )
         temp.add(
             RouteForList(
-                "",Date(),"bbb","",2
+                "",Date(),"bbb","", 2
             )
         )
         temp.add(
             RouteForList(
-                "",Date(),"ccc","",3
+                "",Date(),"ccc","", 3
             )
         )
         temp.add(
             RouteForList(
-                "",Date(),"ddd","",4
+                "",Date(),"ddd","", 4
             )
         )
 
