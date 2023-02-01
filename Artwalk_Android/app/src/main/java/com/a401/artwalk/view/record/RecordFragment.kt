@@ -4,18 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
 import com.mapbox.maps.Style
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.utils.LocationPermissionHelper
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -30,47 +28,43 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
-
+import com.mapbox.geojson.utils.PolylineUtils
+import java.lang.Math.cos
+import java.lang.Math.sin
+import java.util.*
+import kotlin.concurrent.timer
+import kotlin.math.asin
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
+    private var curPoint : Point = Point.fromLngLat(0.0,0.0)
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var mapView: MapView
-    lateinit var curPoint : Point
+    private var timerTaskforPolyLine : Timer? = null
+    private var timerTaskforTime: Timer? = null
+    private var timerTaskforDistance: Timer? = null
+    private var time = 0
+    private var distance = 0.0
+    private var flagForWalk = true
+
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
     }
 
-    private val PositionChangedListenerCentercur = OnIndicatorPositionChangedListener {
+    private val positionChangedListenerCenterCur = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
         mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
-        // it은 현재 위치이고, onIndicatorPositionChangedListner는 위치가 변경될 때마다 호출되는 친구이다.
-        addPolylineToMap(it)
         curPoint = it
     }
 
-    private val PositionChangedListenerFree = OnIndicatorPositionChangedListener {
+    private val positionChangedListenerFree = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().build())
-        addPolylineToMap(it)
         curPoint = it
-    }
-
-    private fun addPolylineToMap(cur: Point) {
-        //현재 위치가 it을 기억 이 전 위치
-        val lastlong = cur.longitude()+0.000001
-        val lastlat = cur.latitude()+0.000001
-        val points = listOf(
-            Point.fromLngLat(cur.longitude(), cur.latitude()),
-            Point.fromLngLat(lastlong ,lastlat)
-        )
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(points)
-            .withLineColor("#ee4e8b")
-            .withLineWidth(5.0)
-        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -91,7 +85,10 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         setInitBinding()
         setMapView()
         changeStartButtonState()
+        changeQuitButtonState()
         changeCurButtonState()
+        setDistanceText()
+        setDurationText()
         locationPermissionHelper = LocationPermissionHelper(WeakReference(requireActivity()))
         locationPermissionHelper.checkPermissions {
             onMapReady()
@@ -108,32 +105,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private fun setInitBinding(){
         binding.vm = recordViewModel
     }
-    private fun changeStartButtonState(){
-        var quitbutton = binding.imagebuttonRecordQuitbutton
-        recordViewModel.startButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordStartbutton){
-                isSelected= !isSelected
-                quitbutton.isEnabled = !quitbutton.isEnabled
-                quitbutton.isVisible = !quitbutton.isVisible
-            }
-        }
-    }
-
-    private fun changeCurButtonState(){
-        val Trackingbutton = binding.backToCameraTrackingMode
-        recordViewModel.curButtonEvent.observe(requireActivity()){
-            with(Trackingbutton){
-                isSelected= !isSelected
-            }
-            if (Trackingbutton.isSelected) {
-                //TODO: 현재위치 버튼 클릭시 시점 토글 기능 구현
-                Log.d("isSelected", "isSelected")
-
-            } else {
-                Log.d("isUnSelected", "isUnSelected")
-            }
-        }
-    }
 
     private fun setMapView() {
         polylineAnnotationManager = binding.mapViewRecord.annotations.createPolylineAnnotationManager()
@@ -143,7 +114,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private fun onMapReady() {
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder()
-                .zoom(32.0)
+                .zoom(14.0)
                 .build()
         )
         mapView.getMapboxMap().loadStyleUri(
@@ -151,6 +122,130 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         ) {
             initLocationComponent()
             setupGesturesListener()
+        }
+    }
+
+    private fun changeStartButtonState() {
+        recordViewModel.startButtonEvent.observe(requireActivity()) {
+            with(binding.imagebuttonRecordStartbutton) {
+                isSelected= !isSelected
+            }
+            if(binding.imagebuttonRecordStartbutton.isSelected) {
+                startRun()
+            } else {
+                stopRun()
+            }
+        }
+
+    }
+
+    private fun startRun(){
+        if(flagForWalk){
+            addPolyLinetoMap()
+            flagForWalk = false
+            timerTaskforTime = timer(period = 1000){
+                time++
+                val hour = time / 3600
+                val minute = (time % 3600) / 60
+                val sec = time % 60
+                requireActivity().runOnUiThread(){
+                    binding.second = sec
+                    binding.minute = minute
+                    binding.hour = hour
+                }
+            }
+            timerTaskforDistance = timer(period = 2000) {
+                requireActivity().runOnUiThread() {
+                    binding.distance = distance / 1000
+                }
+            }
+        }
+    }
+
+    private fun stopRun() {
+        if(!flagForWalk){
+            flagForWalk = true
+            timerTaskforTime?.cancel()
+            timerTaskforDistance?.cancel()
+            timerTaskforPolyLine?.cancel()
+
+        }
+    }
+
+    private fun setPolyline(cur:Point, last:Point) {
+        val points = listOf(
+            Point.fromLngLat(cur.longitude(), cur.latitude()),
+            Point.fromLngLat(last.longitude() ,last.latitude())
+        )
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(points)
+            .withLineColor("#ee4e8b")
+            .withLineWidth(7.0)
+        requireActivity().runOnUiThread() {
+            polylineAnnotationManager.create(polylineAnnotationOptions)
+        }
+    }
+
+    private fun addPolyLinetoMap() {
+        var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
+        timerTaskforPolyLine = timer(period = 2000){
+            setPolyline(curPoint,lastPoint)
+            distance += getDistance(curPoint,lastPoint)
+            lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
+        }
+    }
+
+    private fun getDistance(cur: Point, last:Point): Double {
+        val dLat = Math.toRadians(last.latitude() - cur.latitude())
+        val dLong = Math.toRadians(last.longitude() - cur.longitude())
+        val a = sin(dLat/2).pow(2.0) + sin(dLong/2).pow(2.0) * cos(Math.toRadians(cur.latitude()))
+        val c = 2 * asin(sqrt(a))
+        return (6372.8 * 1000 * c) // 상수 입니다..!
+    }
+
+    private fun setDistanceText() {
+        recordViewModel.distance.observe(requireActivity()) { distance ->
+            binding.distance = distance / 1000
+        }
+    }
+
+    private fun setDurationText() {
+        recordViewModel.totalDuration.observe(requireActivity()) { totalDuration ->
+            binding.hour = totalDuration/3600
+            binding.minute = (totalDuration % 3600) / 60
+            binding.second = totalDuration % 60
+        }
+    }
+
+    private fun changeQuitButtonState(){
+        val quitButton = binding.imagebuttonRecordQuitbutton
+        recordViewModel.startButtonEvent.observe(requireActivity()){
+            with(binding.imagebuttonRecordStartbutton){
+                quitButton.isEnabled = !quitButton.isEnabled
+                quitButton.isVisible = !quitButton.isVisible
+            }
+        }
+    }
+
+    private fun changeCurButtonState() {
+        val trackingButton = binding.imagebuttonChangeCameraView
+        trackingButton.isSelected = true
+        recordViewModel.curButtonEvent.observe(requireActivity()){
+            with(trackingButton){
+                isSelected= !isSelected
+            }
+                changeCameraView()
+        }
+    }
+
+    private fun changeCameraView() {
+        if(binding.imagebuttonChangeCameraView.isSelected) {
+            mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerFree)
+            mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
+            mapView.location2.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
+        } else {
+            mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
+            mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerFree)
         }
     }
 
@@ -173,19 +268,22 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
                 )
             )
         }
-        locationComponentPlugin.addOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
+        locationComponentPlugin.addOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
         locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         headerTo()
     }
 
     private fun onCameraTrackingDismissed() {
         mapView.location2
-            .removeOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
+            .removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
         mapView.location2
-            .addOnIndicatorPositionChangedListener(PositionChangedListenerFree)
+            .addOnIndicatorPositionChangedListener(positionChangedListenerFree)
+        if(binding.imagebuttonChangeCameraView.isSelected) {
+            binding.imagebuttonChangeCameraView.isSelected = !binding.imagebuttonChangeCameraView.isSelected
+            changeCameraView()
+        }
         mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
     override fun onDestroy() {
@@ -193,22 +291,14 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView.location2
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.location2
-            .removeOnIndicatorPositionChangedListener(PositionChangedListenerCentercur)
+            .removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        locationPermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    // 마커의 헤더가 원래 위치를 잘 찾지 못하는 버그 해결
-    fun headerTo(){
+    private fun headerTo() {
         mapView.location2.updateSettings2 {
             puckBearingSource = PuckBearingSource.HEADING
         }
     }
+
 }

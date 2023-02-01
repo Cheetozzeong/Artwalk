@@ -2,11 +2,17 @@
 <layout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<data>
-    <variable
-        name="vm"
-        type="com.a401.artwalk.view.record.RecordViewModel"/>
-</data>
+    <data>
+        <variable
+            name="vm"
+            type="com.a401.artwalk.view.record.RecordViewModel"/>
+
+        <variable name="hour" type="Integer" />
+        <variable name="minute" type="Integer" />
+        <variable name="second" type="Integer" />
+        <variable name="distance" type="Double" />
+
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/constraintlayout_record"
     android:layout_width="match_parent"
@@ -19,22 +25,20 @@
         app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
         />
 
-    <!-- 시작 및 종료 버튼-->
-    <ImageButton
-        android:id="@+id/imagebutton_record_startbutton"
-        app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        <ImageButton
+            android:id="@+id/imagebutton_record_startbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_button_bg_50"
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_button_bg_50"
-        android:checked="false"
-        android:src="@drawable/toggle_record_startbutton"
-        android:onClick="@{() -> vm.onClickStartButton()}"/>
+            android:checked="false"
+            android:onClick="@{() -> vm.onClickStartButton()}"
+            android:src="@drawable/toggle_record_startbutton"
+            app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- 나가기 버튼 -->
-    <ImageButton
+        <ImageButton
         android:id="@+id/imagebutton_record_quitbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,7 +49,6 @@
         app:layout_constraintTop_toTopOf="@id/constraintlayout_record"
         android:src="@drawable/ic_quit_24" />
 
-    <!-- 하단 기록 상자-->
     <View
         android:id="@+id/view_record_infoBox"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
-    <!--기록-->
     <LinearLayout
         android:id="@+id/view_record_distanceBox"
         app:layout_constraintStart_toStartOf="@id/view_record_infoBox"
@@ -66,23 +68,23 @@
         android:orientation="vertical"
         android:gravity="center">
 
+        <!--거리-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/route_distance_title"
+            android:text="@string/record_distance_title"
             style="@style/body_title_font_style"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{@string/distance_format(vm.distance)}"
+            android:text="@{@string/distance_format(distance)}"
             android:hint="4.14Km"
             style="@style/body_regular_text_font_style"/>
 
-    <!--거리-->
+
     </LinearLayout>
 
-    <!--예상시간-->
     <LinearLayout
         android:id="@+id/view_record_durationBox"
         app:layout_constraintEnd_toEndOf="@id/view_record_infoBox"
@@ -97,30 +99,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/route_duration_title"
+            android:text="@string/record_duration_title"
             style="@style/body_title_font_style"/>
 
         <TextView
+            android:id="@+id/textView_durationBox_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{@string/duration_format(vm.durationHour, vm.durationMinute, vm.durationSecond)}"
+            android:text="@{@string/duration_format(hour, minute, second)}"
             android:hint="1시간 8분 10초"
             style="@style/body_regular_text_font_style"/>
 
-        </LinearLayout>
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/back_to_camera_tracking_mode"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end|bottom"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"-->
-<!--        app:layout_constraintStart_toEndOf="@id/view_record_durationBox"-->
-<!--        app:srcCompat="@drawable/ic_record_my_location"-->
-<!--        mapbox:fab_size="normal" />-->
+    </LinearLayout>
 
         <ImageButton
-            android:id="@+id/back_to_camera_tracking_mode"
+            android:id="@+id/imagebutton_change_camera_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
