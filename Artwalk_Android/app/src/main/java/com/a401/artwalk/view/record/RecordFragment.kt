@@ -2,17 +2,19 @@ package com.a401.artwalk.view.record
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
+import com.mapbox.maps.Style
+import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.utils.LocationPermissionHelper
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.PuckBearingSource
 import com.mapbox.maps.plugin.annotation.annotations
@@ -24,10 +26,10 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
+import com.mapbox.geojson.utils.PolylineUtils
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.util.*
-import kotlin.concurrent.schedule
 import kotlin.concurrent.timer
 import kotlin.math.asin
 import kotlin.math.pow
@@ -36,6 +38,7 @@ import kotlin.math.sqrt
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
     private var curPoint : Point = Point.fromLngLat(0.0,0.0)
+    private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
@@ -88,6 +91,13 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         locationPermissionHelper.checkPermissions {
             onMapReady()
         }
+        setRoute()
+    }
+
+    private fun setRoute() {
+        arguments.routeArgument ?: return
+        Toast.makeText(context, arguments.routeArgument, Toast.LENGTH_SHORT).show()
+        // TODO: 받아온 geometry를 화면에 띄우기
     }
 
     private fun setInitBinding(){
@@ -133,9 +143,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             flagForWalk = false
             timerTaskforTime = timer(period = 1000){
                 time++
-                var hour = time / 3600
-                var minute = (time % 3600) / 60
-                var sec = time % 60
+                val hour = time / 3600
+                val minute = (time % 3600) / 60
+                val sec = time % 60
                 requireActivity().runOnUiThread(){
                     binding.second = sec
                     binding.minute = minute

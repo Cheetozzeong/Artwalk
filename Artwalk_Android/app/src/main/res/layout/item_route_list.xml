@@ -8,6 +8,10 @@
             name="item"
             type="com.a401.artwalk.view.route.list.RouteListItem"/>
 
+        <variable
+            name="startButtonClickListener"
+            type="com.a401.artwalk.view.route.list.StartButtonClickListener" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,6 +89,7 @@
             app:layout_constraintWidth_percent="0.2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> startButtonClickListener.onClick(item.routeForList)}"
             android:hint="시작"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
