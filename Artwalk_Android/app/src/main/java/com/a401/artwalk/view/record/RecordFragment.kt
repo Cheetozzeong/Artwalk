@@ -45,7 +45,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private var distance = 0.0
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
-    private val r = 6372.8 * 1000
 
     var flagForWalk = true
 
@@ -115,13 +114,12 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun changeStartButtonState(){
-        recordViewModel.startButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordStartbutton){
+    private fun changeStartButtonState() {
+        recordViewModel.startButtonEvent.observe(requireActivity()) {
+            with(binding.imagebuttonRecordStartbutton) {
                 isSelected= !isSelected
             }
-            if(binding.imagebuttonRecordStartbutton.isSelected)
-            {
+            if(binding.imagebuttonRecordStartbutton.isSelected) {
                 startRun()
             } else {
                 stopRun()
@@ -136,9 +134,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             flagForWalk = false
             timerTaskforTime = timer(period = 1000){
                 time++
-                var hour = time/3600
+                var hour = time / 3600
                 var minute = (time % 3600) / 60
-                var sec = time%60
+                var sec = time % 60
                 requireActivity().runOnUiThread(){
                     binding.second = sec
                     binding.minute = minute
@@ -153,9 +151,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun stopRun(){
+    private fun stopRun() {
         if(!flagForWalk){
-            flagForWalk=true
+            flagForWalk = true
             timerTaskforTime?.cancel()
             timerTaskforDistance?.cancel()
             timerPolyLine?.cancel()
@@ -163,7 +161,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun setPolyline(cur:Point, last:Point){
+    private fun setPolyline(cur:Point, last:Point) {
         val points = listOf(
             Point.fromLngLat(cur.longitude(), cur.latitude()),
             Point.fromLngLat(last.longitude() ,last.latitude())
@@ -177,7 +175,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun addPolyLinetoMap(){
+    private fun addPolyLinetoMap() {
         var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
         timerPolyLine = timer(period = 2000){
             setPolyline(curPoint,lastPoint)
@@ -191,7 +189,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         val dLong = Math.toRadians(last.longitude() - cur.longitude())
         val a = sin(dLat/2).pow(2.0) + sin(dLong/2).pow(2.0) * cos(Math.toRadians(cur.latitude()))
         val c = 2 * asin(sqrt(a))
-        return (r*c)
+        return (6372.8 * 1000 * c) // 상수 입니다..!
     }
 
     private fun setDistanceText() {
@@ -218,7 +216,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun changeCurButtonState(){
+    private fun changeCurButtonState() {
         val trackingButton = binding.imagebuttonChangeCameraView
         trackingButton.isSelected = true
         recordViewModel.curButtonEvent.observe(requireActivity()){
@@ -229,7 +227,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun changeCameraView(){
+    private fun changeCameraView() {
         if(binding.imagebuttonChangeCameraView.isSelected) {
             mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerFree)
             mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
@@ -286,7 +284,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
-    private fun headerTo(){
+    private fun headerTo() {
         mapView.location2.updateSettings2 {
             puckBearingSource = PuckBearingSource.HEADING
         }
