@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 	private final UserRepository userRepository;
 	private final RouteRepository routeRepository;
+	private final RecordRepository recordRepository;
 	private final UserDeletedRepository userDeletedRepository;
 	private final TokenProvider tokenProvider;
 	private final UserKakaoToken userKakaoToken;
@@ -195,10 +197,10 @@ public class UserService {
 		for (User user : users) {
 			String userId = user.getUserId();
 			long userRouteCount = routeRepository.findByUserId(userId).size();
-			//			long userRecordCount = recordRepository.findByUserId(userId).size();
+			long userRecordCount = recordRepository.findByUserId(userId).size();
 			Map<String, Object>map = objectMapper.convertValue(user, Map.class);
 			map.put("userRouteCount", userRouteCount);
-			//			map.put("userRecordCount", userRecordCount);
+			map.put("userRecordCount", userRecordCount);
 			response.add(map);
 		}
 		return response;

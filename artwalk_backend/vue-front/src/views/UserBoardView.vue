@@ -61,6 +61,10 @@ export default {
           key: 'userRouteCount',
           label: "User's Route",
         },
+        {
+          key: 'userRecordCount',
+          label: "User's Record",
+        },
       ]
     }
   },
