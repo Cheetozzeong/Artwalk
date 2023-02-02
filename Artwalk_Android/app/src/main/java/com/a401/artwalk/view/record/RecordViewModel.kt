@@ -19,6 +19,12 @@ class RecordViewModel : ViewModel() {
     private val _curButtonEvent: MutableLiveData<Unit> = MutableLiveData()
     val curButtonEvent: LiveData<Unit> = _curButtonEvent
 
+    private val _stopButtonEvent: MutableLiveData<Unit> = MutableLiveData()
+    val stopButtonEvent: LiveData<Unit> = _stopButtonEvent
+
+    private val _pauseButtonEvent: MutableLiveData<Unit> = MutableLiveData()
+    val pauseButtonEvent: LiveData<Unit> = _pauseButtonEvent
+
     fun onClickStartButton(){
         _startButtonEvent.value = Unit
 
@@ -26,5 +32,14 @@ class RecordViewModel : ViewModel() {
 
     fun onClickCurButton(){
         _curButtonEvent.value = Unit
+    }
+
+    fun onClickStopButton(){
+        _stopButtonEvent.value = Unit
+    }
+
+    fun onClickPauseButton(){
+        _pauseButtonEvent.value = Unit
+
     }
 }
