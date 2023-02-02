@@ -10,8 +10,13 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 node {
+	download = true
 	version = '18.13.0'
 	npmVersion = '8.19.3'
+	distBaseUrl = "https://nodejs.org/dist"
+	npmInstallCommand = "install"
+	workDir = file("${project.projectDir}/.gradle/nodejs")
+	npmWorkDir = file("${project.projectDir}/.gradle/npm")
 	nodeProjectDir = file("${project.projectDir}/vue-front")
 	nodeProxySettings = ProxySettings.SMART
 }
