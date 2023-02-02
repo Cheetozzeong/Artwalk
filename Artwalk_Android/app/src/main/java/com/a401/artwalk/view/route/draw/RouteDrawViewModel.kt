@@ -1,6 +1,5 @@
 package com.a401.artwalk.view.route.draw
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,6 +8,7 @@ import com.a401.artwalk.di.dispatcher.DispatcherProvider
 import com.a401.domain.model.Marker
 import com.a401.domain.model.RouteForDraw
 import com.a401.domain.usecase.GetRouteForWalkingUseCase
+import com.a401.domain.usecase.PostRouteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -17,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RouteDrawViewModel @Inject constructor(
     private val getRouteForWalkingUseCase: GetRouteForWalkingUseCase,
+    private val postRoute: PostRouteUseCase,
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider) {
 
@@ -53,7 +54,14 @@ class RouteDrawViewModel @Inject constructor(
     }
 
     fun saveDrawRoute(polyline: String) {
-        Log.d("polyline", polyline)
+
+        viewModelScope.launch {
+            postRoute(RouteForDraw(
+                totalDuration.value ?: 0,
+                distance.value ?: 0.0,
+                polyline
+            ))
+        }
     }
 
     fun addPointEvent(id: Long, latitude: Double, longitude: Double) {
