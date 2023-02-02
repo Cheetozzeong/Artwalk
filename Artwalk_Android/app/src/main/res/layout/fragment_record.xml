@@ -30,13 +30,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_button_bg_50"
-
             android:checked="false"
             android:onClick="@{() -> vm.onClickStartButton()}"
-            android:src="@drawable/toggle_record_startbutton"
+            android:src="@drawable/ic_start_circle_100"
             app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imagebutton_record_stopbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_button_bg_30"
+            android:checked="false"
+            android:onClick="@{() -> vm.onClickPauseButton()}"
+            android:visibility="gone"
+            android:src="@drawable/ic_pause_circle_80"
+            app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
+            app:layout_constraintEnd_toEndOf="@+id/view_record_durationBox"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imagebutton_record_pausebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_button_bg_30"
+            android:checked="false"
+            android:onClick="@{() -> vm.onClickStopButton()}"
+            android:visibility="gone"
+            android:src="@drawable/ic_stop_circle_80"
+            app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/view_record_distanceBox" />
 
         <ImageButton
         android:id="@+id/imagebutton_record_quitbutton"
