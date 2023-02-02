@@ -13,4 +13,6 @@
 
     <string name="bottomNav_menu_route_title">경로</string>
     <string name="bottomNav_menu_recordMain_title">기록</string>
+
+    <string name="toDrawButton_title">경로 그리기</string>
 </resources>
