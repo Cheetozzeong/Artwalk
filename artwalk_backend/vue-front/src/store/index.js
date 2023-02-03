@@ -52,7 +52,7 @@ export default new Vuex.Store({
         method: 'post',
         // TODO: 주소 변경 필요
         url: '/admin/login',
-        headers: {'Content-Type': 'multipart/form-data', 'Access-Control-Allow-Origin': '*'},
+        headers: {'Content-Type': 'multipart/form-data'},
         data: {
           userId: `${payload.userId}`,
           password: `${payload.password}`

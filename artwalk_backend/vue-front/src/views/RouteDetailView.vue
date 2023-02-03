@@ -34,8 +34,7 @@ export default {
     },
     getRouteImage() {
 
-      // TODO: 주소 변경 필요
-      const url = `http://localhost:8080/route/thumb/${this.$route.params.routeId}`
+      const url = `/route/thumb/${this.$route.params.routeId}`
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',

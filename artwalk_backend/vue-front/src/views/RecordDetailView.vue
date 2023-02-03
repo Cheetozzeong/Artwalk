@@ -34,7 +34,7 @@ export default {
           })
     },
     getRecordImage() {
-      const url = `http://localhost:8080/record/thumb/${this.$route.params.recordId}`
+      const url = `/record/thumb/${this.$route.params.recordId}`
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',

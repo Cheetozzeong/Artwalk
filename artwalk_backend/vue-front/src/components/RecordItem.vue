@@ -65,7 +65,7 @@ export default {
       this.formattedDuration = hour + ":" + min + ":" + sec
     },
     getRecordImage() {
-      const url = `http://localhost:8080/record/thumb/${this.record.recordId}`
+      const url = `/record/thumb/${this.record.recordId}`
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',
