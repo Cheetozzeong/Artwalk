@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from "@/store";
 
 const instance = axios.create({
-    headers: {'Access-Control-Allow-Origin': '*'}
+    // headers: {'Access-Control-Allow-Origin': '*'}
 });
 
 instance.interceptors.request.use(
