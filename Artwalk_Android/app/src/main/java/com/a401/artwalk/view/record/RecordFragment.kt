@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
@@ -28,7 +29,6 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
-import com.mapbox.geojson.utils.PolylineUtils
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.util.*
@@ -39,7 +39,6 @@ import kotlin.math.sqrt
 
 class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
-    private var curPoint : Point = Point.fromLngLat(0.0,0.0)
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var locationPermissionHelper: LocationPermissionHelper
@@ -48,6 +47,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private var timerTaskforPolyLine : Timer? = null
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
+    private var curPoint : Point = Point.fromLngLat(0.0,0.0)
     private var time = 0
     private var distance = 0.0
     private var flagForWalk = true
@@ -84,7 +84,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         super.onViewCreated(view, savedInstanceState)
         setInitBinding()
         setMapView()
-        changeStartButtonState()
+        startButtonPressed()
+        pauseButtonPressed()
+        stopButtonPressed()
         changeQuitButtonState()
         changeCurButtonState()
         setDistanceText()
@@ -94,6 +96,20 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             onMapReady()
         }
         setRoute()
+    }
+
+    private fun onMapReady() {
+        mapView.getMapboxMap().setCamera(
+            CameraOptions.Builder()
+                .zoom(14.0)
+                .build()
+        )
+        mapView.getMapboxMap().loadStyleUri(
+            Style.MAPBOX_STREETS
+        ) {
+            initLocationComponent()
+            setupGesturesListener()
+        }
     }
 
     private fun setRoute() {
@@ -111,71 +127,14 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView = binding.mapViewRecord
     }
 
-    private fun onMapReady() {
-        mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder()
-                .zoom(14.0)
-                .build()
-        )
-        mapView.getMapboxMap().loadStyleUri(
-            Style.MAPBOX_STREETS
-        ) {
-            initLocationComponent()
-            setupGesturesListener()
-        }
-    }
-
-    private fun changeStartButtonState() {
-        recordViewModel.startButtonEvent.observe(requireActivity()) {
-            with(binding.imagebuttonRecordStartbutton) {
-                isSelected= !isSelected
-            }
-            if(binding.imagebuttonRecordStartbutton.isSelected) {
-                startRun()
-            } else {
-                stopRun()
-            }
-        }
-
-    }
-
-    private fun startRun(){
-        if(flagForWalk){
-            addPolyLinetoMap()
-            flagForWalk = false
-            timerTaskforTime = timer(period = 1000){
-                time++
-                val hour = time / 3600
-                val minute = (time % 3600) / 60
-                val sec = time % 60
-                requireActivity().runOnUiThread(){
-                    binding.second = sec
-                    binding.minute = minute
-                    binding.hour = hour
-                }
-            }
-            timerTaskforDistance = timer(period = 2000) {
-                requireActivity().runOnUiThread() {
-                    binding.distance = distance / 1000
-                }
-            }
-        }
-    }
-
-    private fun stopRun() {
-        if(!flagForWalk){
-            flagForWalk = true
-            timerTaskforTime?.cancel()
-            timerTaskforDistance?.cancel()
-            timerTaskforPolyLine?.cancel()
-
-        }
+    private fun setupGesturesListener() {
+        mapView.gestures.addOnMoveListener(onMoveListener)
     }
 
     private fun setPolyline(cur:Point, last:Point) {
         val points = listOf(
             Point.fromLngLat(cur.longitude(), cur.latitude()),
-            Point.fromLngLat(last.longitude() ,last.latitude())
+            Point.fromLngLat(last.longitude() ,last.latitude()),
         )
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
             .withPoints(points)
@@ -195,18 +154,18 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
+    private fun setDistanceText() {
+        recordViewModel.distance.observe(requireActivity()) { distance ->
+            binding.distance = distance / 1000
+        }
+    }
+
     private fun getDistance(cur: Point, last:Point): Double {
         val dLat = Math.toRadians(last.latitude() - cur.latitude())
         val dLong = Math.toRadians(last.longitude() - cur.longitude())
         val a = sin(dLat/2).pow(2.0) + sin(dLong/2).pow(2.0) * cos(Math.toRadians(cur.latitude()))
         val c = 2 * asin(sqrt(a))
         return (6372.8 * 1000 * c) // 상수 입니다..!
-    }
-
-    private fun setDistanceText() {
-        recordViewModel.distance.observe(requireActivity()) { distance ->
-            binding.distance = distance / 1000
-        }
     }
 
     private fun setDurationText() {
@@ -238,6 +197,76 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
+    private fun changeStartButtonState(){
+        val startbutton = binding.imagebuttonRecordStartbutton
+        val pausebutton = binding.imagebuttonRecordPausebutton
+        val stopbutton = binding.imagebuttonRecordStopbutton
+        startbutton.isEnabled = !startbutton.isEnabled
+        startbutton.isVisible = !startbutton.isVisible
+        pausebutton.isGone = !pausebutton.isGone
+        stopbutton.isGone = !stopbutton.isGone
+    }
+
+    private fun startButtonPressed() {
+        recordViewModel.startButtonEvent.observe(requireActivity()){
+            with(binding.imagebuttonRecordStartbutton) {
+                changeStartButtonState()
+                startRun()
+            }
+        }
+
+    }
+
+    private fun pauseButtonPressed(){
+        recordViewModel.pauseButtonEvent.observe(requireActivity()){
+            with(binding.imagebuttonRecordPausebutton){
+                changeStartButtonState()
+                stopRun()
+            }
+        }
+    }
+
+    private fun stopButtonPressed(){
+        recordViewModel.stopButtonEvent.observe(requireActivity()){
+            with(binding.imagebuttonRecordStopbutton){
+                changeStartButtonState()
+                stopRun()
+            }
+        }
+    }
+
+    private fun startRun(){
+        if(flagForWalk){
+            addPolyLinetoMap()
+            flagForWalk = false
+            timerTaskforTime = timer(period = 1000){
+                time++
+                val hour = time / 3600
+                val minute = (time % 3600) / 60
+                val sec = time % 60
+                requireActivity().runOnUiThread(){
+                    binding.second = sec
+                    binding.minute = minute
+                    binding.hour = hour
+                }
+            }
+            timerTaskforDistance = timer(period = 2000) {
+                requireActivity().runOnUiThread() {
+                    binding.distance = distance / 1000
+                }
+            }
+        }
+    }
+
+    private fun stopRun() {
+        if(!flagForWalk){
+            flagForWalk = true
+            timerTaskforTime?.cancel()
+            timerTaskforDistance?.cancel()
+            timerTaskforPolyLine?.cancel()
+        }
+    }
+
     private fun changeCameraView() {
         if(binding.imagebuttonChangeCameraView.isSelected) {
             mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerFree)
@@ -247,10 +276,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
             mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerFree)
         }
-    }
-
-    private fun setupGesturesListener() {
-        mapView.gestures.addOnMoveListener(onMoveListener)
     }
 
     private fun initLocationComponent() {
