@@ -1,38 +1,54 @@
 <template>
-  <div>레코드 디테일 {{ record }}</div>
+  <div>레코드 디테일 {{ record }}
+    <img id="thumbnail" :src="thumbUrl" alt="Thumbnail Image">
+  </div>
 </template>
 
 <script>
 
-import axios from "axios";
-
-const API_URL = 'http://localhost:8080'
+import Send from "@/utils/Send";
 
 export default {
   name: "RecordDetailView.vue",
   data() {
     return {
-      record: null
+      record: null,
+      thumbUrl: null
     }
   },
   created() {
     this.getRecordDetail()
+    this.getRecordImage()
   },
   methods: {
     getRecordDetail() {
-      axios({
+      return Send({
         method: 'get',
-        url: `${API_URL}/record/${this.$route.params.recordId}`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${this.$store.state.token}`},
+        url: `/record/${this.$route.params.recordId}`,
       })
           .then((res) => {
-            console.log(res)
             this.record = res.data
           })
           .catch((err) => {
             console.log(err)
           })
-    }
+    },
+    getRecordImage() {
+      const url = `http://localhost:8080/record/thumb/${this.$route.params.recordId}`
+      const options = {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'accessToken': `Bearer ${this.$store.state.token}`
+        }
+      }
+
+      fetch(url, options)
+          .then(res => res.blob())
+          .then(blob => {
+            console.log(blob)
+            this.thumbUrl = URL.createObjectURL(blob)
+          })
+    },
   }
 }
 </script>

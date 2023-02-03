@@ -76,7 +76,7 @@ public class UserController {
 		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
 	})
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public ResponseEntity<?> login(Authentication authentication) {
 		// 사용자 DB의 refreshToken을 사용한다.
 		// 기존 인증 토큰은 블랙리스트로 저정해서 만료 확인해줘야 한다. (테이블을 하나 새로 두거나 Redis 사용 필요)

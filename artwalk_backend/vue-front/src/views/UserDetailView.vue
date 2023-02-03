@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import axios from "axios";
-const API_URL = 'http://localhost:8080'
+import Send from "@/utils/Send";
+
 export default {
   name: "UserDetailView.vue",
   data() {
@@ -21,16 +21,14 @@ export default {
   },
   methods: {
     getUserDetail() {
-      axios({
+      return Send({
         method: 'get',
-        url: `${API_URL}/user`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${this.$store.state.token}`},
+        url: '/user',
         params: {
           userId: this.$route.params.userId
         }
       })
           .then((res) => {
-            console.log(res)
             this.userInfo = res.data.data
           })
           .catch((err) => {
@@ -45,4 +43,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

@@ -2,6 +2,7 @@
   <b-col cols="3">
     <b-card
         img-top
+        :img-src="thumbUrl"
         tag="article"
         style="max-width: 20rem;"
         class="mb-2 m-click"
@@ -11,10 +12,6 @@
         {{ record.detail }}
       </b-card-title>
 
-      <b-card-img>
-
-      </b-card-img>
-
       <b-card-text>
         <p>Record Id : {{ record.recordId }}</p>
         <p>{{ record.userId }}</p>
@@ -22,8 +19,8 @@
       </b-card-text>
 
       <b-card-sub-title>
-        <p>Distance - {{ formattedDistance }}</p>
         <p>Duration - {{ formattedDuration }}</p>
+        <p>Distance - {{ formattedDistance }}</p>
       </b-card-sub-title>
 
     </b-card>
@@ -33,6 +30,7 @@
 <script>
 
 import dayjs from "dayjs";
+
 export default {
   name: "RecordItem.vue",
   props: {
@@ -44,10 +42,12 @@ export default {
       formattedCreation: dayjs(this.date).format('YYYY/MM/DD'),
       formattedDuration: null,
       formattedDistance: Math.round(this.record.distance).toLocaleString('ko-KR') + " M",
+      thumbUrl: null,
     }
   },
   created() {
     this.getTimeStringSeconds(this.record.duration)
+    this.getRecordImage()
   },
   methods: {
     goDetail() {
@@ -63,6 +63,22 @@ export default {
       if (sec.toString().length == 1) sec = "0" + sec
 
       this.formattedDuration = hour + ":" + min + ":" + sec
+    },
+    getRecordImage() {
+      const url = `http://localhost:8080/record/thumb/${this.record.recordId}`
+      const options = {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'accessToken': `Bearer ${this.$store.state.token}`
+        }
+      }
+
+      fetch(url, options)
+          .then(res => res.blob())
+          .then(blob => {
+            console.log(blob)
+            this.thumbUrl = URL.createObjectURL(blob)
+          })
     },
   },
 }
