@@ -45,7 +45,6 @@ public class FileService {
 	}
 	@Value("${mapbox.api.url}")
 	private void setMapboxApiUrl(String mapboxApiUrl) {
-		System.out.println("세팅 : " + mapboxApiUrl);
 		MAPBOX_API_URL = mapboxApiUrl;
 	}
 	@Value("${mapbox.api.key}")
@@ -108,9 +107,52 @@ public class FileService {
 		}
 	}
 
+	/** 프로필 주소를 가지고 이미지를 저장한 후 저장된 경로를 반환합니다. */
+	public static String saveProfileImage(String imageURL, String userId) {
+		String filePathName = "";
+		try {
+			URL imgURL = new URL(imageURL.toString());
+			String extension = "png";
+			filePathName = userId.replace('@', '_') + "_profile." + extension;
+
+			BufferedImage image = ImageIO.read(imgURL);
+			File file = new File(FILE_PATH + "profile/" + filePathName);
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+
+			ImageIO.write(image, extension, file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return filePathName;
+	}
+
+	/** 저장한 프로필 이미지를 반환합니다. */
+	public static ResponseEntity<Resource> findProfile(String userId) {
+		ResponseEntity<Resource> response = null;
+
+		String profilePath = userId.replace('@', '_') + "_profile.png";
+		Resource resource = new FileSystemResource(FILE_PATH + "profile/" + profilePath);
+		if(!resource.exists()){
+			response = new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+		}
+
+		HttpHeaders header = new HttpHeaders();
+		Path filePath = null;
+		try{
+			filePath = Paths.get(FILE_PATH + "profile/" + profilePath);
+			header.add("Content-type", Files.probeContentType(filePath));
+			response = new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
 	/** 인코딩된 경로(route)를 가지고 썸네일 이미지를 생성하고 저장한 후 저장된 경로를 반환합니다. */
 	public static String saveThumbnail(String option, String geometryPath, String geometry, String userId) {
-		System.out.println("썸네일 생성");
 		StringBuilder imageURL = new StringBuilder();
 		imageURL.append(MAPBOX_API_URL).append("path-")
 			.append(polyLineWidth).append("+")
