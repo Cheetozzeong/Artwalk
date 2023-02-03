@@ -2,6 +2,7 @@ package com.ssafy.a401.artwalk_backend.domain.admin.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("admin")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://i8a401.p.ssafy.io:8080")
 public class AdminRestController {
 
     private final AdminService adminService;
