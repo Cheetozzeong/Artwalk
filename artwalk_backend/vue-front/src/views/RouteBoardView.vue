@@ -54,9 +54,7 @@
 <script>
 
 import RouteItem from "@/components/RouteItem.vue";
-import axios from "axios";
-
-const API_URL = 'http://localhost:8080'
+import Send from "@/utils/Send";
 
 export default {
   name: "RouteBoardView.vue",
@@ -76,10 +74,9 @@ export default {
       this.selectedDropdownItem = e
     },
     goSearch() {
-      axios({
+      return Send({
         method: 'get',
-        url: `${API_URL}/route/list/${this.searchKeyword}`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${this.$store.state.token}`},
+        url: `/route/list/${this.searchKeyword}`,
       })
           .then((res) => {
             this.searchedRoutes = res.data.data

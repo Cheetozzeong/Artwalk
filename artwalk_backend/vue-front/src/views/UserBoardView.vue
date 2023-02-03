@@ -24,6 +24,7 @@
 
 <script>
 import UserItem from "@/components/UserItem.vue";
+
 export default {
   name: "UserBoardView.vue",
   components: {
@@ -72,4 +73,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

@@ -3,10 +3,10 @@ import Vuex from 'vuex'
 import axios from "axios";
 import createPersistedState from 'vuex-persistedstate'
 import router from "@/router";
+import Send from "@/utils/Send";
 
 Vue.use(Vuex)
 
-const API_URL = 'http://localhost:8080'
 
 export default new Vuex.Store({
   plugins: [
@@ -14,6 +14,7 @@ export default new Vuex.Store({
       storage: window.sessionStorage
     })
   ],
+
   state: {
     token: null,
     route: [],
@@ -49,7 +50,8 @@ export default new Vuex.Store({
     login(context, payload) {
       axios({
         method: 'post',
-        url: `${API_URL}/admin/login`,
+        // TODO: 주소 변경 필요
+        url: 'http://localhost:8080/admin/login',
         headers: {'Content-Type': 'multipart/form-data', 'Access-Control-Allow-Origin': '*'},
         data: {
           userId: `${payload.userId}`,
@@ -69,12 +71,11 @@ export default new Vuex.Store({
       context.commit('LOG_OUT')
     },
     getRoute(context) {
-      axios({
+      return Send({
         method: 'get',
-        url: `${API_URL}/route/list`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
+        url: '/route/list',
         params: {
-          user: false,
+          user: false
         }
       })
           .then((res) => {
@@ -84,26 +85,12 @@ export default new Vuex.Store({
             console.log(err)
           })
     },
-    getUser(context) {
-      axios({
-        method: 'get',
-        url: `${API_URL}/user/list`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
-      })
-          .then((res) => {
-            context.commit('GET_USER', res.data.data)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-    },
     getRecord(context) {
-      axios({
+      return Send({
         method: 'get',
-        url: `${API_URL}/record/list/`,
-        headers: {'Access-Control-Allow-Origin': '*', 'accessToken': `Bearer ${context.state.token}`},
+        url: '/record/list',
         params: {
-          user: false,
+          user: false
         }
       })
           .then((res) => {
@@ -113,6 +100,18 @@ export default new Vuex.Store({
             console.log(err)
           })
     },
+    getUser(context) {
+      return Send({
+        method: 'get',
+        url: '/user/list',
+      })
+          .then((res) => {
+            context.commit('GET_USER', res.data.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+    }
   },
   modules: {
   }
