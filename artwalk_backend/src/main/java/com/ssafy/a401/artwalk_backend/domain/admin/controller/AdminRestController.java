@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("admin")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://i8a401.p.ssafy.io:8080")
+@CrossOrigin(origins = {"http://i8a401.p.ssafy.io"}, allowCredentials = "true")
 public class AdminRestController {
 
     private final AdminService adminService;
