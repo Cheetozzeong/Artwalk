@@ -50,7 +50,7 @@ export default {
       this.$router.push({ name: 'routeDetail', params: { routeId: this.route.routeId } })
     },
     getRouteImage() {
-      const url = `http://localhost:8080/route/thumb/${this.route.routeId}`
+      const url = `/route/thumb/${this.route.routeId}`
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',

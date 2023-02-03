@@ -2,7 +2,6 @@ import axios from 'axios'
 import store from "@/store";
 
 const instance = axios.create({
-    baseURL: 'http://i8a401.p.ssafy.io:8080',
     headers: {'Access-Control-Allow-Origin': '*'}
 });
 

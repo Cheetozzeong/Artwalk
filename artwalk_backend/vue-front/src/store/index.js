@@ -51,7 +51,7 @@ export default new Vuex.Store({
       axios({
         method: 'post',
         // TODO: 주소 변경 필요
-        url: 'http://i8a401.p.ssafy.io:8080/admin/login',
+        url: '/admin/login',
         headers: {'Content-Type': 'multipart/form-data', 'Access-Control-Allow-Origin': '*'},
         data: {
           userId: `${payload.userId}`,
