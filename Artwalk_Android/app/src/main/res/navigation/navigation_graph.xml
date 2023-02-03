@@ -15,6 +15,10 @@
             android:id="@+id/action_route_list_to_record_main"
             app:destination="@id/record_main"/>
 
+        <action
+            android:id="@+id/action_route_list_to_route_draw"
+            app:destination="@id/route_draw"/>
+
     </fragment>
 
     <fragment
@@ -33,6 +37,12 @@
             app:nullable="true"
             android:defaultValue="@null"/>
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/route_draw"
+        android:name="com.a401.artwalk.view.route.draw.RouteDrawFragment"
+        tools:layout="@layout/fragment_route_draw">
     </fragment>
 
 </navigation>

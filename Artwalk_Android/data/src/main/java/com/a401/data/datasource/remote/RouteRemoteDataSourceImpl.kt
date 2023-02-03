@@ -15,7 +15,7 @@ class RouteRemoteDataSourceImpl @Inject constructor(
 ) : RouteRemoteDataSource{
 
     private val mapboxApi = ApiClient.getMapboxDirectionsApiService()
-    private val routeServerApi = ApiClient.getRouteServerApiService()
+//    private val routeServerApi = ApiClient.getRouteServerApiService()
 
     override suspend fun getRouteData(profile: String, coordinates: ArrayList<MarkerRequest>, geometries: String, overview: String): RouteForDraw {
         return routeForDrawFromResponse(mapboxApi.getRoute(

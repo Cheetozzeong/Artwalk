@@ -27,6 +27,7 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
 
         set()
         setupRecyclerView()
+        setToDrawButtonClickListener()
 
         lifecycleScope.launch {
             collectListItem()
@@ -44,6 +45,13 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
     private suspend fun collectListItem() {
         routeListViewModel.routes.collect { routeForList ->
             routeListAdapter.submitList(routeForList)
+        }
+    }
+
+    private fun setToDrawButtonClickListener() {
+        binding.buttonRouteListToRouteDraw.setOnClickListener {
+            val action = RouteListFragmentDirections.actionRouteListToRouteDraw()
+            findNavController().navigate(action)
         }
     }
 }
