@@ -3,6 +3,7 @@ package com.a401.data.datasource.remote
 import com.a401.data.BuildConfig
 import com.a401.data.api.ApiClient
 import com.a401.data.mapper.routeForDrawFromResponse
+import com.a401.data.mapper.routeForListsFromResponses
 import com.a401.data.mapper.routeRequestFromRouteForDraw
 import com.a401.data.model.request.MarkerRequest
 import com.a401.domain.model.RouteForDraw
@@ -11,11 +12,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+
 class RouteRemoteDataSourceImpl @Inject constructor(
+
 ) : RouteRemoteDataSource{
 
     private val mapboxApi = ApiClient.getMapboxDirectionsApiService()
-    private val routeServerApi = ApiClient.getRouteServerApiService()
+    private val a401Api = ApiClient.getRouteServerApiService()
 
     override suspend fun getRouteData(profile: String, coordinates: ArrayList<MarkerRequest>, geometries: String, overview: String): RouteForDraw {
         return routeForDrawFromResponse(mapboxApi.getRoute(
@@ -27,16 +30,23 @@ class RouteRemoteDataSourceImpl @Inject constructor(
         ))
     }
 
-    override suspend fun getRouteList(): Flow<List<RouteForList>> {
-//        return flow {
-//            emit(routeForListsFromResponses(routeServerApi.getRouteList()))
-//        }
-        return flow { emit(emptyList<RouteForList>()) }
+    // TODO: login구현 후 삭제하고 저장된 token 사용
+    private val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU1NDkxOTZ9.t5oX3SgA6qVEzhpqiu0emvM7j_k7XcFtH5A-zSptvYdkZaIGCCTH_cAZCwxZdo0nVh4OaNZwEP1mytqWPhHU4A"
+
+    override suspend fun getRouteList(user: Boolean): Flow<List<RouteForList>> {
+        return flow {
+            emit(routeForListsFromResponses(
+                a401Api.getRouteList(
+                    accessToken,
+                    user
+                )
+            ))
+        }
     }
 
     override suspend fun postRoute(routeForDraw: RouteForDraw) {
-        return routeServerApi.postRoute(
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyaGRkcGNrczk4MTRAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY3NTI1ODgxOH0.JTJ599jcjeWjkdBmO-5ignFrV8prskieLaygTvQDaNlK-PCdJ6Qi5q3xBbOHlGPal4g5MVErDghkFrl-b-GLnA",
+        return a401Api.postRoute(
+            accessToken,
             routeRequestFromRouteForDraw(routeForDraw)
         )
     }

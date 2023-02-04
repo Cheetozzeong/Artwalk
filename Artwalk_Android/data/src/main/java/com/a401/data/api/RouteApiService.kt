@@ -8,15 +8,15 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface RouteServerApiService {
+interface RouteApiService {
 
-    @GET("route/list")
+    @GET("list")
     suspend fun getRouteList(
         @Header("accessToken") accessToken: String,
         @Query("user") user: Boolean
     ): RouteListResponse
 
-    @POST("route/")
+    @POST()
     suspend fun postRoute(
         @Header("accessToken") accessToken: String,
         @Body() route: RouteRequest
