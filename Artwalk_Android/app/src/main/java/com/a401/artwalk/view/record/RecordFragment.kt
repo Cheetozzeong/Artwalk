@@ -1,7 +1,6 @@
 package com.a401.artwalk.view.record
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -29,6 +28,7 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
+import com.mapbox.geojson.utils.PolylineUtils
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.util.*
@@ -231,6 +231,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             with(binding.imagebuttonRecordStopbutton){
                 changeStartButtonState()
                 stopRun()
+                saveRecord()
             }
         }
     }
@@ -265,6 +266,22 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             timerTaskforDistance?.cancel()
             timerTaskforPolyLine?.cancel()
         }
+    }
+
+    private fun saveRecord(){
+        val recordRoute: String = polylineAnnotationManager.getTotalPolyline()
+        Toast.makeText(context, recordRoute, Toast.LENGTH_SHORT).show()
+        Log.d("recordRoute", recordRoute)
+    }
+
+    private fun PolylineAnnotationManager.getTotalPolyline(): String {
+        val pointList: ArrayList<Point> = ArrayList()
+        annotations.forEach() { polylineAnnotation ->
+            polylineAnnotation.points.forEach() { point ->
+                pointList.add(point)
+            }
+        }
+        return PolylineUtils.encode(pointList, 5)
     }
 
     private fun changeCameraView() {
