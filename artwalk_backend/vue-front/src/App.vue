@@ -83,4 +83,28 @@
   cursor: pointer;
 }
 
+.f-size {
+  font-size: 18px;
+}
+
+.x-scroll {
+  overflow: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.x-scroll::-webkit-scrollbar {
+  width: 3px;  /* 스크롤바의 너비 */
+}
+
+.x-scroll::-webkit-scrollbar-thumb {
+  height: 20%; /* 스크롤바의 길이 */
+  background: rgba(7, 167, 148, 0.44); /* 스크롤바의 색상 */
+  border-radius: 10px;
+}
+
+.x-scroll::-webkit-scrollbar-track {
+  background: rgb(255, 255, 255);  /*스크롤바 뒷 배경 색상*/
+  border-radius: 10px;
+}
+
 </style>

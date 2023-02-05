@@ -13,7 +13,7 @@
           </router-link>
         </template>
         <template #cell(profile)="data">
-          <img :src="data.item.profile">
+          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>
         </template>
       </b-table>
 

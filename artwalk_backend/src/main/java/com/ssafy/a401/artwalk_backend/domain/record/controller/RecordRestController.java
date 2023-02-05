@@ -86,6 +86,27 @@ public class RecordRestController {
 		return response;
 	}
 
+	@Operation(summary = "관리자용 사용자 기록 목록 조회", description = "관리자용 특정 사용자 기록 목록 조회 메서드입니다.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = OK, description = "기록 목록 조회 성공"),
+			@ApiResponse(responseCode = FAIL, description = "기록 목록 조회 실패")
+	})
+	@GetMapping("/list/{userId}")
+	public ResponseDTO recordListByUserId(@Parameter(name = "userId", description = "사용자 ID") @PathVariable("userId") String userId){
+		ResponseDTO response = null;
+		List<Record> records = null;
+
+		records = recordService.findByUserId(userId);
+
+		if(records != null) {
+			response = new ResponseDTO(OK, records);
+		}else {
+			response = new ResponseDTO(FAIL, null);
+		}
+
+		return response;
+	}
+
 	@Operation(summary = "기록 조회", description = "기록 조회 메서드입니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "기록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
