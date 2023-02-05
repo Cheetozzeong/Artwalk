@@ -16,9 +16,9 @@ import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRouteDrawBinding
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
+import com.mapbox.geojson.utils.PolylineUtils
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
-import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
@@ -42,6 +42,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         addPolylineToMap()
         setDurationText()
         setDistanceText()
+        setSaveButtonClickListener()
     }
 
     private fun setInitBinding() {
@@ -143,7 +144,20 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
         }
     }
 
+    fun setSaveButtonClickListener() {
+        binding.buttonRouteDrawSave.setOnClickListener {
+            routeDrawViewModel.saveDrawRoute(polylineAnnotationManager.getTotalPolyline())
+        }
+    }
 
-
+    private fun PolylineAnnotationManager.getTotalPolyline(): String {
+        val pointList: ArrayList<Point> = ArrayList()
+        annotations.forEach() { polylineAnnotation ->
+            polylineAnnotation.points.forEach() { point ->
+                pointList.add(point)
+            }
+        }
+        return PolylineUtils.encode(pointList, 5)
+    }
 
 }

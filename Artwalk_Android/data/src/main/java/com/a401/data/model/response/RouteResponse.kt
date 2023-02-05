@@ -5,7 +5,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class RouteListResponse(
-    @SerializedName("routes") var routes: ArrayList<Routes> = arrayListOf(),
+    // TODO: Back에서 data -> routes로 변경하면 수정할 것
+    @SerializedName("data") var routes: ArrayList<Routes> = arrayListOf(),
+//    @SerializedName("routes") var routes: ArrayList<Routes> = arrayListOf(),
     @SerializedName("code") var code: String,
 )
 
