@@ -39,6 +39,10 @@ class RouteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRoutForList(): Flow<List<RouteForList>> {
-        return routeRemoteDataSource.getRouteList()
+        return routeRemoteDataSource.getRouteList(true)
+    }
+
+    override suspend fun postRoute(route: RouteForDraw) {
+        return routeRemoteDataSource.postRoute(route)
     }
 }

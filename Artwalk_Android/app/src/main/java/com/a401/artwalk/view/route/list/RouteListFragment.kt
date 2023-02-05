@@ -17,10 +17,11 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
 
     private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
-    private val routeListAdapter = RouteListAdapter(StartButtonClickListener { geometry ->
+    private val routeListAdapter = RouteListAdapter(
+        StartButtonClickListener { geometry ->
         val action = RouteListFragmentDirections.actionRouteListToRecordMain(geometry)
-        findNavController().navigate(action)
-    })
+        findNavController().navigate(action) }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
