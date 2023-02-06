@@ -70,4 +70,34 @@ public class UserRestController {
 
 		return response;
 	}
+
+	/** 유저 닉네임, 아이디 검색 */
+	@Operation(summary = "유저 닉네임 검색", description = "유저 닉네임 검색 메서드입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = OK, description = "유저 닉네임 검색 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "유저 닉네임 검색 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+	})
+	@GetMapping("/search")
+	public ResponseDTO userSearch(
+		@RequestParam(name = "type", value = "type") String type,
+		@RequestParam(name = "keyword", value = "keyword") String keyword) {
+
+		ResponseDTO response = null;
+		if (type.equals("nickname")) {
+			List<User> nicknames = userService.searchUserNickname(keyword);
+			if(nicknames != null){
+				response = new ResponseDTO(OK, nicknames);
+			}else{
+				response = new ResponseDTO(FAIL, null);
+			}
+		} else if (type.equals("userId")) {
+			List<User> userIds = userService.searchUserIdname(keyword);
+			if(userIds != null){
+				response = new ResponseDTO(OK, userIds);
+			}else{
+				response = new ResponseDTO(FAIL, null);
+			}
+		}
+		return response;
+	}
 }
