@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.a401.artwalk_backend.domain.common.service.FileService;
 import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
@@ -20,6 +21,9 @@ import com.ssafy.a401.artwalk_backend.domain.user.model.UserResponseKakao;
 import com.ssafy.a401.artwalk_backend.domain.user.repository.UserDeletedRepository;
 import com.ssafy.a401.artwalk_backend.domain.user.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +43,8 @@ public class UserService {
 	private final UserDeletedRepository userDeletedRepository;
 	private final TokenProvider tokenProvider;
 	private final UserKakaoToken userKakaoToken;
+	@Autowired
+	private FileService fileService;
 
 	@Transactional
 	public Token login(String serviceType, String idToken) {
@@ -82,7 +88,7 @@ public class UserService {
 					// 새 사용자 객체
 					User user = User.builder()
 						.userId(email)
-						.profile(picture)
+						.profile(fileService.saveProfileImage(picture, email))
 						.nickname(nickname)
 						.refreshToken(token.getRefreshToken())
 						.build();
@@ -160,6 +166,10 @@ public class UserService {
 				.build();
 		}
 		return null;
+	}
+
+	public ResponseEntity<Resource> getProfileImage(String userId){
+		return fileService.findProfile(userId);
 	}
 
 	public Authentication getAuthentication(String email, String password, String role) {

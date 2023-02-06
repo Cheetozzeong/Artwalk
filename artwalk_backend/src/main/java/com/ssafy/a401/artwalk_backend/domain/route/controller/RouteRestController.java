@@ -62,12 +62,12 @@ public class RouteRestController {
 
 	@Operation(summary = "경로 목록 조회", description = "경로 목록 조회 메서드입니다. user가 true면 특정 사용자의 경로 목록만 조회합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-		@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+		@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공"),
+		@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패")
 	})
 	@GetMapping("/list")
-	public ResponseDTO routeList(@RequestParam(name="user") boolean userOption, Authentication authentication) {
-		ResponseDTO response = null;
+	public Map<String, Object> routeList(@RequestParam(name="user") boolean userOption, Authentication authentication) {
+		Map<String, Object> response = new HashMap<>();
 		List<Route> routes = null;
 
 		if(userOption) {
@@ -78,9 +78,11 @@ public class RouteRestController {
 		}
 
 		if(routes != null) {
-			response = new ResponseDTO(OK, routes);
+			response.put("code", OK);
+			response.put("routes", routes);
 		}else {
-			response = new ResponseDTO(FAIL, null);
+			response.put("code", FAIL);
+			response.put("routes", null);
 		}
 
 		return response;

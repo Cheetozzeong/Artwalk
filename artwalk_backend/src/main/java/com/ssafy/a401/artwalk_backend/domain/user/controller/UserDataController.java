@@ -2,6 +2,7 @@ package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
 import java.util.Map;
 
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,13 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.user.model.User;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,5 +51,12 @@ public class UserDataController {
 
 		if (user != null) return ResponseEntity.ok().body(user);
 		else return ResponseEntity.badRequest().body(null);
+	}
+
+	@Operation(summary = "사용자 프로필 사진 조회", description = "사용자 프로필 사진 조회 메서드입니다.")
+	@GetMapping("/info/profile")
+	public ResponseEntity<Resource> displayRouteThumbnail(@RequestParam(name = "userId", value = "userId") String userId) {
+		ResponseEntity<Resource> response = userService.getProfileImage(userId);
+		return response;
 	}
 }
