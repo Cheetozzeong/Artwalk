@@ -13,6 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
+import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteDrawBinding
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -25,7 +26,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
+class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
 
     private val routeDrawViewModel by viewModels<RouteDrawViewModel> { defaultViewModelProviderFactory }
     private lateinit var mapboxMap: MapboxMap
@@ -33,6 +34,7 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mapView = binding.mapViewRouteDraw
         super.onViewCreated(view, savedInstanceState)
 
         setInitBinding()
@@ -79,9 +81,9 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
     }
 
     private fun setMapBoxView() {
-        mapboxMap = binding.mapViewRouteDraw.getMapboxMap()
-        pointAnnotationManager = binding.mapViewRouteDraw.annotations.createPointAnnotationManager()
-        polylineAnnotationManager = binding.mapViewRouteDraw.annotations.createPolylineAnnotationManager()
+        mapboxMap = mapView.getMapboxMap()
+        pointAnnotationManager = mapView.annotations.createPointAnnotationManager()
+        polylineAnnotationManager = mapView.annotations.createPolylineAnnotationManager()
 
         mapboxMap.addOnMapClickListener { point ->
 
@@ -92,7 +94,6 @@ class RouteDrawFragment : BaseFragment<FragmentRouteDrawBinding> (R.layout.fragm
 
             true
         }
-        mapboxMap.loadStyleUri(Style.MAPBOX_STREETS)
     }
 
     private fun addPolylineToMap() {

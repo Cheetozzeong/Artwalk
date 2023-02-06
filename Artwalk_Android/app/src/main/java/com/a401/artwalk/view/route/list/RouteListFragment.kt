@@ -7,13 +7,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
+import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteListBinding
 import com.mapbox.maps.Style
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragment_route_list) {
+class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fragment_route_list) {
 
     private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
@@ -23,9 +24,9 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
     })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setMapView()
         super.onViewCreated(view, savedInstanceState)
 
-        set()
         setupRecyclerView()
         setToDrawButtonClickListener()
 
@@ -34,8 +35,8 @@ class RouteListFragment : BaseFragment<FragmentRouteListBinding>(R.layout.fragme
         }
     }
 
-    private fun set() {
-        binding.mapViewRouteList.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+    private fun setMapView() {
+        mapView = binding.mapViewRouteList
     }
 
     private fun setupRecyclerView() = with(binding.recyclerViewRouteList) {
