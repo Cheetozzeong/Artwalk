@@ -22,15 +22,16 @@ import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import springfox.documentation.annotations.ApiIgnore;
 
-// @Tag(name = "기록", description = "Artwalk 기록 API 입니다.")
+@Api(tags = {"기록 API"}, description = "기록 정보 API 입니다.")
 @RestController
 @RequestMapping("record")
 public class RecordRestController {
@@ -46,7 +47,7 @@ public class RecordRestController {
 		@ApiResponse(responseCode = FAIL, description = "기록 저장 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@PostMapping("")
-	public ResponseDTO recordAdd(@RequestBody Record record, Authentication authentication) {
+	public ResponseDTO recordAdd(@RequestBody Record record, @ApiIgnore Authentication authentication) {
 		ResponseDTO response = null;
 
 		String userId = authentication.getName();
@@ -60,13 +61,14 @@ public class RecordRestController {
 		return response;
 	}
 
-	@Operation(summary = "기록 목록 조회", description = "기록 목록 조회 메서드입니다. user가 true면 특정 사용자의 기록 목록만 조회합니다.")
+	@Operation(summary = "기록 목록 조회", description = "기록 목록 조회 메서드입니다.")
+	@ApiImplicitParam(name = "user", value = "true: accessToken과 일치하는 사용자의 기록 목록을 반환합니다. ||  false: 모든 사용자의 기록 목록을 반환합니다.", dataType = "boolean")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "기록 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "기록 목록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("/list")
-	public ResponseDTO recordList(@RequestParam(name="user") boolean userOption, Authentication authentication) {
+	public ResponseDTO recordList(@RequestParam(name="user") boolean userOption, @ApiIgnore Authentication authentication) {
 		ResponseDTO response = null;
 		List<Record> records = null;
 
@@ -87,12 +89,13 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "관리자용 사용자 기록 목록 조회", description = "관리자용 특정 사용자 기록 목록 조회 메서드입니다.")
+	@ApiImplicitParam(name = "userId", value = "기록 목록을 조회할 사용자 ID (예시. ssafy@ssafy.com)", dataType = "String")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = OK, description = "기록 목록 조회 성공"),
 			@ApiResponse(responseCode = FAIL, description = "기록 목록 조회 실패")
 	})
 	@GetMapping("/list/{userId}")
-	public ResponseDTO recordListByUserId(@Parameter(name = "userId", description = "사용자 ID") @PathVariable("userId") String userId){
+	public ResponseDTO recordListByUserId(@PathVariable("userId") String userId){
 		ResponseDTO response = null;
 		List<Record> records = null;
 
@@ -108,12 +111,13 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "기록 조회", description = "기록 조회 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "기록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "기록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("/{recordId}")
-	public ResponseDTO recordDetails(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId) {
+	public ResponseDTO recordDetails(@PathVariable("recordId") int recordId) {
 		ResponseDTO response = null;
 
 		Record record = recordService.findByRecordId(recordId);
@@ -130,12 +134,13 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "수정할 기록 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "기록 수정 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "기록 수정 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@PutMapping("/{recordId}")
-	public ResponseDTO recordModify(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId, @RequestBody Record record) {
+	public ResponseDTO recordModify(@PathVariable("recordId") int recordId, @RequestBody Record record) {
 		ResponseDTO response = null;
 
 		Record originRecord  = recordService.findByRecordId(recordId);
@@ -150,12 +155,13 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "기록 삭제", description = "기록 삭제 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "삭제할 기록 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "기록 삭제 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "기록 삭제 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@DeleteMapping("/{recordId}")
-	public ResponseDTO recordRemove(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId) {
+	public ResponseDTO recordRemove(@PathVariable("recordId") int recordId) {
 		ResponseDTO response = null;
 
 		Record record = recordService.findByRecordId(recordId);
@@ -183,24 +189,27 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "기록 썸네일 조회", description = "기록 썸네일 조회 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
 	@GetMapping("/thumb/{recordId}")
-	public ResponseEntity<Resource> displayRecordThumbnail(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId) {
+	public ResponseEntity<Resource> displayRecordThumbnail(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
 		ResponseEntity<Resource> response = recordService.getThumbnailImage(record);
 		return response;
 	}
 
 	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
 	@GetMapping("/image/{recordId}")
-	public ResponseEntity<Resource> displayRecordImage(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId) {
+	public ResponseEntity<Resource> displayRecordImage(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
 		ResponseEntity<Resource> response = recordService.getShareImage(record);
 		return response;
 	}
 
 	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.")
+	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 Id", dataType = "int")
 	@PostMapping("/image/{recordId}")
-	public ResponseDTO displayRecordImage(@Parameter(name = "recordId", description = "기록 ID") @PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
+	public ResponseDTO displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
 		ResponseDTO response = null;
 
 		Record record = recordService.findByRecordId(recordId);

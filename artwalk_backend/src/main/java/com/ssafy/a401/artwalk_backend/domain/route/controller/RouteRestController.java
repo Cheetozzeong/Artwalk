@@ -22,15 +22,16 @@ import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.route.service.RouteService;
 import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import springfox.documentation.annotations.ApiIgnore;
 
-// @Tag(name = "경로", description = "Artwalk 경로 API 입니다.")
+@Api(tags = {"경로 API"}, description = "경로 정보 API 입니다.")
 @RestController
 @RequestMapping("route")
 public class RouteRestController {
@@ -46,7 +47,7 @@ public class RouteRestController {
 		@ApiResponse(responseCode = FAIL, description = "경로 저장 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@PostMapping("")
-	public ResponseDTO routeAdd(@RequestBody Route route, Authentication authentication){
+	public ResponseDTO routeAdd(@RequestBody Route route, @ApiIgnore Authentication authentication){
 		ResponseDTO response = null;
 
 		String userId = authentication.getName();
@@ -61,12 +62,13 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "경로 목록 조회", description = "경로 목록 조회 메서드입니다. user가 true면 특정 사용자의 경로 목록만 조회합니다.")
+	@ApiImplicitParam(name = "user", value = "true: accessToken과 일치하는 사용자의 경로 목록을 반환합니다. ||  false: 모든 사용자의 경로 목록을 반환합니다.", dataType = "boolean")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공"),
 		@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패")
 	})
 	@GetMapping("/list")
-	public Map<String, Object> routeList(@RequestParam(name="user") boolean userOption, Authentication authentication) {
+	public Map<String, Object> routeList(@RequestParam(name="user") boolean userOption, @ApiIgnore Authentication authentication) {
 		Map<String, Object> response = new HashMap<>();
 		List<Route> routes = null;
 
@@ -89,12 +91,13 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "관리자용 사용자 경로 목록 조회", description = "관리자용 특정 사용자 경로 목록 조회 메서드입니다.")
+	@ApiImplicitParam(name = "userId", value = "경로 목록을 조회할 사용자 ID (예시. ssafy@ssafy.com)", dataType = "String")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = OK, description = "경로 목록 조회 성공"),
 			@ApiResponse(responseCode = FAIL, description = "경로 목록 조회 실패")
 	})
 	@GetMapping("/list/{userId}")
-	public ResponseDTO routeListByUserId(@Parameter(name = "userId", description = "사용자 ID") @PathVariable("userId") String userId){
+	public ResponseDTO routeListByUserId(@PathVariable("userId") String userId){
 		ResponseDTO response = null;
 		List<Route> routes = null;
 
@@ -110,12 +113,13 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "경로 조회", description = "경로 조회 메서드입니다.")
+	@ApiImplicitParam(name = "routeId", value = "조회할 경로 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "경로 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "경로 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("/{routeId}")
-	public ResponseDTO routeDetails(@Parameter(name = "routeId", description = "경로 ID") @PathVariable("routeId") int routeId) {
+	public ResponseDTO routeDetails(@PathVariable("routeId") int routeId) {
 		ResponseDTO response = null;
 
 		Route route = routeService.findByRouteId(routeId);
@@ -131,12 +135,13 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "경로 수정", description = "경로 수정 메서드입니다.")
+	@ApiImplicitParam(name = "routeId", value = "수정할 경로 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "경로 수정 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "경로 수정 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@PutMapping("/{routeId}")
-	public ResponseDTO routeModify(@Parameter(name = "routeId", description = "경로 ID") @PathVariable("routeId") int routeId, @RequestBody Route route, Authentication authentication) {
+	public ResponseDTO routeModify(@PathVariable("routeId") int routeId, @RequestBody Route route, @ApiIgnore Authentication authentication) {
 		ResponseDTO response = null;
 
 		String userId = authentication.getName();
@@ -152,14 +157,15 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "경로 삭제", description = "경로 삭제 메서드입니다.")
+	@ApiImplicitParam(name = "routeId", value = "삭제할 경로 Id", dataType = "int")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "경로 삭제 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "경로 삭제 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@DeleteMapping("/{routeId}")
-	public ResponseDTO routeRemove(@Parameter(name = "routeId", description = "경로 ID") @PathVariable("routeId") int routeId) {
+	public ResponseDTO routeRemove(@PathVariable("routeId") int routeId) {
 		ResponseDTO response = null;
-
+		
 		Route route = routeService.findByRouteId(routeId);
 		int result = routeService.removeRoute(route);
 		if(result == 0) {
@@ -185,8 +191,9 @@ public class RouteRestController {
 	}
 
 	@Operation(summary = "경로 썸네일 조회", description = "경로 썸네일 조회 메서드입니다.")
+	@ApiImplicitParam(name = "routeId", value = "조회할 경로 Id", dataType = "int")
 	@GetMapping("/thumb/{routeId}")
-	public ResponseEntity<Resource> displayRouteThumbnail(@Parameter(name = "routeId", description = "경로 ID") @PathVariable("routeId") int routeId) {
+	public ResponseEntity<Resource> displayRouteThumbnail(@PathVariable("routeId") int routeId) {
 		Route route = routeService.findByRouteId(routeId);
 		ResponseEntity<Resource> response = routeService.getThumbnailImage(route);
 		return response;

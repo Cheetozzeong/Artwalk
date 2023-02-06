@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,13 +14,15 @@ import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.model.User;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+@Api(tags = {"사용자 관리 API"}, description = "admin page 사용자 관리 API 입니다.")
 @RestController
 @RequestMapping("user")
 public class UserRestController {
@@ -31,8 +32,7 @@ public class UserRestController {
 	@Autowired
 	private UserService userService;
 
-	/** 전체 유저 조회 */
-	@Operation(summary = "모든 유저 목록 조회", description = "모든 유저 목록 조회 메서드입니다.")
+	@Operation(summary = "모든 사용자 목록 조회", description = "모든 사용자 목록 조회 메서드입니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = OK, description = "모든 유저 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
 		@ApiResponse(responseCode = FAIL, description = "모든 유저 목록 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
@@ -51,11 +51,11 @@ public class UserRestController {
 		return response;
 	}
 
-	/** 특정 유저 정보 조회 */
-	@Operation(summary = "특정 유저 정보 조회", description = "특정 유저 정보 조회 메서드입니다.")
+	@Operation(summary = "사용자 정보 조회", description = "특정 사용자 정보 조회 메서드입니다.")
+	@ApiImplicitParam(name = "userId", value = "정보를 조회할 사용자 ID (예시. ssafy@ssafy.com)", dataType = "String")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = OK, description = "특정 유저 정보 조회 성공"),
-		@ApiResponse(responseCode = FAIL, description = "특정 유저 정보 조회 실패")
+		@ApiResponse(responseCode = OK, description = "사용자 정보 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "사용자 정보 조회 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("")
 	public ResponseDTO userDetail(@RequestParam(name = "userId", value = "userId") String userId) {
@@ -71,11 +71,10 @@ public class UserRestController {
 		return response;
 	}
 
-	/** 유저 닉네임, 아이디 검색 */
-	@Operation(summary = "유저 닉네임 검색", description = "유저 닉네임 검색 메서드입니다.")
+	@Operation(summary = "사용자 닉네임 검색", description = "사용자 닉네임 검색 메서드입니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = OK, description = "유저 닉네임 검색 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-		@ApiResponse(responseCode = FAIL, description = "유저 닉네임 검색 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+		@ApiResponse(responseCode = OK, description = "사용자 닉네임 검색 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "사용자 닉네임 검색 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@GetMapping("/search")
 	public ResponseDTO userSearch(
