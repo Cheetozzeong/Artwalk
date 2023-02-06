@@ -147,8 +147,7 @@
             android:backgroundTint="@color/neutral05"
             android:src="@drawable/ic_record_my_location"
             app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"
-            app:layout_constraintStart_toEndOf="@id/view_record_durationBox"
-            android:onClick="@{() -> vm.onClickCurButton()}"/>
+            app:layout_constraintStart_toEndOf="@id/view_record_durationBox"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </layout>
