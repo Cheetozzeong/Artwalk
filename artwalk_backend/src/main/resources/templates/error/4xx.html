@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잘못된 접근입니다</title>
+    <link rel="favicon" href="/favicon.ico">
+    <style>
+        div {
+            width: 100%;
+            height: 100vh;
+            text-align: center;
+            padding-block: 20vh;
+        }
+
+        img{
+            width: 150px;
+            margin: 20px;
+        }
+
+        p {
+            color: #5e5e5e
+        }
+
+        button {
+            padding: 15px 25px 18px;
+            gap: 2px;
+            background: #07A794;
+            box-shadow: 0px 8px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 30px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #ffffff;
+            border: #07A794;
+            cursor: pointer;
+            margin: 20px;
+        }
+        button:hover {
+            background: #3CBBB0;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <img src="/img/logo_wrong.png" alt="잘못된 접근 이미지">
+    <h2>잘못된 접근입니다.</h2>
+    <p>인증에 실패하여 페이지에 접근할 수 없습니다
+        <br>해당 기능을 제공한 서비스 관리자에게 문의해주세요.
+    </p>
+    <button onclick="location.href='/admin/'">관리자 인증하기</button>
+</div>
+</body>
+</html>
