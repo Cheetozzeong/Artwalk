@@ -14,6 +14,10 @@ object ApiClient {
     fun getRouteServerApiService(): RouteApiService =
         getInstance(BuildConfig.ROUTE_BASE_URL).create(RouteApiService::class.java)
 
+    fun getUserServerApiService(): UserApiService =
+        getInstance(BuildConfig.LOGIN_BASE_URL).create(UserApiService::class.java)
+
+
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)

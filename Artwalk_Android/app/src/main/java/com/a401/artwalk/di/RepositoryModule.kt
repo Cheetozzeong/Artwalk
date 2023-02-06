@@ -1,7 +1,9 @@
 package com.a401.artwalk.di
 
 import com.a401.data.repository.RouteRepositoryImpl
+import com.a401.data.repository.UserRepositoryImpl
 import com.a401.domain.repository.RouteRepository
+import com.a401.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +15,8 @@ interface RepositoryModule {
 
     @Binds
     fun bindRouteRepository(routeRepository: RouteRepositoryImpl): RouteRepository
+
+    @Binds
+    fun bindUserRepository(userRepository: UserRepositoryImpl): UserRepository
 
 }
