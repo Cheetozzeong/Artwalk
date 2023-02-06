@@ -223,4 +223,22 @@ public class UserService {
 		if (users.isEmpty()) throw new UsernameNotFoundException("회원 정보를 찾지 못했습니다.");
 		return users;
 	}
+
+	/**
+	 * 유저 닉네임 검색
+	 */
+	public List<User> searchUserNickname(String keyword) {
+		List<User> users = userRepository.findByNicknameContaining(keyword);
+
+		return users;
+	}
+
+	/**
+	 * 유저 아이디 검색
+	 */
+	public List<User> searchUserIdname(String keyword) {
+		List<User> users = userRepository.findByUserIdContaining(keyword);
+
+		return users;
+	}
 }
