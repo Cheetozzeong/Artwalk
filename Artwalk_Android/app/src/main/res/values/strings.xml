@@ -15,4 +15,5 @@
     <string name="bottomNav_menu_recordMain_title">기록</string>
 
     <string name="toDrawButton_title">경로 그리기</string>
+    <string name="routeThumb_description">경로이미지 썸네일</string>
 </resources>

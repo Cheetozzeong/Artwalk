@@ -31,8 +31,4 @@ class RecordViewModel : ViewModel() {
         _stopButtonEvent.value = Unit
     }
 
-    fun onClickPauseButton(){
-        _pauseButtonEvent.value = Unit
-
-    }
 }

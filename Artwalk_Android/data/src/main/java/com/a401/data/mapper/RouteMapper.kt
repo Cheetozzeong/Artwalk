@@ -1,5 +1,6 @@
 package com.a401.data.mapper
 
+import com.a401.data.model.request.RouteRequest
 import com.a401.data.model.response.RouteListResponse
 import com.a401.domain.model.RouteForDraw
 import com.a401.domain.model.RouteForList
@@ -27,4 +28,13 @@ fun routeForListsFromResponses(response: RouteListResponse): List<RouteForList> 
             }
         }
 
+fun routeRequestFromRouteForDraw(routeForDraw: RouteForDraw): RouteRequest =
+    with(routeForDraw) {
+        RouteRequest(
+            duration.toDouble(),
+            distance,
+            title = null,
+            geometry
+        )
+    }
 

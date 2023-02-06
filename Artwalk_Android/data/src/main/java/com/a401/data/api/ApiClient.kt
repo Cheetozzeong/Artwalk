@@ -7,11 +7,21 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    fun getMapboxDirectionsApiService(): MapboxDirectionsApiService = getInstance(BuildConfig.MAPBOX_DIRECTIONS_URL).create(MapboxDirectionsApiService::class.java)
-//    fun getRouteServerApiService(): RouteServerApiService = getInstance("").create(RouteServerApiService::class.java)
+    fun getMapboxDirectionsApiService(): MapboxDirectionsApiService =
+        getInstance(BuildConfig.MAPBOX_DIRECTIONS_URL).create(MapboxDirectionsApiService::class.java)
+
+    fun getRouteServerApiService(): RouteApiService =
+        getInstance(BuildConfig.ROUTE_BASE_URL).create(RouteApiService::class.java)
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     private fun getInstance(baseUrl: String): Retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)

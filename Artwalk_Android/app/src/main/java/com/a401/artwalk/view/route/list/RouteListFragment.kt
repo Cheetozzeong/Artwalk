@@ -18,10 +18,11 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
 
     private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
-    private val routeListAdapter = RouteListAdapter(StartButtonClickListener { geometry ->
+    private val routeListAdapter = RouteListAdapter(
+        StartButtonClickListener { geometry ->
         val action = RouteListFragmentDirections.actionRouteListToRecordMain(geometry)
-        findNavController().navigate(action)
-    })
+        findNavController().navigate(action) }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setMapView()

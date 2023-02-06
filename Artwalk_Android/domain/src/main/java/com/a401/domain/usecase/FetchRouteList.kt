@@ -8,7 +8,7 @@ import javax.inject.Inject
 class FetchRouteList @Inject constructor(
     private val routeRepository: RouteRepository
 ) {
-    suspend fun invoke(): Flow<List<RouteForList>> {
+    suspend operator fun invoke(): Flow<List<RouteForList>> {
         return routeRepository.getRoutForList()
     }
 }
