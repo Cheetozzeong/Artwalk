@@ -95,7 +95,10 @@ export default {
     allRoutes() {
       return this.$store.state.route
     },
-  }
+  },
+  created() {
+    this.$store.dispatch('getRoute')
+  },
 }
 </script>
 

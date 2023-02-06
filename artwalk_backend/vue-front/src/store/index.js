@@ -50,7 +50,6 @@ export default new Vuex.Store({
     login(context, payload) {
       axios({
         method: 'post',
-        // TODO: 주소 변경 필요
         url: '/admin/login',
         headers: {'Content-Type': 'multipart/form-data'},
         data: {
