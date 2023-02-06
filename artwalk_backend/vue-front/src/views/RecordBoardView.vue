@@ -33,7 +33,10 @@ export default {
     allRecords() {
       return this.$store.state.record
     },
-  }
+  },
+  created() {
+    this.$store.dispatch('getRecord')
+  },
 }
 </script>
 

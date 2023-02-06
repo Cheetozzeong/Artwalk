@@ -8,20 +8,9 @@
 export default {
   name: "MainView.vue",
   created() {
-    this.getUser()
-    this.getRecord()
-    this.getRoute()
-  },
-  methods: {
-    getUser() {
-      this.$store.dispatch('getUser')
-    },
-    getRecord() {
-      this.$store.dispatch('getRecord')
-    },
-    getRoute() {
-      this.$store.dispatch('getRoute')
-    }
+    this.$store.dispatch('getUser')
+    this.$store.dispatch('getRoute')
+    this.$store.dispatch('getRecord')
   },
 }
 
