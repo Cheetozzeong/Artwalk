@@ -96,6 +96,7 @@ public class UserController {
 	public ResponseEntity<?> connect(Authentication authentication) {
 		// 새 AccessToken 발급한다.
 		String newAccessToken = userService.getNewAccessToken(authentication);
+		userService.modifyUserRecentAccess(authentication.getName());
 
 		// 헤더에 담는다.
 		HttpHeaders headers = new HttpHeaders();

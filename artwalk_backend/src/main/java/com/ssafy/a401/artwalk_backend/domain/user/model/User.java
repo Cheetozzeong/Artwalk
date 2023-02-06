@@ -1,10 +1,13 @@
 package com.ssafy.a401.artwalk_backend.domain.user.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -45,6 +48,15 @@ public class User {
 	private int level;
 	private int exp;
 
+	private LocalDateTime regDate;
+	private LocalDateTime recentAccess;
+
+	@PrePersist
+	public void prePersist() {
+		this.regDate = LocalDateTime.now();
+		this.recentAccess = this.regDate;
+	}
+
 	public User(String userId, String profile, String nickname, int level, int exp) {
 		this.userId = userId;
 		this.profile = profile;
@@ -70,7 +82,11 @@ public class User {
 		return passwordEncoder.matches(this.password, plainPassword);
 	}
 
-	public void setRefreshToken(String refreshToken) {
+	public void updateRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+	public void updateRecentAccess() {
+		this.recentAccess = LocalDateTime.now();
+		System.out.println("recentAccess -----> " + recentAccess);
 	}
 }

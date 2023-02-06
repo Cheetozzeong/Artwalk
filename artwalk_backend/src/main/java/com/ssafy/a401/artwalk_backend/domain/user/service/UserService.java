@@ -82,6 +82,7 @@ public class UserService {
 				String nickname = userResponseKakao.getNickname();
 
 				return registUser(email, "", picture, nickname);
+
 			} catch (NullPointerException e) {
 				log.info("사용자의 idToken을 확인할 수 없습니다.");
 				e.printStackTrace();
@@ -135,7 +136,7 @@ public class UserService {
 			User user = users.get();
 
 			// 토큰 재발급 로직 작성 필요
-			user.setRefreshToken(token.getRefreshToken());
+			user.updateRefreshToken(token.getRefreshToken());
 			log.info("토큰 값이 갱신되었습니다.");
 
 		} else {
@@ -162,7 +163,7 @@ public class UserService {
 		Optional<User> user = userRepository.findById(email);
 
 		if (user.isPresent()) {
-			user.get().setRefreshToken("");
+			user.get().updateRefreshToken("");
 			return true;
 		}
 		else {
@@ -285,5 +286,12 @@ public class UserService {
 		List<User> users = userRepository.findByUserIdContaining(keyword);
 
 		return users;
+	}
+
+	@Transactional
+	public void modifyUserRecentAccess(String email) {
+		Optional<User> user = userRepository.findById(email);
+		System.out.println(user.get().getUserId());
+		user.ifPresent(User::updateRecentAccess);
 	}
 }
