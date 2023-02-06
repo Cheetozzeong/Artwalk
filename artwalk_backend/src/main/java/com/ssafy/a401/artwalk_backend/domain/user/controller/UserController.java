@@ -2,16 +2,11 @@ package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
 import java.util.Map;
 
+import com.ssafy.a401.artwalk_backend.domain.user.model.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
@@ -41,7 +36,46 @@ public class UserController {
 	@PostMapping("/login/{serviceType}")
 	public ResponseEntity<?> login(@PathVariable String serviceType, @RequestHeader Map<String, Object> header) {
 		String idToken = header.get("id-token").toString();
-		Token token = userService.login(serviceType, idToken);
+		Token token = userService.useSocialLogin(serviceType, idToken);
+
+		// 헤더에 담는다.
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", token.getAccessToken());
+		headers.add("refreshToken", token.getRefreshToken());
+
+		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
+		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+	}
+
+	// 사용자 가입 (폼으로 가입)
+	@Operation(summary = "사용자 가입", description = "사용자 가입. 폼 데이터를 이용해 가입")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "가입 성공"),
+			@ApiResponse(responseCode = "400", description = "가입 실패")
+	})
+	@PostMapping("/reg/artwalk")
+	public ResponseEntity<?> registration(@RequestBody User user) {
+		Token token = userService.regist(user);
+
+		// 헤더에 담는다.
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", token.getAccessToken());
+		headers.add("refreshToken", token.getRefreshToken());
+
+		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
+		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+	}
+
+	// 사용자 로그인 (폼으로 로그인)
+	@Operation(summary = "사용자 로그인", description = "사용자 로그인. 폼 데이터를 이용해 로그인")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "로그인 성공"),
+			@ApiResponse(responseCode = "400", description = "로그인 실패")
+	})
+	@PostMapping("/login/artwalk")
+	public ResponseEntity<?> login(@RequestBody User user) {
+
+		Token token = userService.useNormalLogin(user.getUserId(), user.getPassword());
 
 		// 헤더에 담는다.
 		HttpHeaders headers = new HttpHeaders();

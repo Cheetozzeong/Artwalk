@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
@@ -24,10 +26,10 @@ public class SecurityConfig {
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-	// @Bean
-	// public PasswordEncoder passwordEncoder() {
-	// 	return new BCryptPasswordEncoder();
-	// }
+	 @Bean
+	 public PasswordEncoder passwordEncoder() {
+	 	return new BCryptPasswordEncoder();
+	 }
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -66,7 +68,7 @@ public class SecurityConfig {
 				.antMatchers( // 관리자 로그인, 사용자 인증 패이지는 토큰 없이 접근 가능
 					// "/**"
 					"/admin/**", "/css/**", "/js/**", "/favicon.ico", "/img/**",
-					"/auth/login/*",
+					"/auth/login/*", "/auth/reg/*",
 					"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
 					// TODO: 공유 페이지 토큰 예외 처리
 					);

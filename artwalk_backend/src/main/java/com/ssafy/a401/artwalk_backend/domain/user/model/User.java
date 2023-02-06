@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @NoArgsConstructor
@@ -26,6 +27,8 @@ public class User {
 
 	@Id
 	private String userId;
+
+	private String password;
 
 	@Column(nullable = true, length = 255)
 	private String refreshToken;
@@ -56,6 +59,15 @@ public class User {
 		this.nickname = nickname;
 		this.refreshToken = refreshToken;
 		this.userAuthority = userAuthority;
+	}
+
+	public User hashPassword(PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(this.password);
+		return this;
+	}
+
+	public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
+		return passwordEncoder.matches(this.password, plainPassword);
 	}
 
 	public void setRefreshToken(String refreshToken) {

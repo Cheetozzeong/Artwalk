@@ -29,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +44,23 @@ public class UserService {
 	private final UserDeletedRepository userDeletedRepository;
 	private final TokenProvider tokenProvider;
 	private final UserKakaoToken userKakaoToken;
-	@Autowired
-	private FileService fileService;
+
+	private final PasswordEncoder bCryptPasswordEncoder;
+
+	private final FileService fileService;
 
 	@Transactional
-	public Token login(String serviceType, String idToken) {
+	public Token regist(User user) {
+
+		String email = user.getUserId();
+		String password = user.getPassword();
+		String nickname = user.getNickname();
+
+		return registUser(email, password, "", nickname);
+	}
+
+	@Transactional
+	public Token useSocialLogin(String serviceType, String idToken) {
 
 		// 구글이면
 		if (serviceType.equals("google")) {
@@ -68,37 +81,7 @@ public class UserService {
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
 
-				Authentication authentication = getAuthentication(email, null, "ROLE_USER");
-				Token token = getToken(authentication);
-
-				Optional<User> users = userRepository.findById(email);
-
-				// 사용자 이메일이 이미 존재한다면
-				if (users.isPresent()) {
-					log.info("동일한 이메일이 존재합니다.");
-
-					// Token만 재발급
-					User user = users.get();
-
-					// 토큰 재발급 로직 작성 필요
-					user.setRefreshToken(token.getRefreshToken());
-					log.info("토큰 값이 갱신되었습니다.");
-
-				} else {
-					// 새 사용자 객체
-					User user = User.builder()
-						.userId(email)
-						.profile(fileService.saveProfileImage(picture, email))
-						.nickname(nickname)
-						.refreshToken(token.getRefreshToken())
-						.build();
-
-					// 새로운 사용자 계정을 등록한다.
-					userRepository.save(user);
-					log.info("새로운 사용자가 등록되었습니다. email -> ", email);
-				}
-
-				return token;
+				return registUser(email, "", picture, nickname);
 			} catch (NullPointerException e) {
 				log.info("사용자의 idToken을 확인할 수 없습니다.");
 				e.printStackTrace();
@@ -110,6 +93,68 @@ public class UserService {
 
 		log.info("요청의 서비스 유형이 올바르지 않습니다.");
 		return null;
+	}
+
+	@Transactional
+	public Token useNormalLogin(String email, String password) {
+
+		Optional<User> users = userRepository.findById(email);
+
+		if (users.isPresent()) {
+			User user = users.get();
+
+			if (user.getPassword().equals(password)) {
+				Authentication authentication = getAuthentication(email, password, "ROLE_USER");
+				return getToken(authentication);
+			}
+//			if (user.checkPassword(password, bCryptPasswordEncoder)) {
+//				Authentication authentication = getAuthentication(email, password, "ROLE_USER");
+//				return getToken(authentication);
+//			}
+			else {
+				log.info("로그인 실패");
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	@Transactional
+	public Token registUser(String email, String password, String picture, String nickname) {
+		Authentication authentication = getAuthentication(email, password, "ROLE_USER");
+		Token token = getToken(authentication);
+
+		Optional<User> users = userRepository.findById(email);
+
+		// 사용자 이메일이 이미 존재한다면
+		if (users.isPresent()) {
+			log.info("동일한 이메일이 존재합니다.");
+
+			// Token만 재발급
+			User user = users.get();
+
+			// 토큰 재발급 로직 작성 필요
+			user.setRefreshToken(token.getRefreshToken());
+			log.info("토큰 값이 갱신되었습니다.");
+
+		} else {
+			// 새 사용자 객체
+			User user = User.builder()
+					.userId(email)
+					.password(password)
+					.profile(fileService.saveProfileImage(picture, email))
+					.nickname(nickname)
+					.refreshToken(token.getRefreshToken())
+					.build();
+
+//			user.hashPassword(bCryptPasswordEncoder);
+			// 새로운 사용자 계정을 등록한다.
+			userRepository.save(user);
+			log.info("새로운 사용자가 등록되었습니다. email -> ", email);
+		}
+
+		return token;
 	}
 
 	@Transactional
