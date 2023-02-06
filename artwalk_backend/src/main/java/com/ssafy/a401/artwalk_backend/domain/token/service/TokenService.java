@@ -37,7 +37,7 @@ public class TokenService {
 		// 사용자 이메일이 이미 존재한다면
 		if (user.isPresent()) {
 			User selectedUser = user.get();
-			selectedUser.setRefreshToken(refreshToken);
+			selectedUser.updateRefreshToken(refreshToken);
 			log.info(selectedUser.getUserId(), " 새 토큰 생성");
 		}
 	}
