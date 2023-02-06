@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,10 +24,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Api(tags = {"사용자 로그인 API"}, description = "사용자 로그인 API 입니다.")
 @Slf4j
-// @Tag(name = "사용자", description = "Artwalk 사용자 API 입니다.")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 @RequiredArgsConstructor
 public class UserController {
 	private final UserService userService;

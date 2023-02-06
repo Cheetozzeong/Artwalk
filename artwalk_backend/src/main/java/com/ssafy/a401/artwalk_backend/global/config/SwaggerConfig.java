@@ -1,12 +1,16 @@
 package com.ssafy.a401.artwalk_backend.global.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import springfox.documentation.oas.annotations.EnableOpenApi;
+import springfox.documentation.service.Server;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -20,6 +24,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+@EnableOpenApi
 public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
@@ -61,15 +66,21 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket api() {
+		Server serverLocal = new Server("local server", "http://localhost:8080", "for local usages", Collections.emptyList(), Collections.emptyList());
+		Server testServer = new Server("deploy server", "https://i8a401.p.ssafy.io/", "for deploy server", Collections.emptyList(), Collections.emptyList());
 		return new Docket(DocumentationType.OAS_30)
+			.servers(serverLocal, testServer)
 			.securityContexts(Arrays.asList(securityContext()))
 			.securitySchemes(Arrays.asList(apiKey()))
 			.consumes(consumeContentTypes())
 			.produces(produceContentTypes())
+			.useDefaultResponseMessages(false)
 			.apiInfo(apiInfo())
 			.select()
-			.apis(RequestHandlerSelectors.basePackage("com.ssafy.a401.artwalk_backend.domain"))
-			.paths(PathSelectors.ant("/**"))
+			// .apis(RequestHandlerSelectors.basePackage("com.ssafy.a401.artwalk_backend.domain"))
+			// .paths(PathSelectors.ant("/**"))
+			.apis(RequestHandlerSelectors.any())
+			.paths(PathSelectors.any())
 			.build();
 	}
 }
