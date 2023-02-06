@@ -90,9 +90,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         setInitBinding()
         setMapView()
         startButtonPressed()
-        pauseButtonPressed()
         stopButtonPressed()
-        changeQuitButtonState()
         changeCurButtonState()
         setDistanceText()
         setDurationText()
@@ -181,16 +179,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun changeQuitButtonState(){
-        val quitButton = binding.imagebuttonRecordQuitbutton
-        recordViewModel.startButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordStartbutton){
-                quitButton.isEnabled = !quitButton.isEnabled
-                quitButton.isVisible = !quitButton.isVisible
-            }
-        }
-    }
-
     private fun changeCurButtonState() {
         val trackingButton = binding.imagebuttonChangeCameraView
         trackingButton.isSelected = true
@@ -204,11 +192,9 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
 
     private fun changeStartButtonState(){
         val startbutton = binding.imagebuttonRecordStartbutton
-        val pausebutton = binding.imagebuttonRecordPausebutton
         val stopbutton = binding.imagebuttonRecordStopbutton
         startbutton.isEnabled = !startbutton.isEnabled
         startbutton.isVisible = !startbutton.isVisible
-        pausebutton.isGone = !pausebutton.isGone
         stopbutton.isGone = !stopbutton.isGone
     }
 
@@ -220,15 +206,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
             }
         }
 
-    }
-
-    private fun pauseButtonPressed(){
-        recordViewModel.pauseButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordPausebutton){
-                changeStartButtonState()
-                stopRun()
-            }
-        }
     }
 
     private fun stopButtonPressed(){
@@ -279,17 +256,22 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         val recordUrl =
             "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-8+ff0000($encodedUrl)/auto/1280x1280?access_token=pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA"
         dialog.setContentView(R.layout.fragment_record_dialog)
-        val tv = dialog.findViewById<TextView>(R.id.button_record_save)
+        val recordSaveButton = dialog.findViewById<TextView>(R.id.button_record_save)
+        val recordQuitButton = dialog.findViewById<TextView>(R.id.button_record_quit)
         val recordImage = dialog.findViewById<ImageView>(R.id.imageview_record_save)
         if (recordImage != null) {
             Glide.with(requireActivity()).load(recordUrl).into(recordImage)
         }
-        tv?.setOnClickListener {
+        recordSaveButton?.setOnClickListener {
             Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+        recordQuitButton?.setOnClickListener {
             dialog.dismiss()
         }
         dialog.show()
     }
+
     private fun PolylineAnnotationManager.getTotalPolyline(): String {
         val pointList: ArrayList<Point> = ArrayList()
         annotations.forEach() { polylineAnnotation ->
