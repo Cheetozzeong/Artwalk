@@ -1,4 +1,4 @@
-package com.a401.artwalk.utils
+package com.a401.artwalk.utills
 
 import android.app.Activity
 import android.widget.Toast

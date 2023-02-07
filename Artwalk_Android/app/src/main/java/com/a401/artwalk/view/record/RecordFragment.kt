@@ -15,7 +15,8 @@ import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
 import com.mapbox.maps.Style
 import androidx.navigation.fragment.navArgs
-import com.a401.artwalk.utils.LocationPermissionHelper
+import com.a401.artwalk.base.UsingMapFragment
+import com.a401.artwalk.utills.LocationPermissionHelper
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mapbox.android.gestures.MoveGestureDetector
@@ -33,6 +34,7 @@ import com.mapbox.maps.plugin.locationcomponent.location2
 import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.utils.PolylineUtils
+import com.mapbox.maps.plugin.locationcomponent.location
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.net.URLEncoder
@@ -42,13 +44,11 @@ import kotlin.math.asin
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_record) {
+class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
-    private lateinit var locationPermissionHelper: LocationPermissionHelper
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
-    private lateinit var mapView: MapView
     private var timerTaskforPolyLine : Timer? = null
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
@@ -57,62 +57,24 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     private var distance = 0.0
     private var flagForWalk = true
 
-    private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
-        mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
-    }
 
-    private val positionChangedListenerCenterCur = OnIndicatorPositionChangedListener {
-        mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
-        mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
-        curPoint = it
-    }
-
-    private val positionChangedListenerFree = OnIndicatorPositionChangedListener {
-        mapView.getMapboxMap().setCamera(CameraOptions.Builder().build())
-        curPoint = it
-    }
-
-    private val onMoveListener = object : OnMoveListener {
-        override fun onMoveBegin(detector: MoveGestureDetector) {
-            onCameraTrackingDismissed()
-        }
-
-        override fun onMove(detector: MoveGestureDetector): Boolean {
-            return false
-        }
-
-        override fun onMoveEnd(detector: MoveGestureDetector) {
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setInitBinding()
         setMapView()
+        super.onViewCreated(view, savedInstanceState)
+
+        val onIndicatorPositionChangedListenerForDraw = OnIndicatorPositionChangedListener {
+            curPoint = it
+        }
+        mapView.location.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListenerForDraw)
+
+        setInitBinding()
         startButtonPressed()
         stopButtonPressed()
         changeCurButtonState()
         setDistanceText()
         setDurationText()
-        locationPermissionHelper = LocationPermissionHelper(WeakReference(requireActivity()))
-        locationPermissionHelper.checkPermissions {
-            onMapReady()
-        }
         setRoute()
-    }
-
-    private fun onMapReady() {
-        mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder()
-                .zoom(14.0)
-                .build()
-        )
-        mapView.getMapboxMap().loadStyleUri(
-            Style.MAPBOX_STREETS
-        ) {
-            initLocationComponent()
-            setupGesturesListener()
-        }
     }
 
     private fun setRoute() {
@@ -130,10 +92,6 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         mapView = binding.mapViewRecord
     }
 
-    private fun setupGesturesListener() {
-        mapView.gestures.addOnMoveListener(onMoveListener)
-    }
-
     private fun setPolyline(cur:Point, last:Point) {
         val points = listOf(
             Point.fromLngLat(cur.longitude(), cur.latitude()),
@@ -148,7 +106,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
     }
 
-    private fun addPolyLinetoMap() {
+    private fun addPolyLineToMap() {
         var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
         timerTaskforPolyLine = timer(period = 2000){
             setPolyline(curPoint,lastPoint)
@@ -180,13 +138,8 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
     }
 
     private fun changeCurButtonState() {
-        val trackingButton = binding.imagebuttonChangeCameraView
-        trackingButton.isSelected = true
-        recordViewModel.curButtonEvent.observe(requireActivity()){
-            with(trackingButton){
-                isSelected= !isSelected
-            }
-                changeCameraView()
+        binding.imagebuttonChangeCameraView.setOnClickListener {
+            onCameraTracking()
         }
     }
 
@@ -220,7 +173,7 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
 
     private fun startRun(){
         if(flagForWalk){
-            addPolyLinetoMap()
+            addPolyLineToMap()
             flagForWalk = false
             timerTaskforTime = timer(period = 1000){
                 time++
@@ -281,64 +234,4 @@ class RecordFragment : BaseFragment<FragmentRecordBinding>(R.layout.fragment_rec
         }
         return PolylineUtils.encode(pointList, 5)
     }
-
-    private fun changeCameraView() {
-        if(binding.imagebuttonChangeCameraView.isSelected) {
-            mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerFree)
-            mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
-            mapView.location2.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        } else {
-            mapView.location2.removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
-            mapView.location2.addOnIndicatorPositionChangedListener(positionChangedListenerFree)
-        }
-    }
-
-    private fun initLocationComponent() {
-        val locationComponentPlugin = mapView.location2
-        locationComponentPlugin.updateSettings {
-            this.enabled = true
-            this.locationPuck = LocationPuck2D(
-                topImage = AppCompatResources.getDrawable(
-                    requireActivity(),
-                    R.drawable.ic_mylocation,
-                ),
-                shadowImage = AppCompatResources.getDrawable(
-                    requireActivity(),
-                    R.drawable.mylocation_bg,
-                )
-            )
-        }
-        locationComponentPlugin.addOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
-        locationComponentPlugin.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        headerTo()
-    }
-
-    private fun onCameraTrackingDismissed() {
-        mapView.location2
-            .removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
-        mapView.location2
-            .addOnIndicatorPositionChangedListener(positionChangedListenerFree)
-        if(binding.imagebuttonChangeCameraView.isSelected) {
-            binding.imagebuttonChangeCameraView.isSelected = !binding.imagebuttonChangeCameraView.isSelected
-            changeCameraView()
-        }
-        mapView.location2
-            .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.location2
-            .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        mapView.location2
-            .removeOnIndicatorPositionChangedListener(positionChangedListenerCenterCur)
-        mapView.gestures.removeOnMoveListener(onMoveListener)
-    }
-
-    private fun headerTo() {
-        mapView.location2.updateSettings2 {
-            puckBearingSource = PuckBearingSource.HEADING
-        }
-    }
-
 }

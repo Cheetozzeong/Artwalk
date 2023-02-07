@@ -1,9 +1,12 @@
 package com.a401.data.api
 
 import com.a401.data.BuildConfig
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
@@ -22,8 +25,23 @@ object ApiClient {
 
     private fun getInstance(baseUrl: String): Retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
-        .client(okHttpClient)
+        .client(provideOkHttpClient(AppInterceptor()))
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
+
+    private fun provideOkHttpClient(interceptor: AppInterceptor): OkHttpClient = OkHttpClient.Builder().run {
+        addInterceptor(interceptor)
+        build()
+    }
+
+    class AppInterceptor : Interceptor {
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain) : Response = with(chain) {
+            val newRequest = request().newBuilder()
+                .addHeader("Accept", "application/json")
+                .build()
+            proceed(newRequest)
+        }
+    }
 }
