@@ -134,4 +134,28 @@ public class RecordService {
 
 		return result;
 	}
+
+	public List<Record> findByUserIdContaining(String userId) {
+		List<Record> recordList = new ArrayList<>();
+		List<Record> records = recordRepository.findByUserIdContaining(userId);
+		for (Record record : records) {
+			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
+			record.setRecentImage(makeImageUrl(record.getRecordId()));
+			record.setGeometry(fileService.readFile(fileOption, record.getGeometry(), userId));
+			recordList.add(record);
+		}
+		return recordList;
+	}
+
+	public List<Record> findByDetailContaining(String detail) {
+		List<Record> recordList = new ArrayList<>();
+		List<Record> records = recordRepository.findByDetailContaining(detail);
+		for (Record record : records) {
+			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
+			record.setRecentImage(makeImageUrl(record.getRecordId()));
+			record.setGeometry(fileService.readFile(fileOption, record.getGeometry(), record.getUserId()));
+			recordList.add(record);
+		}
+		return recordList;
+	}
 }

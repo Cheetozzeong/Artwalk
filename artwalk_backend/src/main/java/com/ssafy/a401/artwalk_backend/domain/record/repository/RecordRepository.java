@@ -10,4 +10,8 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 	int countByRecordId(int recordId);
 
 	List<Record> findByUserId(String userId);
+
+	List<Record> findByUserIdContaining(String userId);
+
+	List<Record> findByDetailContaining(String detail);
 }

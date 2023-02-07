@@ -76,7 +76,6 @@ export default {
       fetch(url, options)
           .then(res => res.blob())
           .then(blob => {
-            console.log(blob)
             this.thumbUrl = URL.createObjectURL(blob)
           })
     },

@@ -115,4 +115,37 @@ public class RouteService {
 		String thumbUrl = "/route/thumb/" + routeId;
 		return thumbUrl;
 	}
+
+	public List<Route> findByUserIdContaining(String userId) {
+		List<Route> routeList = new ArrayList<>();
+		List<Route> routes = routeRepository.findByUserIdContaining(userId);
+		for (Route route : routes) {
+			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
+			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), userId));
+			routeList.add(route);
+		}
+		return routeList;
+	}
+
+	public List<Route> findByMakerContaining(String maker) {
+		List<Route> routeList = new ArrayList<>();
+		List<Route> routes = routeRepository.findByMakerContaining(maker);
+		for (Route route : routes) {
+			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
+			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));
+			routeList.add(route);
+		}
+		return routeList;
+	}
+
+	public List<Route> findByTitleContaining(String title) {
+		List<Route> routeList = new ArrayList<>();
+		List<Route> routes = routeRepository.findByTitleContaining(title);
+		for (Route route : routes) {
+			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
+			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));
+			routeList.add(route);
+		}
+		return routeList;
+	}
 }
