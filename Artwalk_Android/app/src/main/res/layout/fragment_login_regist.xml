@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.a401.artwalk.view.login.regist.RegistViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/View_login_artWalkLoginBox"
+        app:layout_constraintTop_toBottomOf="@id/View_login_intervene"
+        app:layout_constraintBottom_toTopOf="@id/view_login_loginBox"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textInput_id_title"
+            android:includeFontPadding="false"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="아이디"
+            style="@style/body_detail_font_style"/>
+        <EditText
+            android:id="@+id/textInput_id"
+            android:inputType="textEmailAddress"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@={vm.userId}"
+            android:hint="sample123@gmail.com">
+        </EditText>
+
+        <TextView
+            android:id="@+id/textInput_password_title"
+            android:includeFontPadding="false"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="비밀번호"
+            style="@style/body_detail_font_style"/>
+        <EditText
+            android:id="@+id/textInput_password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toBottomOf="@id/View_login_artWalkLoginBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@={vm.userPassword}"
+            android:hint="*******">
+        </EditText>
+
+        <TextView
+            android:id="@+id/textInput_nickName_title"
+            android:includeFontPadding="false"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="닉네임"
+            style="@style/body_detail_font_style"/>
+        <EditText
+            android:id="@+id/textInput_nickName"
+            android:inputType="text"
+            app:layout_constraintBottom_toBottomOf="@id/View_login_artWalkLoginBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@={vm.userNickName}"
+            android:hint="김춘복">
+        </EditText>
+
+        <Button
+            android:id="@+id/button_login_artWalkLogin"
+            android:text="회원가입"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> vm.postRegistEvent()}"/>
+    </LinearLayout>
+
+</layout>
