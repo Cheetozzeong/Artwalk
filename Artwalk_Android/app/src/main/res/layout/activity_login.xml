@@ -45,7 +45,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/login_kakao"
             android:padding="1dp"
-            android:onClick="@{() -> vm.onClickKakaoLoginButton()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf= "@+id/view_login_loginBox"
