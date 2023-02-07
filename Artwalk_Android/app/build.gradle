@@ -21,7 +21,6 @@ android {
         manifestPlaceholders["kakaoApiKey"] = KAKAO_API_KEY
         buildConfigField("String", "KAKAO_NATIVE_KEY", KAKAO_NATIVE_KEY)
         buildConfigField("String", "IMAGE_BASE_URL", IMAGE_BASE_URL)
-
     }
 
     buildTypes {

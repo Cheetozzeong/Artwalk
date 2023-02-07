@@ -33,7 +33,7 @@ class RouteListAdapter(
 
         holder.apply {
 
-            val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU1NDkxOTZ9.t5oX3SgA6qVEzhpqiu0emvM7j_k7XcFtH5A-zSptvYdkZaIGCCTH_cAZCwxZdo0nVh4OaNZwEP1mytqWPhHU4A"
+            val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU2ODg4NTd9.cQ0ot0d3joap981k6XICgGHWMB-HoxGd17UUVQrNr-Rf-ckzA7Z6POf_dr-SrLKOnaOF8VGaY1Dwn0aiAVl42Q"
 
             val routeId = currentList[position].routeForList.routeId
             Glide.with(holder.itemView)
@@ -44,7 +44,7 @@ class RouteListAdapter(
                     )
                 )
                 .into(binding.imageViewRouteItemThumbnail)
-        }
+          }
     }
 }
 

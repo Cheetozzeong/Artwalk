@@ -31,7 +31,7 @@ class RouteRemoteDataSourceImpl @Inject constructor(
     }
 
     // TODO: login구현 후 삭제하고 저장된 token 사용
-    private val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU1NDkxOTZ9.t5oX3SgA6qVEzhpqiu0emvM7j_k7XcFtH5A-zSptvYdkZaIGCCTH_cAZCwxZdo0nVh4OaNZwEP1mytqWPhHU4A"
+    private val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU2ODg4NTd9.cQ0ot0d3joap981k6XICgGHWMB-HoxGd17UUVQrNr-Rf-ckzA7Z6POf_dr-SrLKOnaOF8VGaY1Dwn0aiAVl42Q"
 
     override suspend fun getRouteList(user: Boolean): Flow<List<RouteForList>> {
         return flow {
