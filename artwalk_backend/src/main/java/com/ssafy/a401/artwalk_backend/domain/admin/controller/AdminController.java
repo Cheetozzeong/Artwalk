@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.swagger.annotations.Api;
 
-@Api(tags = {"관리자 페이지 이동 API"}, description = "Admin page 이동 API 입니다.")
+@Api(tags = {"관리자 페이지 이동 API"}, description = "ADMIN PAGE 이동 API 입니다.")
 @RequestMapping("admin")
 @Controller
 public class AdminController {
-	@GetMapping("")
+	@GetMapping("**")
 	public String viewMapping() {
 		return "forward:/index.html";
 	}

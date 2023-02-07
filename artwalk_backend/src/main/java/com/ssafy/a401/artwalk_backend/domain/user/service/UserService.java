@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ssafy.a401.artwalk_backend.domain.common.service.FileService;
 import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
@@ -206,7 +207,11 @@ public class UserService {
 			String userId = user.getUserId();
 			long userRouteCount = routeRepository.findByUserId(userId).size();
 			long userRecordCount = recordRepository.findByUserId(userId).size();
+			
+			// DATETIME 직렬화를 위한 모듈 설정
+			objectMapper.registerModule(new JavaTimeModule());
 			Map<String, Object> map = objectMapper.convertValue(user, Map.class);
+			
 			map.put("userRouteCount", userRouteCount);
 			map.put("userRecordCount", userRecordCount);
 			response.add(map);
