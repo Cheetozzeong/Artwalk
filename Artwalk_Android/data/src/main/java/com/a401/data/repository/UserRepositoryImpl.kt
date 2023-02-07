@@ -10,4 +10,8 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun postIdToken(idToken: String) {
         return userRemoteDataSource.postIdToken(idToken)
     }
+
+    override suspend fun postLogin(accessToken: String, refreshToken: String) {
+        return userRemoteDataSource.postLogin(accessToken, refreshToken)
+    }
 }
