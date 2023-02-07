@@ -12,12 +12,14 @@ import com.ssafy.a401.artwalk_backend.domain.common.service.FileService;
 import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class RouteService {
-	@Autowired
-	private RouteRepository routeRepository;
-	@Autowired
-	private FileService fileService;
+
+	private final RouteRepository routeRepository;
+	private final FileService fileService;
 
 	private static String fileOption = "route";
 

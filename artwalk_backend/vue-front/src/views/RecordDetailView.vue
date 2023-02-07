@@ -33,7 +33,7 @@
         <b-modal
             id="modal-prevent-closing"
             ref="modal"
-            title="루트를 삭제하시겠습니까?"
+            title="기록을 삭제하시겠습니까?"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk"
@@ -148,7 +148,7 @@ export default {
         }
       })
           .then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.data.code === 'Fail') {
               alert("비밀번호를 확인해주세요.")
             } else {
