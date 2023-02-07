@@ -77,9 +77,10 @@ dependencies {
     implementation 'com.kakao.sdk:v2-user:2.10.0'
     implementation 'com.kakao.sdk:usermgmt:1.27.0'
 
-    //Image Url Loader
+    // glide (Image)
     implementation 'com.github.bumptech.glide:glide:4.14.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.1'
+
 }
 
 kapt {
