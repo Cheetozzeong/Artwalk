@@ -26,6 +26,10 @@ class MainActivity: BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 // TODO: 자동 로그인
                 // TODO: 자동 로그인 실패시 login page로 이동
             }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         startActivity(intent)
     }
 
