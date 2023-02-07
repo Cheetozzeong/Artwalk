@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.route.service.RouteService;
 import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
@@ -30,17 +31,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags = {"경로 API"}, description = "경로 정보 API 입니다.")
 @RestController
 @RequestMapping("route")
+@RequiredArgsConstructor
 public class RouteRestController {
 	private static final String OK = "Ok";
 	private static final String FAIL = "Fail";
 
-	@Autowired
-	private RouteService routeService;
+	private final RouteService routeService;
+	private final AdminService adminService;
 
 	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다.")
 	@ApiResponses(value = {
@@ -144,6 +147,32 @@ public class RouteRestController {
 			response = new ResponseDTO(FAIL, null);
 		}
 
+		return response;
+	}
+
+	@Operation(summary = "관리자용 사용자 경로 삭제", description = "관리자용 사용자 경로 삭제 메서드입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = OK, description = "관리자용 사용자 경로 삭제 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "관리자용 사용자 경로 삭제 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+	})
+	@DeleteMapping("/admin/{routeId}")
+	public ResponseDTO routeRemoveAdmin(@RequestBody Map<String, String> passwordMap, @PathVariable("routeId") int routeId, Authentication authentication) {
+		ResponseDTO response = null;
+
+		Route route = routeService.findByRouteId(routeId);
+		String userId = authentication.getName();
+		int result = adminService.checkPw(userId, passwordMap.get("password"));
+
+		if (result == 0) {
+			int res = routeService.removeRoute(route);
+			if (res == 0) {
+				response = new ResponseDTO(OK, result);
+			} else {
+				response = new ResponseDTO(FAIL, result);
+			}
+		} else {
+			response = new ResponseDTO(FAIL, result);
+		}
 		return response;
 	}
 

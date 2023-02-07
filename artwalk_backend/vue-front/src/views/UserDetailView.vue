@@ -93,7 +93,7 @@ export default {
         url: `/route/list/${this.$route.params.userId}`,
       })
           .then((res) => {
-            console.log(res)
+            // console.log(res)
             this.userRoutes = res.data.data
           })
           .catch((err) => {
@@ -106,7 +106,7 @@ export default {
         url: `/record/list/${this.$route.params.userId}`,
       })
           .then((res) => {
-            console.log(res)
+            // console.log(res)
             this.userRecords = res.data.data
           })
           .catch((err) => {
