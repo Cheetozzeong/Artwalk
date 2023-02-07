@@ -44,4 +44,21 @@ public class AdminService {
 
 		return null;
 	}
+
+	@Transactional
+	public int checkPw(String userId, String password) {
+		Optional<Admin> admins = adminRepository.findById(userId);
+
+		if (admins.isPresent()) {
+			Admin admin = admins.get();
+			if (password.equals(admin.getPassword())) {
+				return 0;
+			} else {
+				log.info("패스워드 불일치");
+			}
+		} else {
+			log.info("관리자 아이디 틀림");
+		}
+		return 1;
+	}
 }

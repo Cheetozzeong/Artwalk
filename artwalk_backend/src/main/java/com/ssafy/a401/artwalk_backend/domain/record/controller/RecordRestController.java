@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
@@ -30,17 +31,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags = {"기록 API"}, description = "기록 정보 API 입니다.")
 @RestController
 @RequestMapping("record")
+@RequiredArgsConstructor
 public class RecordRestController {
 	private static final String OK = "Ok";
 	private static final String FAIL = "Fail";
 	
-	@Autowired
-	private RecordService recordService;
+	private final RecordService recordService;
+	private final AdminService adminService;
 
 	@Operation(summary = "기록 저장", description = "기록 저장 메서드입니다.")
 	@ApiResponses(value = {
@@ -139,6 +142,32 @@ public class RecordRestController {
 			response = new ResponseDTO(FAIL, null);
 		}
 
+		return response;
+	}
+
+	@Operation(summary = "관리자용 사용자 기록 삭제", description = "관리자용 사용자 기록 삭제 메서드입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = OK, description = "관리자용 사용자 기록 삭제 성공", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+		@ApiResponse(responseCode = FAIL, description = "관리자용 사용자 기록 삭제 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
+	})
+	@DeleteMapping("/admin/{recordId}")
+	public ResponseDTO recordRemoveAdmin(@RequestBody Map<String, String> passwordMap, @PathVariable("recordId") int recordId, Authentication authentication) {
+		ResponseDTO response = null;
+
+		Record record = recordService.findByRecordId(recordId);
+		String userId = authentication.getName();
+		int result = adminService.checkPw(userId, passwordMap.get("password"));
+
+		if (result == 0) {
+			int res = recordService.removeRecord(record);
+			if (res == 0) {
+				response = new ResponseDTO(OK, result);
+			} else {
+				response = new ResponseDTO(FAIL, result);
+			}
+		} else {
+			response = new ResponseDTO(FAIL, result);
+		}
 		return response;
 	}
 

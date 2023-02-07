@@ -84,14 +84,14 @@ public class UserRestController {
 
 		ResponseDTO response = null;
 		if (type.equals("nickname")) {
-			List<User> nicknames = userService.searchUserNickname(keyword);
+			List<Map<String, Object>> nicknames = userService.searchUserNickname(keyword);
 			if(nicknames != null){
 				response = new ResponseDTO(OK, nicknames);
 			}else{
 				response = new ResponseDTO(FAIL, null);
 			}
 		} else if (type.equals("userId")) {
-			List<User> userIds = userService.searchUserIdname(keyword);
+			List<Map<String, Object>> userIds = userService.searchUserIdname(keyword);
 			if(userIds != null){
 				response = new ResponseDTO(OK, userIds);
 			}else{

@@ -14,12 +14,14 @@ import com.ssafy.a401.artwalk_backend.domain.common.service.FileService;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class RecordService {
-	@Autowired
-	private RecordRepository recordRepository;
-	@Autowired
-	private FileService fileService;
+
+	private final RecordRepository recordRepository;
+	private final FileService fileService;
 
 	private static String fileOption = "record";
 

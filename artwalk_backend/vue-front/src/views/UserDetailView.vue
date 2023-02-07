@@ -12,12 +12,12 @@
         <h3>Profile Image</h3>
         <b-img width="250vh" height="250vh" rounded thumbnail fluid :src="userInfo.profile"></b-img>
       </b-col>
-      <b-col class="col-1 f-size">
+      <b-col class="col-2 f-size">
         <div class="my-3">User Id</div>
         <div class="my-3">Level</div>
         <div class="my-3">Exp</div>
       </b-col>
-      <b-col class="col-6 f-size">
+      <b-col class="col-5 f-size">
         <div class="fw-bold my-3">{{ userInfo.userId }}</div>
         <div class="fw-bold my-3">{{ userInfo.level }}</div>
         <div class="fw-bold my-3">{{ userInfo.exp }}</div>

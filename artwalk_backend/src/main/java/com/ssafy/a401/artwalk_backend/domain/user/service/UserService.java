@@ -228,13 +228,39 @@ public class UserService {
 	}
 
 	/** 유저 닉네임 검색 **/
-	public List<User> searchUserNickname(String keyword) {
-		return userRepository.findByNicknameContaining(keyword);
+	public List<Map<String, Object>> searchUserNickname(String keyword) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		List<User> users = userRepository.findByNicknameContaining(keyword);
+		for (User user : users) {
+			String userId = user.getUserId();
+			long userRouteCount = routeRepository.findByUserId(userId).size();
+			long userRecordCount = recordRepository.findByUserId(userId).size();
+			Map<String, Object>map = objectMapper.convertValue(user, Map.class);
+			map.put("userRouteCount", userRouteCount);
+			map.put("userRecordCount", userRecordCount);
+			response.add(map);
+		}
+		return response;
 	}
 
 	/** 유저 아이디 검색 **/
-	public List<User> searchUserIdname(String keyword) {
-		return userRepository.findByUserIdContaining(keyword);
+	public List<Map<String, Object>> searchUserIdname(String keyword) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> response = new ArrayList<>();
+
+		List<User> users = userRepository.findByUserIdContaining(keyword);
+		for (User user : users) {
+			String userId = user.getUserId();
+			long userRouteCount = routeRepository.findByUserId(userId).size();
+			long userRecordCount = recordRepository.findByUserId(userId).size();
+			Map<String, Object> map = objectMapper.convertValue(user, Map.class);
+			map.put("userRouteCount", userRouteCount);
+			map.put("userRecordCount", userRecordCount);
+			response.add(map);
+		}
+		return response;
 	}
 
 	@Transactional
