@@ -111,6 +111,7 @@ public class FileService {
 	public static String saveProfileImage(String imageURL, String userId) {
 		String filePathName = "";
 		try {
+			System.out.println("imageURL ---> " + imageURL);
 			URL imgURL = new URL(imageURL.toString());
 			String extension = "png";
 			filePathName = userId.replace('@', '_') + "_profile." + extension;

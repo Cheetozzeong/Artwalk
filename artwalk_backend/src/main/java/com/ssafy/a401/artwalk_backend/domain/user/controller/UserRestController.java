@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,16 +22,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 
 @Api(tags = {"사용자 관리 API"}, description = "admin page 사용자 관리 API 입니다.")
 @RestController
 @RequestMapping("user")
+@RequiredArgsConstructor
 public class UserRestController {
 	private static final String OK = "Ok";
 	private static final String FAIL = "Fail";
-
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
 	@Operation(summary = "모든 사용자 목록 조회", description = "모든 사용자 목록 조회 메서드입니다.")
 	@ApiResponses(value = {
@@ -60,11 +61,11 @@ public class UserRestController {
 	@GetMapping("")
 	public ResponseDTO userDetail(@RequestParam(name = "userId", value = "userId") String userId) {
 		ResponseDTO response = null;
-		Optional<User> users = userService.findUserDetail(userId);
 
-		if(users.isPresent()){
-			response = new ResponseDTO(OK, users);
-		}else{
+		try {
+			User user = userService.findUserDetail(userId);
+			response = new ResponseDTO(OK, user);
+		} catch (UsernameNotFoundException e) {
 			response = new ResponseDTO(FAIL, null);
 		}
 

@@ -78,15 +78,8 @@ public class User {
 		return this;
 	}
 
-	public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
-		return passwordEncoder.matches(this.password, plainPassword);
-	}
-
 	public void updateRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
-	public void updateRecentAccess() {
-		this.recentAccess = LocalDateTime.now();
-		System.out.println("recentAccess -----> " + recentAccess);
-	}
+	public void updateRecentAccess() { this.recentAccess = LocalDateTime.now(); }
 }
