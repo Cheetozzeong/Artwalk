@@ -16,4 +16,6 @@
 
     <string name="toDrawButton_title">경로 그리기</string>
     <string name="routeThumb_description">경로이미지 썸네일</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
