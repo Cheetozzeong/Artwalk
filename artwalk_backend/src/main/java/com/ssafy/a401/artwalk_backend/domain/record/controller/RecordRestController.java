@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +83,37 @@ public class RecordRestController {
 		if(records != null) {
 			response = new ResponseDTO(OK, records);
 		} else {
+			response = new ResponseDTO(FAIL, null);
+		}
+
+		return response;
+	}
+
+	@Operation(summary = "기록 검색", description = "기록 검색 메서드입니다.")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "type", value = "경로 검색 옵션", dataType = "String"),
+			@ApiImplicitParam(name = "keyword", value = "경로 검색 키워드", dataType = "String")
+	})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = OK, description = "기록 목록 조회 성공"),
+			@ApiResponse(responseCode = FAIL, description = "기록 목록 조회 실패")
+	})
+	@GetMapping("/search")
+	public ResponseDTO recordListSearch(@RequestParam(name = "type") String type, @RequestParam(name = "keyword") String keyword) {
+		ResponseDTO response = null;
+		List<Record> records = null;
+
+		if(type.equals("userId")) {
+			String userId = keyword;
+			records = recordService.findByUserIdContaining(userId);
+		} else if (type.equals("detail")) {
+			String detail = keyword;
+			records = recordService.findByDetailContaining(detail);
+		}
+
+		if(records != null) {
+			response = new ResponseDTO(OK, records);
+		}else {
 			response = new ResponseDTO(FAIL, null);
 		}
 

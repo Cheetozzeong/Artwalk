@@ -66,7 +66,7 @@ export default {
       selectedDropdownItem: "not Selected",
       searchKeyword: null,
       searchedRoutes: null,
-      options: ['userId', 'maker', 'routeId'],
+      options: ['userId', 'maker', 'title'],
     }
   },
   methods: {
@@ -74,16 +74,28 @@ export default {
       this.selectedDropdownItem = e
     },
     goSearch() {
+      if (this.selectedDropdownItem === "not Selected") {
+        alert("검색 타입을 지정해주세요.")
+        return
+      } else if (this.searchKeyword === null) {
+        alert("검색어를 입력해주세요.")
+        return
+      }
+
       return Send({
         method: 'get',
-        url: `/route/list/${this.searchKeyword}`,
+        url: '/route/search/',
+        params: {
+          searchType: this.selectedDropdownItem,
+          searchKeyword: this.searchKeyword
+        }
       })
           .then((res) => {
             this.searchedRoutes = res.data.data
           })
           .catch((err) => {
             console.log(err)
-          })
+          });
     },
     doReset() {
       this.selectedDropdownItem = "not Selected"

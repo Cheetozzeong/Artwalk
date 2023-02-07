@@ -78,7 +78,7 @@ export default new Vuex.Store({
         }
       })
           .then((res) => {
-            context.commit('GET_ROUTE', res.data.data)
+            context.commit('GET_ROUTE', res.data.routes)
           })
           .catch((err) => {
             console.log(err)

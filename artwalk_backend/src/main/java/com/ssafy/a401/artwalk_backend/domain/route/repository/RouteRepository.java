@@ -10,4 +10,10 @@ public interface RouteRepository extends JpaRepository<Route, Integer> {
 	int countByRouteId(int routeId);
 
 	List<Route> findByUserId(String userId);
+
+	List<Route> findByUserIdContaining(String userId);
+
+	List<Route> findByMakerContaining(String maker);
+
+	List<Route> findByTitleContaining(String title);
 }
