@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
@@ -26,6 +27,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
         setInitBinding()
         KakaoSdk.init(requireActivity(), BuildConfig.KAKAO_NATIVE_KEY)
         setKakaoLoginButton()
+        setToRegistButton()
     }
 
     private fun setInitBinding() {
@@ -35,6 +37,13 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
     private fun setKakaoLoginButton() {
         binding.buttonKakaoLogin.setOnClickListener {
             kakaoLogin()
+        }
+    }
+
+    private fun setToRegistButton() {
+        binding.textViewLoginToRegist.setOnClickListener {
+            val action = LoginMainFragmentDirections.actionLoginMainToLoginRegist()
+            findNavController().navigate(action)
         }
     }
 
