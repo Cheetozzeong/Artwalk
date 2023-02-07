@@ -41,7 +41,7 @@ public class UserDataController {
 	@GetMapping("/info")
 	public ResponseEntity<User> getMemberInfo(@ApiIgnore Authentication authentication) {
 		String email = authentication.getName();
-		User user = userService.getUserInfo(email);
+		User user = userService.findUserDetail(email);
 
 		if (user != null) return ResponseEntity.ok().body(user);
 		else return ResponseEntity.badRequest().body(null);

@@ -25,7 +25,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("auth")
 @RequiredArgsConstructor
 public class UserController {
+
 	private final UserService userService;
+
+	@Operation(summary = "사용자 가입", description = "사용자 가입. Artwalk 자체적으로 사용자 가입한다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "가입 성공"),
+		@ApiResponse(responseCode = "400", description = "가입 실패")
+	})
+	@PostMapping("/reg/artwalk")
+	public ResponseEntity<?> userNormalSave(@RequestBody User user) {
+		Token token = userService.addNormalUser(user);
+		if (token == null) return ResponseEntity.badRequest().body("사용자 아이디 중복");
+
+		HttpHeaders headers = userHeader(token);
+		return ResponseEntity.ok().headers(headers).body("SUCCESS");
+	}
 
 	// 사용자 로그인 (가입)
 	@Operation(summary = "사용자 로그인", description = "사용자 로그인. 지원 serviceType: kakao\n 로그인 시 헤더에 idToken 추가 필요")
@@ -34,36 +49,13 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "로그인 실패")
 	})
 	@PostMapping("/login/{serviceType}")
-	public ResponseEntity<?> login(@PathVariable String serviceType, @RequestHeader Map<String, Object> header) {
+	public ResponseEntity<?> userSocialSave(@PathVariable String serviceType, @RequestHeader Map<String, Object> header) {
 		String idToken = header.get("id-token").toString();
-		Token token = userService.useSocialLogin(serviceType, idToken);
+		Token token = userService.addSocialUser(serviceType, idToken);
+		if (token == null) return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
 
-		// 헤더에 담는다.
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("accessToken", token.getAccessToken());
-		headers.add("refreshToken", token.getRefreshToken());
-
-		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
-		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
-	}
-
-	// 사용자 가입 (폼으로 가입)
-	@Operation(summary = "사용자 가입", description = "사용자 가입. 폼 데이터를 이용해 가입")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "가입 성공"),
-			@ApiResponse(responseCode = "400", description = "가입 실패")
-	})
-	@PostMapping("/reg/artwalk")
-	public ResponseEntity<?> registration(@RequestBody User user) {
-		Token token = userService.regist(user);
-
-		// 헤더에 담는다.
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("accessToken", token.getAccessToken());
-		headers.add("refreshToken", token.getRefreshToken());
-
-		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
-		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+		HttpHeaders headers = userHeader(token);
+		return ResponseEntity.ok().headers(headers).body("SUCCESS");
 	}
 
 	// 사용자 로그인 (폼으로 로그인)
@@ -73,17 +65,14 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "로그인 실패")
 	})
 	@PostMapping("/login/artwalk")
-	public ResponseEntity<?> login(@RequestBody User user) {
+	public ResponseEntity<?> userLogin(@RequestBody User user) {
 
 		Token token = userService.useNormalLogin(user.getUserId(), user.getPassword());
+		if (token == null) return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+		userService.modifyUserRecentAccess(user.getUserId());
 
-		// 헤더에 담는다.
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("accessToken", token.getAccessToken());
-		headers.add("refreshToken", token.getRefreshToken());
-
-		if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
-		else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+		HttpHeaders headers = userHeader(token);
+		return ResponseEntity.ok().headers(headers).body("SUCCESS");
 	}
 
 	// 어플리케이션 접속 시 AccessToken 새로 발급한다.
@@ -93,17 +82,18 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "갱신 실패")
 	})
 	@PostMapping("/connect")
-	public ResponseEntity<?> connect(Authentication authentication) {
+	public ResponseEntity<?> userConnectDetails(Authentication authentication) {
 		// 새 AccessToken 발급한다.
 		String newAccessToken = userService.getNewAccessToken(authentication);
+		if (newAccessToken == null) return ResponseEntity.badRequest().body("사용자 접속 토큰 갱신 실패");
+
 		userService.modifyUserRecentAccess(authentication.getName());
 
 		// 헤더에 담는다.
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("accessToken", newAccessToken);
 
-		if (newAccessToken != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
-		else return ResponseEntity.badRequest().body("사용자 접속 토큰 갱신 실패");
+		return ResponseEntity.ok().headers(headers).body("SUCCESS");
 	}
 
 	// 사용자 로그아웃
@@ -113,11 +103,8 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
 	})
 	@PostMapping("/logout")
-	public ResponseEntity<?> login(Authentication authentication) {
-		// 사용자 DB의 refreshToken을 사용한다.
-		// 기존 인증 토큰은 블랙리스트로 저정해서 만료 확인해줘야 한다. (테이블을 하나 새로 두거나 Redis 사용 필요)
-
-		if(userService.logout(authentication.getName())) return ResponseEntity.ok("로그아웃 성공");
+	public ResponseEntity<?> userLogout(Authentication authentication) {
+		if(userService.logoutUser(authentication.getName())) return ResponseEntity.ok("로그아웃 성공");
 		else return ResponseEntity.badRequest().body("사용자 정보 확인 실패");
 	}
 
@@ -127,10 +114,17 @@ public class UserController {
 		@ApiResponse(responseCode = "200", description = "사용자 탈퇴 성공"),
 		@ApiResponse(responseCode = "400", description = "사용자 탈퇴 실패")
 	})
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> delete(Authentication authentication) {
-
-		if(userService.delete(authentication.getName())) return ResponseEntity.ok("탈퇴 성공");
+	@DeleteMapping("/remove")
+	public ResponseEntity<?> userRemove(Authentication authentication) {
+		if(userService.removeUser(authentication.getName())) return ResponseEntity.ok("탈퇴 성공");
 		else return ResponseEntity.badRequest().body("사용자 정보 확인 실패");
+	}
+
+	// 사용자 토큰을 헤더에 세팅한다.
+	private HttpHeaders userHeader(Token token) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("accessToken", token.getAccessToken());
+		headers.add("refreshToken", token.getRefreshToken());
+		return headers;
 	}
 }
