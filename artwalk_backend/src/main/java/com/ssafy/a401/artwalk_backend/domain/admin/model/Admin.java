@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.domain.admin.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import com.ssafy.a401.artwalk_backend.domain.user.model.UserAuthority;
 @DynamicInsert
 @ToString
 @Entity(name = "admin")
+@Schema(description = "관리자 Entity")
 public class Admin {
 
     @Id
