@@ -7,6 +7,9 @@
         <variable
             name="vm"
             type="com.a401.artwalk.view.login.regist.RegistViewModel" />
+        <variable
+            name="registFailMessage"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -17,6 +20,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
+
+        <TextView
+            android:id="@+id/textView_regist_errorMassage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/error01"
+            android:text="@{registFailMessage}"/>
 
         <TextView
             android:id="@+id/textInput_id_title"

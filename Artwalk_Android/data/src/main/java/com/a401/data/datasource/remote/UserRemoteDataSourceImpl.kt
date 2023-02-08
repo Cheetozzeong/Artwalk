@@ -7,6 +7,9 @@ import com.a401.data.model.request.LoginUserRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import com.a401.data.model.request.ArtWalkRegistRequest
+import com.a401.domain.model.User
+import retrofit2.Response
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
@@ -45,6 +48,18 @@ class UserRemoteDataSourceImpl @Inject constructor(
                     emit("FAIL")
                 }
             }
+
+    override suspend fun postRegist(user: User, password: String): Flow<Response<Void>> {
+        return  flow {
+            emit(
+                a401UserApi.registArtWalk(
+                    ArtWalkRegistRequest(
+                        user.userId,
+                        password,
+                        user.nickName
+                    )
+                )
+            )
         }
     }
 }
