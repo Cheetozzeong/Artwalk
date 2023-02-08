@@ -206,7 +206,7 @@ public class FileService {
 	}
 
 	/** 인코딩된 기록(record)을 가지고 공유이미지를 생성하고 저장한 후 저장된 경로를 반환합니다. */
-	public static String makeImage(String option, String recordPath, String geometry, Map<String, Object> request, String userId) {
+	public static String saveShareImage(String option, String recordPath, String geometry, Map<String, Object> request, String userId) {
 		int polyLineWidth = (int)request.get("polyLineWidth"); // 기록 굵기
 		String polyLineColor = (String)request.get("polyLineColor"); // 기록 색상
 		double minLon = (double)request.get("minLon"); // 최소 경도
@@ -245,6 +245,34 @@ public class FileService {
 			e.printStackTrace();
 		}
 
+		return filePathName;
+	}
+	
+	// TODO: 공유이미지 임시 생성 메서드 -> 추후 수정 예정
+	public static String saveShareImageTemp(String option, String recordPath, String geometry, String userId) {
+		StringBuilder imageURL = new StringBuilder();
+		imageURL.append(MAPBOX_API_URL).append("path-")
+			.append(polyLineWidth).append("+")
+			.append(polyLineColor).append("(")
+			.append(geometry).append(")/auto/")
+			.append(imageWidth).append("x")
+			.append(imageHeight).append("?access_token=")
+			.append(MAPBOX_API_KEY);
+		String filePathName = "";
+		try {
+			URL imgURL = new URL(imageURL.toString());
+			String extension = "png";
+			StringTokenizer st = new StringTokenizer(recordPath, ".");
+			filePathName = st.nextToken() + "_share." + extension;
+			BufferedImage image = ImageIO.read(imgURL);
+			File file = new File(makePathName(option, filePathName, userId));
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			ImageIO.write(image, extension, file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return filePathName;
 	}
 

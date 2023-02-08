@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.domain.user.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -8,16 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.user.model.User;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserDTO;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
@@ -28,23 +26,19 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserDataController {
+	private static ModelMapper modelMapper = new ModelMapper();
 	private static final String OK = "Ok";
 	private static final String FAIL = "Fail";
-
 	private final UserService userService;
 
 	@Operation(summary = "사용자 정보 조회", description = "accessToken과 일치하는 사용자 기본 정보를 조회합니다.")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = OK, description = "사용자 정보 조회 성공", content = @Content(schema = @Schema(implementation = User.class))),
-		@ApiResponse(responseCode = FAIL, description = "사용자 정보 조회 실패")
-	})
 	@GetMapping("/info")
-	public ResponseEntity<User> getMemberInfo(@ApiIgnore Authentication authentication) {
+	public ResponseEntity<UserResponseDTO> getMemberInfo(@ApiIgnore Authentication authentication) {
 		String email = authentication.getName();
-		User user = userService.findUserDetail(email);
+		UserDTO userDTO = userService.findUserDetail(email);
 
-		if (user != null) return ResponseEntity.ok().body(user);
-		else return ResponseEntity.badRequest().body(null);
+		if (userDTO != null) return ResponseEntity.ok().body(new UserResponseDTO(OK, userDTO));
+		else return ResponseEntity.badRequest().body(new UserResponseDTO(FAIL, null));
 	}
 
 	@Operation(summary = "사용자 프로필 사진 조회", description = "사용자 프로필 사진 조회 메서드입니다.")

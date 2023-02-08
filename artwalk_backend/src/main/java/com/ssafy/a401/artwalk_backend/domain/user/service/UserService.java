@@ -16,12 +16,15 @@ import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.token.model.TokenProvider;
 import com.ssafy.a401.artwalk_backend.domain.user.model.User;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.model.UserDeleted;
 import com.ssafy.a401.artwalk_backend.domain.user.model.UserKakaoToken;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserLoginDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.model.UserResponseKakao;
 import com.ssafy.a401.artwalk_backend.domain.user.repository.UserDeletedRepository;
 import com.ssafy.a401.artwalk_backend.domain.user.repository.UserRepository;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+	private static ModelMapper modelMapper = new ModelMapper();
 	private final UserRepository userRepository;
 	private final RouteRepository routeRepository;
 	private final RecordRepository recordRepository;
@@ -52,13 +56,12 @@ public class UserService {
 
 	/** 사용자 로그인 **/
 	@Transactional
-	public Token useNormalLogin(String email, String password) {
+	public Token useNormalLogin(UserLoginDTO userLoginDTO) {
 
-		Optional<User> users = userRepository.findById(email);
+		Optional<User> users = userRepository.findById(userLoginDTO.getUserId());
 
 		if (users.isPresent()) {
-			User user = users.get();
-
+			// User user = users.get();
 			// if (user.getPassword().equals(password)) {
 			// 	Authentication authentication = getAuthentication(email, password, "ROLE_USER");
 			// 	return getToken(authentication);
@@ -66,9 +69,8 @@ public class UserService {
 
 			// bCryptPasswordEncoder.matches(password, users.get().getPassword())
 
-
-			if (bCryptPasswordEncoder.matches(password, users.get().getPassword())) {
-				Authentication authentication = getAuthentication(email, password, "ROLE_USER");
+			if (bCryptPasswordEncoder.matches(userLoginDTO.getPassword(), users.get().getPassword())) {
+				Authentication authentication = getAuthentication(userLoginDTO.getUserId(), userLoginDTO.getPassword(), "ROLE_USER");
 				return getToken(authentication);
 			}
 			else {
@@ -220,10 +222,15 @@ public class UserService {
 	}
 
 	/** 유저 정보 검색 **/
-	public User findUserDetail(String userId) {
+	public UserDTO findUserDetail(String userId) {
 		Optional<User> users = userRepository.findById(userId);
 
-		if (users.isPresent()) return users.get();
+		if (users.isPresent()){
+			User user = users.get();
+			UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+			userDTO.setProfile("/info/profile?userId="+userDTO.getUserId());
+			return userDTO;
+		}
 		else throw new UsernameNotFoundException("회원 정보를 찾지 못했습니다.");
 	}
 
