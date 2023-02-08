@@ -8,7 +8,7 @@ import retrofit2.http.*
 
 interface UserApiService {
 
-    @POST("auth/login/{serviceType}")
+    @POST("login/{serviceType}")
     suspend fun postIdToken(
         @Header("id-token") idToken: String,
         @Path("serviceType") serviceType: String,
