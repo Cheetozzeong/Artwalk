@@ -171,8 +171,8 @@ public class RecordRestController {
 		return response;
 	}
 
-	// @Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다.")
-	// @ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
+	// @Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
+	// @ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
 	// @GetMapping("/image/{recordId}")
 	// public ResponseEntity<Resource> displayRecordImage(@PathVariable("recordId") int recordId) {
 	// 	Record record = recordService.findByRecordId(recordId);
@@ -180,21 +180,14 @@ public class RecordRestController {
 	// 	return response;
 	// }
 	//
-	// @Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.")
-	// @ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 Id", dataType = "int")
-	// @PostMapping("/image/{recordId}")
-	// public ResponseDTO displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
-	// 	ResponseDTO response = null;
-	//
-	// 	Record record = recordService.findByRecordId(recordId);
-	// 	Record result = recordService.saveRecordImage(record, request);
-	//
-	// 	if(result != null) {
-	// 		response = new ResponseDTO(OK, result);
-	// 	} else {
-	// 		response = new ResponseDTO(FAIL, null);
-	// 	}
-	//
-	// 	return response;
-	// }
+	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  Path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 ID", dataType = "int")
+	@PostMapping("/image/{recordId}")
+	public ResponseEntity<RecordResponseDTO> displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
+		Record record = recordService.findByRecordId(recordId);
+		Record result = recordService.saveRecordImage(record, request);
+
+		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
+		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
+	}
 }
