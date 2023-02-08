@@ -7,4 +7,6 @@ interface UserRepository {
     suspend fun postIdToken(idToken: String)
 
     suspend fun postRegist(user: User, password: String): Flow<String>
+
+    suspend fun getUserInfo(): Flow<User>
 }

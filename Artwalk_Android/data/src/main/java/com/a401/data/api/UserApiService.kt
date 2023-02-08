@@ -1,22 +1,25 @@
 package com.a401.data.api
 
 import com.a401.data.model.request.ArtWalkRegistRequest
+import com.a401.data.model.response.UserResponse
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserApiService {
 
-    @POST("login/{serviceType}")
+    @POST("auth/login/{serviceType}")
     suspend fun postIdToken(
         @Header("id-token") idToken: String,
         @Path("serviceType") serviceType: String
     ): Response<Void>
 
-    @POST("reg/artwalk")
+    @POST("auth/reg/artwalk")
     suspend fun registArtWalk(
         @Body() user: ArtWalkRegistRequest
     ): Response<Void>
+
+    @GET("user/info")
+    suspend fun getUserInfo(
+        @Header("accessToken") accessToken: String
+    ): Response<UserResponse>
 }

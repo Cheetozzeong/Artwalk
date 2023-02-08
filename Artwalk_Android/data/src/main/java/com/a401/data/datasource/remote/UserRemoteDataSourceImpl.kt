@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.a401.data.api.ApiClient
 import com.a401.data.model.request.ArtWalkRegistRequest
+import com.a401.data.model.response.UserResponse
 import com.a401.domain.model.User
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     private val a401UserApi = ApiClient.getUserServerApiService()
     private val prefs: SharedPreferences = context.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
+    private val accessToken: String = "Bearer ${prefs.getString("accessToken", "")}"
 
     override suspend fun postIdToken(idToken: String) {
         val responseHeader = a401UserApi.postIdToken(idToken, "kakao").headers()
@@ -40,4 +42,14 @@ class UserRemoteDataSourceImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun getUserInfo(): UserResponse? {
+        val response = a401UserApi.getUserInfo(accessToken)
+        return if(response.isSuccessful) {
+            response.body()
+        }else {
+            null
+        }
+    }
+
 }
