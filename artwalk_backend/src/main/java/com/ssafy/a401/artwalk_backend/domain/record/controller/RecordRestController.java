@@ -58,8 +58,8 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "기록 조회", description = "기록 조회 메서드입니다. path에 조회할 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
+	@Operation(summary = "기록 조회", description = "기록 조회 메서드입니다. Path에 조회할 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
 	@GetMapping("/{recordId}")
 	public ResponseEntity<RecordResponseDTO> recordDetails(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
@@ -72,27 +72,29 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다. path에 수정할 기록 ID를, request body에는 수정할 detail(메모) 내용을 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "수정할 기록 Id", dataType = "int")
+	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다. Path에 수정할 기록 ID를, Request Body에는 수정할 detail(메모) 내용을 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "수정할 기록 ID", dataType = "int")
 	@PutMapping("/{recordId}")
 	public ResponseEntity<RecordResponseDTO> recordModify(@PathVariable("recordId") int recordId, @RequestBody RecordRequestDTO recordRequestDTO) {
 		Record originRecord  = recordService.findByRecordId(recordId);
 		Record result = recordService.modifyRecord(originRecord, recordRequestDTO.getDetail());
+
 		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "기록 삭제", description = "기록 삭제 메서드입니다. path에 삭제할 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "삭제할 기록 Id", dataType = "int")
+	@Operation(summary = "기록 삭제", description = "기록 삭제 메서드입니다. Path에 삭제할 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "삭제할 기록 ID", dataType = "int")
 	@DeleteMapping("/{recordId}")
 	public ResponseEntity<CountResponseDTO> recordRemove(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
 		int result = recordService.removeRecord(record);
+
 		if(result == 0) return ResponseEntity.ok().body(new CountResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 	}
 
-	@Operation(summary = "관리자용 사용자 기록 삭제", description = "관리자용 사용자 기록 삭제 메서드입니다. path에 삭제할 기록 ID와 request body에 password(관리자 비밀번호)를 담아 요청합니다.")
+	@Operation(summary = "관리자용 사용자 기록 삭제", description = "사용자 기록 삭제 메서드입니다. Path에 삭제할 기록 ID와 request body에 password(관리자 비밀번호)를 담아 요청합니다.")
 	@DeleteMapping("/admin/{recordId}")
 	public ResponseEntity<CountResponseDTO> recordRemoveAdmin(@RequestBody PasswordDTO passwordDTO , @PathVariable("recordId") int recordId, @ApiIgnore Authentication authentication) {
 		Record record = recordService.findByRecordId(recordId);
@@ -108,7 +110,7 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 	}
 
-	@Operation(summary = "기록 목록 조회", description = "기록 목록 조회 메서드입니다. query string의 user(boolean) 값을 통해 전체 기록 목록 또는 사용자 기록 목록을 반환합니다.")
+	@Operation(summary = "기록 목록 조회", description = "기록 목록 조회 메서드입니다. Query String의 user(boolean) 값을 통해 전체 기록 목록 또는 사용자 기록 목록을 반환합니다.")
 	@ApiImplicitParam(name = "user", value = "true: accessToken과 일치하는 사용자의 기록 목록을 반환합니다. ||  false: 모든 사용자의 기록 목록을 반환합니다.", dataType = "boolean")
 	@GetMapping("/list")
 	public ResponseEntity<RecordListResponseDTO> recordList(@RequestParam(name="user") boolean searchForUser, @ApiIgnore Authentication authentication) {
@@ -141,7 +143,7 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordListResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "관리자용 사용자 기록 목록 조회", description = "관리자용 특정 사용자 기록 목록 조회 메서드입니다. path에 사용자 ID를 포함하여 요청합니다.")
+	@Operation(summary = "관리자용 사용자 기록 목록 조회", description = "특정 사용자 기록 목록 조회 메서드입니다. Path에 사용자 ID를 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "userId", value = "기록 목록을 조회할 사용자 ID (예시. ssafy@ssafy.com)", dataType = "String")
 	@GetMapping("/list/{userId}")
 	public ResponseEntity<RecordListResponseDTO> recordListByUserId(@PathVariable("userId") String userId){
@@ -160,8 +162,8 @@ public class RecordRestController {
 		return ResponseEntity.ok().body(new CountResponseDTO(OK, count));
 	}
 
-	@Operation(summary = "기록 썸네일 조회", description = "기록 썸네일 조회 메서드입니다. path에 조회하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
+	@Operation(summary = "기록 썸네일 조회", description = "기록 썸네일 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
 	@GetMapping("/thumb/{recordId}")
 	public ResponseEntity<Resource> displayRecordThumbnail(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
@@ -169,8 +171,8 @@ public class RecordRestController {
 		return response;
 	}
 
-	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. path에 조회하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
+	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
 	@GetMapping("/image/{recordId}")
 	public ResponseEntity<Resource> displayRecordImage(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
@@ -178,8 +180,8 @@ public class RecordRestController {
 		return response;
 	}
 
-	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 Id", dataType = "int")
+	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  Path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 ID", dataType = "int")
 	@PostMapping("/image/{recordId}")
 	public ResponseEntity<RecordResponseDTO> displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
 		Record record = recordService.findByRecordId(recordId);

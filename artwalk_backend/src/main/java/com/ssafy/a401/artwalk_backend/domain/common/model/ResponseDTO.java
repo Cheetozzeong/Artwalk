@@ -16,9 +16,9 @@ import lombok.ToString;
 @ToString
 @Schema(description = "응답 DTO")
 public class ResponseDTO {
-	@Schema(description = "응답 코드", nullable = false, example = "Ok | Fail")
+	@Schema(description = "응답 코드", nullable = false, example = "Ok")
 	private String code;
 
-	@Schema(description = "응답 데이터", example = "요청에 따른 응답 데이터")
-	private Object data;
+	@Schema(description = "메시지", example = "요청에 따른 응답 메시지")
+	private String message;
 }

@@ -77,9 +77,7 @@ public class SwaggerConfig {
 			.useDefaultResponseMessages(false)
 			.apiInfo(apiInfo())
 			.select()
-			// .apis(RequestHandlerSelectors.basePackage("com.ssafy.a401.artwalk_backend.domain"))
-			// .paths(PathSelectors.ant("/**"))
-			.apis(RequestHandlerSelectors.any())
+			.apis(RequestHandlerSelectors.basePackage("com.ssafy.a401.artwalk_backend.domain"))
 			.paths(PathSelectors.any())
 			.build();
 	}

@@ -24,13 +24,13 @@ public class AdminService {
 	private final UserService userService;
 
 	@Transactional
-	public Token login(String userId, String password) {
-		Optional<Admin> admins = adminRepository.findById(userId);
+	public Token login(AdminDTO adminDTO) {
+		Optional<Admin> admins = adminRepository.findById(adminDTO.getUserId());
 
 		if (admins.isPresent()) {
 			Admin admin = admins.get();
-			if (password.equals(admin.getPassword())) {
-				Authentication authentication = userService.getAuthentication(userId, password, "ROLE_ADMIN");
+			if (adminDTO.getPassword().equals(admin.getPassword())) {
+				Authentication authentication = userService.getAuthentication(adminDTO.getUserId(), adminDTO.getPassword(), "ROLE_ADMIN");
 				Token token = userService.getToken(authentication);
 				admin.setRefreshToken(token.getRefreshToken());
 				return token;

@@ -1,4 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.record.model;
+package com.ssafy.a401.artwalk_backend.domain.route.model;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Schema(description = "기록 목록 응답 DTO")
-public class RecordListResponseDTO {
+@Schema(description = "경로 목록 응답 DTO")
+public class RouteListResponseDTO {
 	@Schema(description = "응답 코드", nullable = false, example = "Ok")
 	private String code;
 
-	@Schema(description = "기록 배열", example = "요청에 따른 기록 목록 데이터 배열")
-	private List<Record> records;
+	@Schema(description = "경로 배열", example = "요청에 따른 경로 목록 데이터 배열")
+	private List<Route> routes;
 }

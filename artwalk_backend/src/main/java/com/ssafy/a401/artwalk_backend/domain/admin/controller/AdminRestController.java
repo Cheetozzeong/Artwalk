@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.a401.artwalk_backend.domain.admin.model.AdminDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
+import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 
 import io.swagger.annotations.Api;
@@ -20,19 +22,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"https://i8a401.p.ssafy.io"}, allowCredentials = "true")
 public class AdminRestController {
+    private static final String OK = "Ok";
+    private static final String FAIL = "Fail";
     private final AdminService adminService;
 
     @Operation(summary = "관리자 로그인", description = "관리자 로그인 메서드입니다.")
     @PostMapping("/login")
-    public ResponseEntity<String> login(String userId, String password) {
-        Token token = adminService.login(userId, password);
+    public ResponseEntity<ResponseDTO> login(AdminDTO adminDTO) {
+        Token token = adminService.login(adminDTO);
+        if(token == null) return ResponseEntity.badRequest().body(new ResponseDTO(FAIL, "사용자 토큰 발급 실패"));
 
-        // 헤더에 담는다.
         HttpHeaders headers = new HttpHeaders();
         headers.add("accessToken", token.getAccessToken());
         headers.add("refreshToken", token.getRefreshToken());
-
-        if (token != null) return ResponseEntity.ok().headers(headers).body("SUCCESS");
-        else return ResponseEntity.badRequest().body("사용자 토큰 발급 실패");
+        return ResponseEntity.ok().headers(headers).body(new ResponseDTO(OK, "SUCCESS"));
     }
 }
