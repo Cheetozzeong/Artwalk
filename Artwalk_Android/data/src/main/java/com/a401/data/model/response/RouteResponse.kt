@@ -5,9 +5,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class RouteListResponse(
-    // TODO: Back에서 data -> routes로 변경하면 수정할 것
     @SerializedName("routes") var routes: ArrayList<Routes> = arrayListOf(),
-//    @SerializedName("routes") var routes: ArrayList<Routes> = arrayListOf(),
+    @SerializedName("data") var data: RouteInfo?,
     @SerializedName("code") var code: String,
 )
 
@@ -21,4 +20,8 @@ data class Routes (
     @SerializedName("title") var title: String?,
     @SerializedName("creation") var creation: Date?,
     @SerializedName("thumbnail") var thumbnail: String?,
+)
+
+data class RouteInfo(
+    @SerializedName("count") var count: Int?
 )

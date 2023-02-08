@@ -8,6 +8,7 @@ import com.a401.data.mapper.routeForDrawFromResponse
 import com.a401.data.mapper.routeForListsFromResponses
 import com.a401.data.mapper.routeRequestFromRouteForDraw
 import com.a401.data.model.request.MarkerRequest
+import com.a401.data.model.response.RouteListResponse
 import com.a401.domain.model.RouteForDraw
 import com.a401.domain.model.RouteForList
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -52,6 +53,10 @@ class RouteRemoteDataSourceImpl @Inject constructor(
             accessToken,
             routeRequestFromRouteForDraw(routeForDraw)
         )
+    }
+
+    override suspend fun getRouteCount(): RouteListResponse {
+        return a401Api.getRouteCount(accessToken)
     }
 
     private fun ArrayList<MarkerRequest>.convertCoordinatesToString(): String {
