@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.a401.artwalk_backend.domain.admin.model.AdminDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.route.service.RouteService;
@@ -156,12 +157,12 @@ public class RouteRestController {
 		@ApiResponse(responseCode = FAIL, description = "관리자용 사용자 경로 삭제 실패", content = @Content(schema = @Schema(implementation = ResponseDTO.class)))
 	})
 	@DeleteMapping("/admin/{routeId}")
-	public ResponseDTO routeRemoveAdmin(@RequestBody Map<String, String> passwordMap, @PathVariable("routeId") int routeId, Authentication authentication) {
+	public ResponseDTO routeRemoveAdmin(@RequestBody AdminDTO adminDTO, @PathVariable("routeId") int routeId, Authentication authentication) {
 		ResponseDTO response = null;
 
 		Route route = routeService.findByRouteId(routeId);
-		String userId = authentication.getName();
-		int result = adminService.checkPw(userId, passwordMap.get("password"));
+		adminDTO.setUserId(authentication.getName());
+		int result = adminService.checkPassword(adminDTO);
 
 		if (result == 0) {
 			int res = routeService.removeRoute(route);

@@ -136,8 +136,8 @@ public class FileService {
 
 		String profilePath = userId.replace('@', '_') + "_profile.png";
 		Resource resource = new FileSystemResource(FILE_PATH + "profile/" + profilePath);
-		if(!resource.exists()){
-			response = new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+		if(!resource.exists() || profilePath == null){
+			resource = new FileSystemResource(FILE_PATH + "profile/default_profile.png");
 		}
 
 		HttpHeaders header = new HttpHeaders();
