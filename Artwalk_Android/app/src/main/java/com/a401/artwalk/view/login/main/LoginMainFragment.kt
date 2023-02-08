@@ -60,7 +60,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
             if (error != null) {
 
             } else if (token != null) {
-                loginViewModel.isSuccessKakaoLogin(token.idToken!!)
+                loginViewModel.sendKakaoLoginRequest(token.idToken!!)
             }
         }
 
@@ -78,7 +78,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                     UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
                 } else if (token != null) {
-                    loginViewModel.isSuccessKakaoLogin(token.idToken!!)
+                    loginViewModel.sendKakaoLoginRequest(token.idToken!!)
                 }
             }
         } else {
