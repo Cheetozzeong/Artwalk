@@ -1,5 +1,7 @@
 package com.a401.data.datasource.remote
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.a401.data.BuildConfig
 import com.a401.data.api.ApiClient
 import com.a401.data.mapper.routeForDrawFromResponse
@@ -8,15 +10,17 @@ import com.a401.data.mapper.routeRequestFromRouteForDraw
 import com.a401.data.model.request.MarkerRequest
 import com.a401.domain.model.RouteForDraw
 import com.a401.domain.model.RouteForList
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-
 class RouteRemoteDataSourceImpl @Inject constructor(
-
+    @ApplicationContext context: Context
 ) : RouteRemoteDataSource{
 
+    private val prefs: SharedPreferences = context.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
+    private val accessToken: String = "Bearer ${prefs.getString("accessToken", "")}"
     private val mapboxApi = ApiClient.getMapboxDirectionsApiService()
     private val a401Api = ApiClient.getRouteServerApiService()
 
@@ -30,8 +34,7 @@ class RouteRemoteDataSourceImpl @Inject constructor(
         ))
     }
 
-    // TODO: login구현 후 삭제하고 저장된 token 사용
-    private val accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDA3YmFlQG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NzU2ODg4NTd9.cQ0ot0d3joap981k6XICgGHWMB-HoxGd17UUVQrNr-Rf-ckzA7Z6POf_dr-SrLKOnaOF8VGaY1Dwn0aiAVl42Q"
+
 
     override suspend fun getRouteList(user: Boolean): Flow<List<RouteForList>> {
         return flow {

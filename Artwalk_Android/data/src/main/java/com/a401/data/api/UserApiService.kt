@@ -1,7 +1,9 @@
 package com.a401.data.api
 
 import com.a401.data.model.response.UserResponse
+import com.a401.data.model.request.ArtWalkRegistRequest
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -19,4 +21,9 @@ interface UserApiService {
         @Header("accessToken") accessToken: String,
         @Header("refreshToken") refreshToken: String
     ): Response<UserResponse>
+
+    @POST("reg/artwalk")
+    suspend fun registArtWalk(
+        @Body() user: ArtWalkRegistRequest
+    ): Response<Void>
 }

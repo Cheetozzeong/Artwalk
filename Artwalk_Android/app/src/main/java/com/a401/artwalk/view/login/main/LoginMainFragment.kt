@@ -1,13 +1,15 @@
-package com.a401.artwalk.view.login
+package com.a401.artwalk.view.login.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
-import com.a401.artwalk.databinding.FragmentLoginBinding
+import com.a401.artwalk.databinding.FragmentLoginMainBinding
+import com.a401.artwalk.view.SampleActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -16,41 +18,46 @@ import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
+class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragment_login_main) {
+
     private val loginViewModel by viewModels<LoginViewModel> { defaultViewModelProviderFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        KakaoSdk.init(requireActivity(), BuildConfig.KAKAO_NATIVE_KEY)
         setInitBinding()
-        clickedLoginButton()
-
+        KakaoSdk.init(requireActivity(), BuildConfig.KAKAO_NATIVE_KEY)
+        setKakaoLoginButton()
+        setToRegistButton()
     }
 
     private fun setInitBinding() {
         binding.vm = loginViewModel
     }
 
-    private fun clickedLoginButton() {
-        loginViewModel.kakaoLoginButtonEvent.observe(requireActivity()){
-            with(binding.buttonKakaoLogin){
-                kakaoLogin()
-            }
+    private fun setKakaoLoginButton() {
+        binding.buttonKakaoLogin.setOnClickListener {
+            kakaoLogin()
+        }
+    }
+
+    private fun setToRegistButton() {
+        binding.textViewLoginToRegist.setOnClickListener {
+            val action = LoginMainFragmentDirections.actionLoginMainToLoginRegist()
+            findNavController().navigate(action)
         }
     }
 
     //TODO: 데이터 모듈로 이동
     private fun kakaoLogin() {
+
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
-            } else if (token != null) {
-                    UserApiClient.instance.me { user, error ->
-                        token.idToken?.let { loginViewModel.saveKakaoIdToken(it) }
 
+            } else if (token != null) {
+                if(loginViewModel.isSuccessKakaoLogin(token.idToken!!)) {
+                    startActivity(Intent(context, SampleActivity::class.java))
                 }
             }
-
         }
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
@@ -67,6 +74,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                     UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
                 } else if (token != null) {
+                    if(loginViewModel.isSuccessKakaoLogin(token.idToken!!)) {
+                        startActivity(Intent(context, SampleActivity::class.java))
+                    }
                 }
             }
         } else {
