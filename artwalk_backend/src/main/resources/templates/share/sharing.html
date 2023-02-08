@@ -90,7 +90,7 @@
             <img src="/favicon.ico" alt="logo" class="logo">
             <h2 class="logo-letter">Artwalk</h2>
         </div>
-        <img th:src="@{/record/image/${link}}" class="record"/>
+        <img th:src="@{/record/image/}+${link}" class="record"/>
         <div>
             <div class="btn">
                 <button class="img-download">이미지 다운로드</button>
