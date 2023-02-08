@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
 data class UserResponse(
+    @SerializedName("user") var user: User,
+    @SerializedName("code") var code: String,
+)
+
+data class User(
     @SerializedName("exp") var exp: Int?,
     @SerializedName("level") var level: Int?,
     @SerializedName("nickname") var nickname: String?,

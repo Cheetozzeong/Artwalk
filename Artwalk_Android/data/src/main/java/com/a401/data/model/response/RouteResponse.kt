@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 
 data class RouteListResponse(
     @SerializedName("routes") var routes: ArrayList<Routes> = arrayListOf(),
-    @SerializedName("data") var data: RouteInfo?,
+    @SerializedName("count") var count: Int?,
     @SerializedName("code") var code: String,
 )
 
@@ -20,8 +20,4 @@ data class Routes (
     @SerializedName("title") var title: String?,
     @SerializedName("creation") var creation: Date?,
     @SerializedName("thumbnail") var thumbnail: String?,
-)
-
-data class RouteInfo(
-    @SerializedName("count") var count: Int?
 )

@@ -55,8 +55,8 @@ class RouteRemoteDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun getRouteCount(): RouteListResponse {
-        return a401Api.getRouteCount(accessToken)
+    override suspend fun getRouteCount(): Flow<RouteListResponse> {
+        return flow { emit(a401Api.getRouteCount(accessToken)) }
     }
 
     private fun ArrayList<MarkerRequest>.convertCoordinatesToString(): String {

@@ -17,6 +17,7 @@ interface UserApiService {
     @POST("login/artwalk")
     suspend fun postLoginInfo(
         @Body() user: LoginUserRequest
+    ): Response<Void>
 
     @POST("reg/artwalk")
     suspend fun registArtWalk(

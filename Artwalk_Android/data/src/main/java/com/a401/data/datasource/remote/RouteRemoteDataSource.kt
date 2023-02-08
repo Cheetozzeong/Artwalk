@@ -14,5 +14,5 @@ interface RouteRemoteDataSource {
 
     suspend fun postRoute(routeForDraw: RouteForDraw)
 
-    suspend fun getRouteCount(): RouteListResponse
+    suspend fun getRouteCount(): Flow<RouteListResponse>
 }
