@@ -258,30 +258,30 @@ public class RecordRestController {
 		return response;
 	}
 
-	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
-	@GetMapping("/image/{recordId}")
-	public ResponseEntity<Resource> displayRecordImage(@PathVariable("recordId") int recordId) {
-		Record record = recordService.findByRecordId(recordId);
-		ResponseEntity<Resource> response = recordService.getShareImage(record);
-		return response;
-	}
-
-	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.")
-	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 Id", dataType = "int")
-	@PostMapping("/image/{recordId}")
-	public ResponseDTO displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
-		ResponseDTO response = null;
-
-		Record record = recordService.findByRecordId(recordId);
-		Record result = recordService.saveRecordImage(record, request);
-
-		if(result != null) {
-			response = new ResponseDTO(OK, result);
-		} else {
-			response = new ResponseDTO(FAIL, null);
-		}
-
-		return response;
-	}
+	// @Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다.")
+	// @ApiImplicitParam(name = "recordId", value = "조회할 기록 Id", dataType = "int")
+	// @GetMapping("/image/{recordId}")
+	// public ResponseEntity<Resource> displayRecordImage(@PathVariable("recordId") int recordId) {
+	// 	Record record = recordService.findByRecordId(recordId);
+	// 	ResponseEntity<Resource> response = recordService.getShareImage(record);
+	// 	return response;
+	// }
+	//
+	// @Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.")
+	// @ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 Id", dataType = "int")
+	// @PostMapping("/image/{recordId}")
+	// public ResponseDTO displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
+	// 	ResponseDTO response = null;
+	//
+	// 	Record record = recordService.findByRecordId(recordId);
+	// 	Record result = recordService.saveRecordImage(record, request);
+	//
+	// 	if(result != null) {
+	// 		response = new ResponseDTO(OK, result);
+	// 	} else {
+	// 		response = new ResponseDTO(FAIL, null);
+	// 	}
+	//
+	// 	return response;
+	// }
 }
