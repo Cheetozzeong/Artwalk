@@ -1,10 +1,17 @@
 package com.a401.artwalk.view.login.main
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
 import com.a401.domain.usecase.PostIdTokenUseCase
+import com.mapbox.maps.extension.style.expressions.dsl.generated.id
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,15 +20,26 @@ class LoginViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider) {
 
-    fun isSuccessKakaoLogin(idToken: String): Boolean {
+    private var _isLoginSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoginSuccess: LiveData<Boolean> = _isLoginSuccess
 
-        onIo {
+    fun isSuccessKakaoLogin(idToken: String) {
+
+        viewModelScope.launch {
             postIdToken(idToken)
-            // TODO: 위 작업이 끝난 후 넘어가도록 처리 필요,,,
-            delay(1000)
-        }
+                .onStart {}
+                .onCompletion { }
+                .collect { result ->
+                    when (result) {
+                        "SUCCESS" -> {
+                            _isLoginSuccess.value = true
+                        }
+                        "FAIL" -> {
 
-        // TODO: 위 결과값을 반환하도록 해야함
-        return true
+                        }
+                    }
+                }
+        }
     }
 }
+
