@@ -1,13 +1,11 @@
 package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.ApiImplicitParams;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.a401.artwalk_backend.domain.admin.model.AdminDTO;
+import com.ssafy.a401.artwalk_backend.domain.admin.model.PasswordDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
-import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.common.model.CountResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordListResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordRequestDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
@@ -33,10 +32,6 @@ import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -90,25 +85,27 @@ public class RecordRestController {
 	@Operation(summary = "기록 삭제", description = "기록 삭제 메서드입니다. path에 삭제할 기록 ID를 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "recordId", value = "삭제할 기록 Id", dataType = "int")
 	@DeleteMapping("/{recordId}")
-	public ResponseEntity<String> recordRemove(@PathVariable("recordId") int recordId) {
+	public ResponseEntity<CountResponseDTO> recordRemove(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
 		int result = recordService.removeRecord(record);
-		if(result == 0) return ResponseEntity.ok().body("SUCCESS");
-		return ResponseEntity.badRequest().body("FAIL");
+		if(result == 0) return ResponseEntity.ok().body(new CountResponseDTO(OK, result));
+		else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 	}
 
 	@Operation(summary = "관리자용 사용자 기록 삭제", description = "관리자용 사용자 기록 삭제 메서드입니다. path에 삭제할 기록 ID와 request body에 password(관리자 비밀번호)를 담아 요청합니다.")
 	@DeleteMapping("/admin/{recordId}")
-	public ResponseEntity<String> recordRemoveAdmin(@RequestBody AdminDTO adminDTO, @PathVariable("recordId") int recordId, @ApiIgnore Authentication authentication) {
+	public ResponseEntity<CountResponseDTO> recordRemoveAdmin(@RequestBody PasswordDTO passwordDTO , @PathVariable("recordId") int recordId, @ApiIgnore Authentication authentication) {
 		Record record = recordService.findByRecordId(recordId);
+		AdminDTO adminDTO = modelMapper.map(passwordDTO, AdminDTO.class);
 		adminDTO.setUserId(authentication.getName());
 		int result = adminService.checkPassword(adminDTO);
 
 		if (result == 0) {
 			int res = recordService.removeRecord(record);
-			if (res == 0) return ResponseEntity.ok().body("SUCCESS");
+			if (res == 0) return ResponseEntity.ok().body(new CountResponseDTO(OK, result));
+			else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 		}
-		return ResponseEntity.badRequest().body("FAIL");
+		else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 	}
 
 	@Operation(summary = "기록 목록 조회", description = "기록 목록 조회 메서드입니다. query string의 user(boolean) 값을 통해 전체 기록 목록 또는 사용자 기록 목록을 반환합니다.")
@@ -158,12 +155,9 @@ public class RecordRestController {
 
 	@Operation(summary = "기록 개수 조회", description = "기록 개수 조회 메서드입니다.")
 	@GetMapping("/count")
-	public ResponseEntity<Map> recordCount() {
+	public ResponseEntity<CountResponseDTO> recordCount() {
 		long count = recordService.getRecordCount();
-		Map<String, Object> map = new HashMap<>();
-		map.put("code", OK);
-		map.put("count", count);
-		return ResponseEntity.ok().body(map);
+		return ResponseEntity.ok().body(new CountResponseDTO(OK, count));
 	}
 
 	@Operation(summary = "기록 썸네일 조회", description = "기록 썸네일 조회 메서드입니다. path에 조회하려는 기록 ID를 포함하여 요청합니다.")

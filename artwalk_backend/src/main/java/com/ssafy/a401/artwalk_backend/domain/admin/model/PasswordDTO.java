@@ -10,11 +10,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@Schema(description = "관리자 DTO")
-public class AdminDTO {
-    @Schema(description = "관리자 아이디", required = false, example = "ssafy@ssafy.com")
-    private String userId;
-
-    @Schema(description = "관리자 비밀번호", required = true, example = "passwordpassword")
+@Schema(description = "비밀번호 DTO")
+public class PasswordDTO {
+    @Schema(description = "비밀번호", required = true, example = "password")
     private String password;
 }
