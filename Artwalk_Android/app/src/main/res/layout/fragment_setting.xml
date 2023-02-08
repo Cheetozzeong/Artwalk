@@ -35,7 +35,7 @@
                 android:id="@+id/textView_setting_privacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="개인정보처리방침"
+                android:text="@string/privacy_policy_title"
                 style="@style/body_regular_text_font_style"/>
 
 
@@ -50,7 +50,7 @@
                 android:id="@+id/textView_setting_locationPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="위치기반서비스 이용약관"
+                android:text="@string/location_policy_title"
                 style="@style/body_regular_text_font_style"/>
 
         </LinearLayout>
