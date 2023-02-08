@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -57,10 +58,12 @@ public class User {
 
 	@JsonSerialize(using= LocalDateTimeSerializer.class)
 	@JsonDeserialize(using= LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime regDate;
 
 	@JsonSerialize(using= LocalDateTimeSerializer.class)
 	@JsonDeserialize(using= LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime recentAccess;
 
 	@PrePersist
