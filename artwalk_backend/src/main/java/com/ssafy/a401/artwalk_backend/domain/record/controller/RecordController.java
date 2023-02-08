@@ -1,5 +1,6 @@
 package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Api(tags = {"기록 API"}, description = "기록 정보 API 입니다.")
 @Controller
-@RequestMapping("record")
+@RequestMapping("sharing")
 @RequiredArgsConstructor
 public class RecordController {
 	private static final String OK = "Ok";
@@ -46,17 +46,29 @@ public class RecordController {
 	
 	private final RecordService recordService;
 
-	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
-	@GetMapping("/image/{recordId}")
-	public String displayRecordImage(Model model, @PathVariable("recordId") int recordId) {
+	@GetMapping("/{link}")
+	public String sharingRecordPage(Model model, @PathVariable("link") String link) {
 		try {
-			Record record = recordService.findByRecordId(recordId);
-			ResponseEntity<Resource> response = recordService.getShareImage(record);
-			model.addAttribute("result", response);
+			recordService.findByLink(link);
+			// ResponseEntity<Resource> response = recordService.getShareImage(record);
+			model.addAttribute("result", link);
 			return "share/sharing";
 		} catch (NullPointerException e) {
 			return "error/4xx";
 		}
 	}
+
+	// @Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
+	// @ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
+	// @GetMapping("/image/{recordId}")
+	// public String displayRecordImage(Model model, @PathVariable("recordId") int recordId) {
+	// 	try {
+	// 		Record record = recordService.findByRecordId(recordId);
+	// 		ResponseEntity<Resource> response = recordService.getShareImage(record);
+	// 		model.addAttribute("result", response.getBody());
+	// 		return "share/sharing";
+	// 	} catch (NullPointerException e) {
+	// 		return "error/4xx";
+	// 	}
+	// }
 }

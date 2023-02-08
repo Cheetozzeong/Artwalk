@@ -68,4 +68,8 @@ public class Record {
 	@Column(length = 40, columnDefinition = "default NULL")
 	@Schema(description = "기록 메모", example = "오운완~^^")
 	private String detail;
+
+	@Column(length = 10, columnDefinition = "default NULL")
+	@Schema(description = "공유 주소", example = "xxxxxxxx")
+	private String link;
 }
