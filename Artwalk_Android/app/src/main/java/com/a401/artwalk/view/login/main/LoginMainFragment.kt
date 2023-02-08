@@ -28,6 +28,12 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
         KakaoSdk.init(requireActivity(), BuildConfig.KAKAO_NATIVE_KEY)
         setKakaoLoginButton()
         setToRegistButton()
+
+        loginViewModel.isLoginSuccess.observe(viewLifecycleOwner) { isLoginSuccess ->
+            if(isLoginSuccess) {
+                startActivity(Intent(context, SampleActivity::class.java))
+            }
+        }
     }
 
     private fun setInitBinding() {
@@ -54,9 +60,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
             if (error != null) {
 
             } else if (token != null) {
-                if(loginViewModel.isSuccessKakaoLogin(token.idToken!!)) {
-                    startActivity(Intent(context, SampleActivity::class.java))
-                }
+                loginViewModel.sendKakaoLoginRequest(token.idToken!!)
             }
         }
 
@@ -74,9 +78,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                     UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
                 } else if (token != null) {
-                    if(loginViewModel.isSuccessKakaoLogin(token.idToken!!)) {
-                        startActivity(Intent(context, SampleActivity::class.java))
-                    }
+                    loginViewModel.sendKakaoLoginRequest(token.idToken!!)
                 }
             }
         } else {
