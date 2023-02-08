@@ -69,8 +69,9 @@ public class SecurityConfig {
 					// "/**"
 					"/admin/**", "/css/**", "/js/**", "/favicon.ico", "/img/**",
 					"/auth/login/*", "/auth/reg/*",
-					"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-					// TODO: 공유 페이지 토큰 예외 처리
+					"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+					"/record/image/*",
+					"/share/*"
 					);
 		};
 	}

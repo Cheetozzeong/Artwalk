@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -85,8 +86,8 @@ public class RecordService {
 
 	/** 저장된 기록 중 record_id가 일치하는 기록를 반환합니다. */
 	public Record findByRecordId(int recordId) {
-		Record record = recordRepository.findById(recordId).get();
-		return record;
+		Optional<Record> record = recordRepository.findById(recordId);
+		return record.orElse(null);
 	}
 
 	/** 저장된 기록 중 user_id가 일치하는 기록를 반환합니다. */

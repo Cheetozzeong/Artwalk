@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Artwalk</title>
+    <link rel="favicon" href="/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+        }
+        h2 {
+            margin: 0;
+            vertical-align: center;
+        }
+        .content {
+            width: 100%;
+            text-align: center;
+        }
+        .header {
+            height: 60px;
+            background-color: #07A794;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+        .logo-letter {
+            color: white;
+            font-family: "Noto Sans KR",sans-serif;
+        }
+        .img-download {
+            padding: 10px 30px 10px;
+            background: #07A794;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #ffffff;
+            border: #07A794;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .app-download {
+            padding: 10px 30px 10px;
+            background: #ffffff;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #000000;
+            border: #000000;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .record {
+            width: 300px;
+            margin: 5%;
+        }
+        .btn {
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .btn {
+                display: block;
+            }
+            .record {
+                width: 80%;
+                margin: 10%;
+            }
+            .img-download {
+                padding: 10px 20%;
+            }
+            .app-download {
+                padding: 10px 20%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <img src="/favicon.ico" alt="logo" class="logo">
+            <h2 class="logo-letter">Artwalk</h2>
+        </div>
+        <img th:src="${result.getBody()}" class="record"/>
+        <div>
+            <div class="btn">
+                <button class="img-download">이미지 다운로드</button>
+            </div>
+            <div class="btn">
+                <button class="app-download">앱에서 확인하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
