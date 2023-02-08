@@ -1,11 +1,11 @@
 package com.ssafy.a401.artwalk_backend.domain.record.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +37,10 @@ public class RecordService {
 
 		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
 		record.setThumbnail(thumbPath);
+
+		// TODO: 공유이미지 임시 생성 메서드 -> 추후 수정 예정
+		String shareImagePath = fileService.saveShareImageTemp(fileOption, geometryPath, geometry, userId);
+		record.setRecentImage(shareImagePath);
 
 		result = recordRepository.save(record);
 
@@ -128,7 +132,7 @@ public class RecordService {
 	public Record saveRecordImage(Record record, Map<String, Object> request) {
 		Record result = null;
 
-		String imagePath = fileService.makeImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), request, record.getUserId());
+		String imagePath = fileService.saveShareImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), request, record.getUserId());
 		if(record.getRecentImage() != null && !("").equals(record.getRecentImage())) {
 			fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		}

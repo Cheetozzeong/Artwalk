@@ -1,6 +1,4 @@
-package com.ssafy.a401.artwalk_backend.domain.common.model;
-
-import org.springframework.http.HttpHeaders;
+package com.ssafy.a401.artwalk_backend.domain.route.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -14,11 +12,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Schema(description = "응답 DTO")
-public class ResponseDTO {
+@Schema(description = "경로 응답 DTO")
+public class RouteResponseDTO {
 	@Schema(description = "응답 코드", nullable = false, example = "Ok")
 	private String code;
 
-	@Schema(description = "메시지", example = "요청에 따른 응답 메시지")
-	private String message;
+	@Schema(description = "경로 데이터", example = "요청에 따른 경로 데이터")
+	private Route route;
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.a401.artwalk_backend.domain.admin.model.Admin;
+import com.ssafy.a401.artwalk_backend.domain.admin.model.AdminDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.repository.AdminRepository;
 import com.ssafy.a401.artwalk_backend.domain.token.model.Token;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
@@ -23,13 +24,13 @@ public class AdminService {
 	private final UserService userService;
 
 	@Transactional
-	public Token login(String userId, String password) {
-		Optional<Admin> admins = adminRepository.findById(userId);
+	public Token login(AdminDTO adminDTO) {
+		Optional<Admin> admins = adminRepository.findById(adminDTO.getUserId());
 
 		if (admins.isPresent()) {
 			Admin admin = admins.get();
-			if (password.equals(admin.getPassword())) {
-				Authentication authentication = userService.getAuthentication(userId, password, "ROLE_ADMIN");
+			if (adminDTO.getPassword().equals(admin.getPassword())) {
+				Authentication authentication = userService.getAuthentication(adminDTO.getUserId(), adminDTO.getPassword(), "ROLE_ADMIN");
 				Token token = userService.getToken(authentication);
 				admin.setRefreshToken(token.getRefreshToken());
 				return token;
@@ -46,12 +47,12 @@ public class AdminService {
 	}
 
 	@Transactional
-	public int checkPw(String userId, String password) {
-		Optional<Admin> admins = adminRepository.findById(userId);
+	public int checkPassword(AdminDTO adminDTO) {
+		Optional<Admin> admins = adminRepository.findById(adminDTO.getUserId());
 
 		if (admins.isPresent()) {
 			Admin admin = admins.get();
-			if (password.equals(admin.getPassword())) {
+			if (adminDTO.getPassword().equals(admin.getPassword())) {
 				return 0;
 			} else {
 				log.info("패스워드 불일치");

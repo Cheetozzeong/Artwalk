@@ -43,8 +43,9 @@ dependencies {
 	implementation 'com.auth0:java-jwt:3.19.0'
 	implementation 'com.auth0:jwks-rsa:0.21.1'
 
-	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'com.google.maps:google-maps-services:2.1.2'
+	implementation 'org.modelmapper:modelmapper:2.4.4'
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'

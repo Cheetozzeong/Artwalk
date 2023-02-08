@@ -27,7 +27,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "record")
-@Schema(description = "기록 DTO")
+@Schema(description = "기록 Entity")
 public class Record {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

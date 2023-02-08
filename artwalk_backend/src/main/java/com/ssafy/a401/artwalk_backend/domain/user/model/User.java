@@ -12,6 +12,7 @@ import javax.persistence.PrePersist;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,11 +20,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @Getter
@@ -36,8 +36,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 public class User {
 
 	@Id
+	@Schema(description = "사용자 ID", nullable = false, example = "ssafy@ssafy.com")
 	private String userId;
 
+	@Schema(description = "사용자 비밀번호", nullable = false, example = "password")
 	private String password;
 
 	@Column(nullable = true, length = 255)
@@ -48,19 +50,25 @@ public class User {
 	private UserAuthority userAuthority;
 
 	@Column(nullable = false, length = 30)
+	@Schema(description = "사용자 닉네임", nullable = false, example = "이싸피")
 	private String nickname;
 
 	@Column
 	private String profile;
+
+	@Schema(description = "사용자 레벨", nullable = false, example = "7")
 	private int level;
+	@Schema(description = "사용자 경험치", nullable = false, example = "151")
 	private int exp;
 
 	@JsonSerialize(using= LocalDateTimeSerializer.class)
 	@JsonDeserialize(using= LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime regDate;
 
 	@JsonSerialize(using= LocalDateTimeSerializer.class)
 	@JsonDeserialize(using= LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime recentAccess;
 
 	@PrePersist

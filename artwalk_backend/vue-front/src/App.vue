@@ -84,7 +84,7 @@
 }
 
 .f-size {
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 
 .x-scroll {
