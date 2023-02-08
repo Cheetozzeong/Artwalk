@@ -26,7 +26,7 @@
       <br>
 
       <!--  게시판 (기본) -->
-      <b-table v-if="searchedUsers == null" :fields="fields" :items="allUsers" sticky-header responsive>
+      <b-table v-if="searchedUsers == null" :fields="fields" :items="allUsers" sticky-header responsive no-sort-reset label-sort-asc="" label-sort-desc="">
         <template #cell(nickname)="data">
           <router-link :to="{ name: 'userDetail', params: { userId: data.item.userId } }" class="tdn maincolor">
             {{ data.item.nickname }}
@@ -38,7 +38,7 @@
       </b-table>
 
       <!--   검색한 결과 경로가 1개 이상일 때   -->
-      <b-table v-else-if="searchedUsers.length >= 1" :fields="fields" :items="searchedUsers" sticky-header responsive>
+      <b-table v-else-if="searchedUsers.length >= 1" :fields="fields" :items="searchedUsers" sticky-header responsive no-sort-reset label-sort-asc="" label-sort-desc="">
         <template #cell(nickname)="data">
           <router-link :to="{ name: 'userDetail', params: { userId: data.item.userId } }" class="tdn maincolor">
             {{ data.item.nickname }}
@@ -95,21 +95,38 @@ export default {
         {
           key: 'level',
           label: 'Level',
+          sortable: true
         },
         {
           key: 'exp',
           label: 'Exp',
+          sortable: true
         },
         {
           key: 'userRouteCount',
-          label: "User's Route",
+          label: "Routes",
+          sortable: true
         },
         {
           key: 'userRecordCount',
-          label: "User's Record",
+          label: "Records",
+          sortable: true
+        },
+        {
+          key: 'regDate',
+          label: "Registration Date",
+          sortable: true
+        },
+        {
+          key: 'recentAccess',
+          label: "Recent Connections",
+          sortable: true
         },
       ]
     }
+  },
+  created() {
+    this.$store.dispatch("getUser");
   },
   methods: {
     changeCategory(e) {
@@ -123,6 +140,9 @@ export default {
     goSearch() {
       if (this.selectedDropdownItem === 'not Selected') {
         alert("검색 타입을 지정해주세요.")
+        return
+      } else if (this.searchKeyword === null) {
+        alert("검색어를 입력해주세요.")
         return
       }
       return Send({
@@ -140,10 +160,7 @@ export default {
             console.log(err)
           })
     }
-  },
-  created() {
-    this.$store.dispatch("getUser");
-  },
+  }
 }
 </script>
 
