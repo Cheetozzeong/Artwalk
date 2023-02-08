@@ -44,8 +44,12 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolBar()
-        // 사용자 게시글 수 받아와서 바인딩
-        // 사용자 경로 정보 받아와서 바인딩
+
+        binding.toolbarUserPage.menu.findItem(R.id.setting).setOnMenuItemClickListener {
+            findNavController().navigate(UserPageFragmentDirections.actionUserPageToSetting())
+            true
+        }
+        // TODO: 내 기록, 뱃지 등 가져오기
 
         lifecycleScope.launch {
             setUser()

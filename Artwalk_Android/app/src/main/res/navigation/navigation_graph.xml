@@ -50,6 +50,15 @@
         android:name="com.a401.artwalk.view.user.UserPageFragment"
         tools:layout="@layout/fragment_user_page">
 
+        <action
+            android:id="@+id/action_userPage_to_setting"
+            app:destination="@id/setting" />
+    </fragment>
+
+    <fragment
+        android:id="@id/setting"
+        android:name="com.a401.artwalk.view.user.SettingFragment"
+        tools:layout="@layout/fragment_setting">
     </fragment>
 
 </navigation>
