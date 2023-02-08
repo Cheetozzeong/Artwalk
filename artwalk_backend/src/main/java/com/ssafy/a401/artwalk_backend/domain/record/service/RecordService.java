@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -84,13 +85,19 @@ public class RecordService {
 		return recordList;
 	}
 
-	/** 저장된 기록 중 record_id가 일치하는 기록를 반환합니다. */
+	/** 저장된 기록 중 record_id가 일치하는 기록을 반환합니다. */
 	public Record findByRecordId(int recordId) {
 		Optional<Record> record = recordRepository.findById(recordId);
 		return record.orElse(null);
 	}
 
-	/** 저장된 기록 중 user_id가 일치하는 기록를 반환합니다. */
+	/** 저장된 기록 중 link와 record_id가 일치하는 기록을 반환합니다. */
+	public Record findByLink(String link) {
+		Optional<Record> record = Optional.ofNullable(recordRepository.findByLink(link));
+		return record.orElse(null);
+	}
+
+	/** 저장된 기록 중 user_id가 일치하는 기록을 반환합니다. */
 	public List<Record> findByUserId(String userId) {
 		List<Record> recordList = new ArrayList<>();
 		List<Record> records = recordRepository.findByUserId(userId);
@@ -137,6 +144,7 @@ public class RecordService {
 			fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		}
 		record.setRecentImage(imagePath);
+		record.setLink(makeRandomLink());
 		result = recordRepository.save(record);
 
 		return result;
@@ -164,5 +172,24 @@ public class RecordService {
 			recordList.add(record);
 		}
 		return recordList;
+	}
+
+	// public String addRandomLink(int recordId) {
+	// 	Optional<Record> record = recordRepository.findById(recordId);
+	// 	String sharingLink = makeRandomLink();
+	// 	record.ifPresent(value -> value.setLink(sharingLink));
+	// 	return sharingLink;
+	// }
+
+	public String makeRandomLink() {
+		int leftLimit = 48;
+		int rightLimit = 122;
+		int targetStringLength = 8;
+		Random random = new Random();
+		return random.ints(leftLimit, rightLimit + 1)
+			.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+			.limit(targetStringLength)
+			.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+			.toString();
 	}
 }

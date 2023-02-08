@@ -19,6 +19,15 @@ public class UserDTO {
 	@Schema(description = "사용자 ID", nullable = false, example = "ssafy@ssafy.com")
 	private String userId;
 
+	@Schema(description = "비밀번호", nullable = false, example = "password")
+	private String password;
+
+	@Schema(description = "리프레쉬 토큰", nullable = false, example = "token")
+	private String refreshToken;
+
+	@Schema(description = "사용자 권한", nullable = false, example = "ROLE_USER")
+	private UserAuthority userAuthority;
+
 	@Schema(description = "닉네임", nullable = false, example = "이싸피")
 	private String nickname;
 
@@ -34,4 +43,6 @@ public class UserDTO {
 	@Schema(description = "가입 날짜", nullable = false, example = "2023/02/06 17:23:45")
     private LocalDateTime regDate;
 
+	@Schema(description = "마지막 접속 날짜", nullable = false, example = "2023/02/06 17:23:45")
+	private LocalDateTime recentAccess;
 }

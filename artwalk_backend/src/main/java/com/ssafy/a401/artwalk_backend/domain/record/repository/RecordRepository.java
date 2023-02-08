@@ -9,6 +9,8 @@ import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 public interface RecordRepository extends JpaRepository<Record, Integer> {
 	int countByRecordId(int recordId);
 
+	Record findByLink(String link);
+
 	List<Record> findByUserId(String userId);
 
 	List<Record> findByUserIdContaining(String userId);
