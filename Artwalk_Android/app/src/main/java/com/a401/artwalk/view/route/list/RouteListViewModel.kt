@@ -1,5 +1,6 @@
 package com.a401.artwalk.view.route.list
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
@@ -25,11 +26,11 @@ class RouteListViewModel @Inject constructor(
 
     init {
         getRoutes()
+        Log.d("LifeCycleVM", "init")
     }
 
-    private fun getRoutes() {
+    fun getRoutes() {
         viewModelScope.launch {
-            // TODO: collect 어떻게 쓰는지 몰라서 collectLatest사용 !! 공부 필요 !!
             fetchRouteList().collectLatest {
                 routeList.value = it
             }

@@ -8,18 +8,18 @@ import retrofit2.http.*
 
 interface UserApiService {
 
-    @POST("login/{serviceType}")
+    @POST("auth/login/{serviceType}")
     suspend fun postIdToken(
         @Header("id-token") idToken: String,
         @Path("serviceType") serviceType: String,
     ): Response<Void>
 
-    @POST("login/artwalk")
+    @POST("auth/login/artwalk")
     suspend fun postLoginInfo(
         @Body() user: LoginUserRequest
     ): Response<Void>
 
-    @POST("reg/artwalk")
+    @POST("auth/reg/artwalk")
     suspend fun registArtWalk(
         @Body() user: ArtWalkRegistRequest
     ): Response<Void>
@@ -27,5 +27,5 @@ interface UserApiService {
     @GET("user/info")
     suspend fun getUserInfo(
         @Header("accessToken") accessToken: String
-    ): Response<UserResponse>
+    ): UserResponse
 }

@@ -14,6 +14,7 @@ import com.a401.domain.model.RouteForList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 import javax.inject.Inject
 
 class RouteRemoteDataSourceImpl @Inject constructor(
@@ -48,11 +49,10 @@ class RouteRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun postRoute(routeForDraw: RouteForDraw) {
-        return a401Api.postRoute(
-            accessToken,
-            routeRequestFromRouteForDraw(routeForDraw)
-        )
+    override suspend fun postRoute(routeForDraw: RouteForDraw): Flow<Response<Void>> {
+        return flow {
+            emit( a401Api.postRoute(accessToken, routeRequestFromRouteForDraw(routeForDraw)))
+        }
     }
 
     override suspend fun getRouteCount(): Flow<RouteListResponse> {

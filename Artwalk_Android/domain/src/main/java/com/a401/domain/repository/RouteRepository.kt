@@ -10,5 +10,5 @@ interface RouteRepository {
 
     suspend fun getRoutForList(): Flow<List<RouteForList>>
 
-    suspend fun postRoute(route: RouteForDraw)
+    suspend fun postRoute(route: RouteForDraw): Flow<String>
 }

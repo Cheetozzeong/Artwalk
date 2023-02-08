@@ -7,10 +7,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.base.UsingMapFragment
@@ -45,6 +48,14 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         setDurationText()
         setDistanceText()
         setSaveButtonClickListener()
+
+        routeDrawViewModel.isSuccessSave.observe(viewLifecycleOwner) { isSuccessSave ->
+            if(isSuccessSave) {
+                findNavController().popBackStack()
+            }
+        }
+        Log.d("LifeCycle2", "onViewCreated")
+
     }
 
     private fun setInitBinding() {
@@ -145,7 +156,7 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         }
     }
 
-    fun setSaveButtonClickListener() {
+    private fun setSaveButtonClickListener() {
         binding.buttonRouteDrawSave.setOnClickListener {
             routeDrawViewModel.saveDrawRoute(polylineAnnotationManager.getTotalPolyline())
         }
@@ -159,6 +170,45 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
             }
         }
         return PolylineUtils.encode(pointList, 5)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d("LifeCycle2", "onCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d("LifeCycle2", "onAttach")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("LifeCycle2", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("LifeCycle2", "onPause")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("LifeCycle2", "onPause")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("LifeCycle2", "onDetach")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("LifeCycle2", "onStart")
     }
 
 }

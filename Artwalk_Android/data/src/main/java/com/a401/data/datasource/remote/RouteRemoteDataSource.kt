@@ -5,6 +5,7 @@ import com.a401.data.model.response.RouteListResponse
 import com.a401.domain.model.RouteForDraw
 import com.a401.domain.model.RouteForList
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 interface RouteRemoteDataSource {
 
@@ -12,7 +13,7 @@ interface RouteRemoteDataSource {
 
     suspend fun getRouteList(user: Boolean): Flow<List<RouteForList>>
 
-    suspend fun postRoute(routeForDraw: RouteForDraw)
+    suspend fun postRoute(routeForDraw: RouteForDraw): Flow<Response<Void>>
 
     suspend fun getRouteCount(): Flow<RouteListResponse>
 }

@@ -19,11 +19,11 @@ interface RouteApiService {
         @Query("user") user: Boolean
     ): RouteListResponse
 
-    @POST()
+    @POST(".")
     suspend fun postRoute(
         @Header("accessToken") accessToken: String,
         @Body() route: RouteRequest
-    )
+    ): Response<Void>
 
     @GET("count")
     suspend fun getRouteCount(

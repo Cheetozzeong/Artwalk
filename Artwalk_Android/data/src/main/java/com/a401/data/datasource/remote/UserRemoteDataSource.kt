@@ -15,5 +15,5 @@ interface UserRemoteDataSource {
 
     suspend fun postRegist(user: User, password: String): Flow<Response<Void>>
 
-    suspend fun getUserInfo(): Flow<UserResponse?>
+    suspend fun getUserInfo(): Flow<UserResponse>
 }

@@ -66,16 +66,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserInfo(): Flow<UserResponse?> {
-        val response = a401UserApi.getUserInfo(accessToken)
-        return flow {
-            emit(
-                if (response.isSuccessful) {
-                    response.body()
-                } else {
-                    null
-                }
-            )
-        }
+    override suspend fun getUserInfo(): Flow<UserResponse> {
+        return flow { emit(a401UserApi.getUserInfo(accessToken)) }
     }
 }

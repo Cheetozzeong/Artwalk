@@ -40,7 +40,7 @@ class UserRepositoryImpl @Inject constructor(
         return flow {
             userRemoteDataSource.getUserInfo().collect() { resultUser ->
                 routeRemoteDataSource.getRouteCount().collect() { resultRoute ->
-                    if(resultUser != null && resultRoute.code == "Ok") {
+                    if(resultUser.code == "Ok" && resultRoute.code == "Ok") {
                         emit(
                             userInfoFromUserAndRouteResponse(
                                 resultUser,
