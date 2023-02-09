@@ -1,7 +1,9 @@
 package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.swagger.annotations.ApiImplicitParams;
 
@@ -192,10 +194,11 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
-	@ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
-	@PostMapping("/download/{link}")
-	public ResponseEntity<UrlResource> downloadImage(@PathVariable("link") String link) {
-		return ResponseEntity.ok().body(null);
-	}
+	// @Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
+	// @ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
+	// @PostMapping("/download/{link}")
+	// public ResponseEntity<UrlResource> downloadImage(@PathVariable("link") String link) {
+	// 	recordService.
+	// 	return ResponseEntity.ok().body(null);
+	// }
 }

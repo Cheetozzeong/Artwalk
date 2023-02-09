@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Entity
+@DynamicInsert
 @Table(name = "route")
 @Schema(description = "경로 Entity")
 public class Route {

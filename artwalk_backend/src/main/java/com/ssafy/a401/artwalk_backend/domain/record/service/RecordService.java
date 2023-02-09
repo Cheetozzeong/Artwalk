@@ -1,5 +1,8 @@
 package com.ssafy.a401.artwalk_backend.domain.record.service;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -173,6 +177,11 @@ public class RecordService {
 		}
 		return recordList;
 	}
+
+	// public ResponseEntity<UrlResource> downloadImage(String link) throws MalformedURLException {
+	// 	Optional<File> file = recordRepository.findByLink(link);
+	//
+	// }
 
 	// public String addRandomLink(int recordId) {
 	// 	Optional<Record> record = recordRepository.findById(recordId);

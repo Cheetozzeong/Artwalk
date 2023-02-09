@@ -101,12 +101,12 @@ public class UserService {
 	@Transactional
 	public Token addNormalUser(User user) {
 
-		String email = user.getUserId();
+		String userId = user.getUserId();
 		String password = user.getPassword();
 		String nickname = user.getNickname();
 
-		if (userRepository.existsById(email)) return null;
-		return addUserToken(email, password, "", nickname);
+		if (userRepository.existsById(userId)) return null;
+		return addUserToken(userId, password, "", nickname);
 	}
 
 	/** 사용자 소셜 로그인 가입 **/
@@ -128,11 +128,11 @@ public class UserService {
 				UserResponseKakao userResponseKakao = userKakaoToken.validationToken(idToken);
 
 				log.info("userResponseKakao -> ", userResponseKakao);
-				String email = userResponseKakao.getEmail();
+				String userId = userResponseKakao.getSub();
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
 
-				return addUserToken(email, "add_artwalk_salt" + email, picture, nickname);
+				return addUserToken(userId, "add_artwalk_salt" + userId, picture, nickname);
 
 			} catch (NullPointerException e) {
 				log.info("사용자의 idToken을 확인할 수 없습니다.");
@@ -271,11 +271,11 @@ public class UserService {
 	}
 
 	@Transactional
-	protected Token addUserToken(String email, String password, String picture, String nickname) {
-		Authentication authentication = getAuthentication(email, password, "ROLE_USER");
+	protected Token addUserToken(String userId, String password, String picture, String nickname) {
+		Authentication authentication = getAuthentication(userId, password, "ROLE_USER");
 		Token token = getToken(authentication);
 
-		Optional<User> users = userRepository.findById(email);
+		Optional<User> users = userRepository.findById(userId);
 
 		// 사용자 이메일이 이미 존재한다면
 		if (users.isPresent()) {
@@ -283,15 +283,15 @@ public class UserService {
 
 			User user = users.get();
 			user.updateRefreshToken(token.getRefreshToken());
-			modifyUserRecentAccess(email);
+			modifyUserRecentAccess(userId);
 
 			log.info("토큰 값이 갱신되었습니다.");
 		} else {
 			// 새 사용자 객체
 			User user = User.builder()
-				.userId(email)
+				.userId(userId)
 				.password(password)
-				.profile(fileService.saveProfileImage(picture, email))
+				.profile(fileService.saveProfileImage(picture, userId))
 				.nickname(nickname)
 				.refreshToken(token.getRefreshToken())
 				.build();
@@ -300,7 +300,7 @@ public class UserService {
 
 			// 새로운 사용자 계정을 등록한다.
 			userRepository.save(user);
-			log.info("새로운 사용자가 등록되었습니다. email -> " + email);
+			log.info("새로운 사용자가 등록되었습니다. userId -> " + userId);
 		}
 		return token;
 	}
