@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,19 @@ public class RecordController {
 	
 	private final RecordService recordService;
 
+	@GetMapping("/edit/{editLink}")
+	public String editShareImage(Model model, @PathVariable("editLink") String editLink, @RequestHeader String accessToken) {
+		Record record = recordService.findByEditLink(editLink);
+		if (record != null) {
+			String geometry = recordService.readGeometryFile(record);
+
+			model.addAttribute("geometry", geometry);
+			model.addAttribute("token", accessToken);
+			return "share/makeShare";
+		} else {
+			return "error/4xx";
+		}
+	}
 	@GetMapping("/{link}")
 	public String sharingRecordPage(Model model, @PathVariable("link") String link) {
 		Record record = recordService.findByLink(link);

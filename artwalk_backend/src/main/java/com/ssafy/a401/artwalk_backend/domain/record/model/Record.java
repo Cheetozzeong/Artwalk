@@ -71,4 +71,8 @@ public class Record {
 	@Column(length = 10, columnDefinition = "default NULL")
 	@Schema(description = "공유 주소", example = "xxxxxxxx")
 	private String link;
+
+	@Column(length = 10, columnDefinition = "default NULL")
+	@Schema(description = "편집 주소", example = "xxxxxxxx")
+	private String editLink;
 }

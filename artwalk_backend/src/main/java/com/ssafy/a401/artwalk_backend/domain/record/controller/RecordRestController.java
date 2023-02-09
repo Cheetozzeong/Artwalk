@@ -26,6 +26,7 @@ import com.ssafy.a401.artwalk_backend.domain.admin.model.AdminDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.model.PasswordDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.CountResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordListResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordRequestDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
@@ -173,6 +174,20 @@ public class RecordRestController {
 		Record record = recordService.findByRecordId(recordId);
 		ResponseEntity<Resource> response = recordService.getThumbnailImage(record);
 		return response;
+	}
+
+	@Operation(summary = "공유페이지 생성", description = "공유페이지 생성 메서드입니다. 편집을 위한 주소를 반환합니다. Path에 편집하려는 기록 주소를 포함해 요청합니다.")
+	@ApiImplicitParam(name = "recordId", value = "조회할 기록 recordId", dataType = "int")
+	@GetMapping("/share/{recordId}")
+	public ResponseEntity<ResponseDTO> modifyRecordImage(@PathVariable("recordId") int recordId) {
+		// recordId로 기록을 찾아온다.
+		Record record = recordService.findByRecordId(recordId);
+		if (record != null) {
+			// 임시 주소 생성한다.
+			String randomLink = recordService.saveRandomEditLink(record);
+			return ResponseEntity.ok().body(new ResponseDTO(OK, randomLink));
+		}
+		else return ResponseEntity.badRequest().body(new ResponseDTO(FAIL, null));
 	}
 
 	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")

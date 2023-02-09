@@ -13,6 +13,8 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 
 	Record findByLink(String link);
 
+	Record findByEditLink(String editLink);
+
 	List<Record> findByUserId(String userId);
 
 	List<Record> findByUserIdContaining(String userId);
