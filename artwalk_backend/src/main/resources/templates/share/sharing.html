@@ -90,10 +90,10 @@
             <img src="/favicon.ico" alt="logo" class="logo">
             <h2 class="logo-letter">Artwalk</h2>
         </div>
-        <img th:src="@{/record/image/}+${link}" class="record"/>
+        <img th:src="link" class="record" id="link1"/>
         <div>
             <div class="btn">
-                <button class="img-download">이미지 다운로드</button>
+                <a href="link" id="link2" download="artwalk_route.png"><button class="img-download">이미지 다운로드</button></a>
             </div>
             <div class="btn">
                 <button class="app-download">앱에서 확인하기</button>
@@ -101,4 +101,16 @@
         </div>
     </div>
 </body>
+<script th:inline="javascript">
+    window.onload = function() {
+        const imageURL = [[${link}]];
+        fetch(`/record/image/${imageURL}`)
+            .then(response => response.blob())
+            .then(blob => {
+                let sharedURL = URL.createObjectURL(blob);
+                document.querySelector("#link1").src = sharedURL;
+                document.querySelector("#link2").href = sharedURL;
+            });
+    }
+</script>
 </html>

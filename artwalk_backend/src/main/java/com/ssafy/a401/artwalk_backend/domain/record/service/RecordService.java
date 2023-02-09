@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import javax.transaction.Transactional;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -101,6 +103,12 @@ public class RecordService {
 		return record.orElse(null);
 	}
 
+	/** 저장된 기록 중 editLink와 record_id가 일치하는 기록을 반환합니다. */
+	public Record findByEditLink(String editLink) {
+		Optional<Record> record = Optional.ofNullable(recordRepository.findByEditLink(editLink));
+		return record.orElse(null);
+	}
+
 	/** 저장된 기록 중 user_id가 일치하는 기록을 반환합니다. */
 	public List<Record> findByUserId(String userId) {
 		List<Record> recordList = new ArrayList<>();
@@ -189,6 +197,14 @@ public class RecordService {
 	// 	record.ifPresent(value -> value.setLink(sharingLink));
 	// 	return sharingLink;
 	// }
+
+	/** 새로운 편집 주소를 생성해 DB에 저장 후 반환합니다. */
+	@Transactional
+	public String saveRandomEditLink(Record record) {
+		String randomLink = makeRandomLink();
+		record.setEditLink(randomLink);
+		return randomLink;
+	}
 
 	public String makeRandomLink() {
 		int leftLimit = 48;
