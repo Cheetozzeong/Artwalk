@@ -81,7 +81,7 @@ export default {
         }
       })
           .then((res) => {
-            this.userInfo = res.data.data
+            this.userInfo = res.data.user
           })
           .catch((err) => {
             console.log(err)
@@ -94,7 +94,7 @@ export default {
       })
           .then((res) => {
             // console.log(res)
-            this.userRoutes = res.data.data
+            this.userRoutes = res.data.routes
           })
           .catch((err) => {
             console.log(err)
@@ -107,7 +107,7 @@ export default {
       })
           .then((res) => {
             // console.log(res)
-            this.userRecords = res.data.data
+            this.userRecords = res.data.records
           })
           .catch((err) => {
             console.log(err)
