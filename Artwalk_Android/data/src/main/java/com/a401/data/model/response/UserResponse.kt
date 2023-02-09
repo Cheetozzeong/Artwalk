@@ -5,7 +5,7 @@ import java.util.*
 
 data class UserResponse(
     @SerializedName("message") var message: String?,
-    @SerializedName("code") var code: String?
+    @SerializedName("code") var code: responseCode?
 )
 
 data class responseCode(
