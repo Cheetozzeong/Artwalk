@@ -46,7 +46,7 @@ public class RouteRestController {
 	private final RouteService routeService;
 	private final AdminService adminService;
 
-	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, URL 인코딩된 경로 문자열), title(String, 제목)를 넣어 요청을 보내면 경로가 저장됩니다.")
+	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, polyline encoded 경로 문자열), title(String, 제목)를 넣어 요청을 보내면 경로가 저장됩니다.")
 	@PostMapping("")
 	public ResponseEntity<RouteResponseDTO> routeAdd(@RequestBody RouteRequestDTO routeRequestDTO, @ApiIgnore Authentication authentication){
 		String userId = authentication.getName();

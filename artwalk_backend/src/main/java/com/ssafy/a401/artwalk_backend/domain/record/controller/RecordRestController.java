@@ -47,7 +47,7 @@ public class RecordRestController {
 	private final RecordService recordService;
 	private final AdminService adminService;
 
-	@Operation(summary = "기록 저장", description = "기록 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, URL 인코딩된 기록 문자열), detail(String, 메모)를 넣어 요청을 보내면 기록이 저장됩니다.")
+	@Operation(summary = "기록 저장", description = "기록 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, polyline encoded 기록 문자열), detail(String, 메모)를 넣어 요청을 보내면 기록이 저장됩니다.")
 	@PostMapping("")
 	public ResponseEntity<RecordResponseDTO> recordAdd(@RequestBody RecordRequestDTO recordRequestDTO, @ApiIgnore Authentication authentication) {
 		String userId = authentication.getName();
