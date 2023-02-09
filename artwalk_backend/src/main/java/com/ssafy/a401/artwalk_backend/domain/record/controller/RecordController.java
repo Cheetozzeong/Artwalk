@@ -49,7 +49,6 @@ public class RecordController {
 	@GetMapping("/{link}")
 	public String sharingRecordPage(Model model, @PathVariable("link") String link) {
 		Record record = recordService.findByLink(link);
-		System.out.println("record ----------> " + record);
 		if (record != null) {
 			model.addAttribute("result", link);
 			return "share/sharing";
