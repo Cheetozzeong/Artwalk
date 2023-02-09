@@ -22,7 +22,7 @@ interface UserApiService {
     @POST("auth/reg/artwalk")
     suspend fun registArtWalk(
         @Body() user: ArtWalkRegistRequest
-    ): Response<Void>
+    ): UserResponse
 
     @GET("user/info")
     suspend fun getUserInfo(

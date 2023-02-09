@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 data class UserResponse(
     @SerializedName("user") var user: User,
+    @SerializedName("message") var message: String,
     @SerializedName("code") var code: String,
 )
 
