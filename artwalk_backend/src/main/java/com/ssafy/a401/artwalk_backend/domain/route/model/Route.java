@@ -33,7 +33,6 @@ import lombok.ToString;
 @Schema(description = "경로 Entity")
 public class Route {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
 	@Schema(description = "경로 ID", nullable = false, example = "6")
 	private int routeId;
