@@ -7,7 +7,6 @@ import com.a401.data.model.request.LoginUserRequest
 import com.a401.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import com.a401.domain.model.User
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun postRegist(user: User, password: String): Flow<String> {
         return flow {
             userRemoteDataSource.postRegist(user, password).collect { response ->
-                if(response.isSuccessful) {
+                if(response.code == "Ok") {
                     emit("SUCCESS")
                 }else {
                     emit("FAIL")
