@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParams;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -172,7 +173,7 @@ public class RecordRestController {
 	}
 
 	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
+	@ApiImplicitParam(name = "link", value = "조회할 기록 link", dataType = "String")
 	@GetMapping("/image/{link}")
 	public ResponseEntity<Resource> displayRecordImage(@PathVariable("link") String link) {
 		Record record = recordService.findByLink(link);
@@ -188,5 +189,12 @@ public class RecordRestController {
 		Record result = recordService.saveRecordImage(record, request);
 		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
+	}
+
+	@Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
+	@ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
+	@PostMapping("/download/{link}")
+	public ResponseEntity<UrlResource> downloadImage(@PathVariable("link") String link) {
+		return ResponseEntity.ok().body(null);
 	}
 }
