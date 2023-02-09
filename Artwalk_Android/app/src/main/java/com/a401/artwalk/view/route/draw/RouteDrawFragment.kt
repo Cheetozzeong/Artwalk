@@ -27,6 +27,9 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.absoluteValue
+
+const val ROUTE_COLOR: String = "#0601bd"
 
 @AndroidEntryPoint
 class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
@@ -112,6 +115,9 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         routeDrawViewModel.lastRoute.observe(requireActivity()) { route ->
             val polylineOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
                 .withGeometry(LineString.fromPolyline(route.geometry, 5))
+                .withLineColor(ROUTE_COLOR)
+                .withLineOpacity(0.498)
+                .withLineWidth(7.0)
             polylineAnnotationManager.create(polylineOptions)
         }
     }
@@ -133,7 +139,7 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         }
     }
 
-    private fun bitmapFromDrawableRes(context: Context, @DrawableRes resourceId: Int) =
+    fun bitmapFromDrawableRes(context: Context, @DrawableRes resourceId: Int) =
         convertDrawableToBitmap(AppCompatResources.getDrawable(context, resourceId))
 
     private fun convertDrawableToBitmap(sourceDrawable: Drawable?): Bitmap? {

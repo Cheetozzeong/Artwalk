@@ -52,7 +52,7 @@ class UserRemoteDataSourceImpl @Inject constructor(
             }
         }
     }
-    override suspend fun postRegist(user: User, password: String): Flow<Response<Void>> {
+    override suspend fun postRegist(user: User, password: String): Flow<UserResponse> {
         return flow {
             emit(
                 a401UserApi.registArtWalk(
