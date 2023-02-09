@@ -27,9 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class FileService {
 	private static String FILE_PATH;
@@ -165,25 +162,34 @@ public class FileService {
 			.append(imageWidth).append("x")
 			.append(imageHeight).append("?access_token=")
 			.append(MAPBOX_API_KEY);
-		log.info("썸네일 요청 주소: ", imageURL.toString());
+		System.out.println("썸네일 요청 주소: " + imageURL.toString());
 
 		String filePathName = "";
+		System.out.println("트라이 시작 전");
 		try {
+			System.out.println("트라이 시작 후");
 			URL imgURL = new URL(imageURL.toString());
+			System.out.print("이미지 url:");
+			System.out.println(imgURL);
 			String extension = "png";
 			StringTokenizer st = new StringTokenizer(geometryPath, ".");
 			filePathName = st.nextToken() + "." + extension;
+			System.out.println("파일 경로 이름: "+filePathName);
 
 			BufferedImage image = ImageIO.read(imgURL);
+			System.out.print("이미지: ");
+			System.out.println(image);
 			File file = new File(makePathName(option, filePathName, userId));
-			log.info("생성된 파일 : ", file);
+			System.out.println("생성된 파일 : " + file);
 			if(!file.exists()) {
-				log.info("파일이 존재하지 않음");
+				System.out.println("파일이 존재하지 않아 생성하기");
 				file.mkdirs();
 			}
 
 			ImageIO.write(image, extension, file);
+			System.out.println("파일이 작성 완료");
 		} catch (Exception e) {
+			System.out.println("설마 여기에??");
 			e.printStackTrace();
 		}
 
