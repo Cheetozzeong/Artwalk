@@ -32,10 +32,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Slf4j
 @Api(tags = {"경로 API"}, description = "경로 정보 API 입니다.")
 @RestController
 @RequestMapping("route")
@@ -48,11 +46,9 @@ public class RouteRestController {
 	private final RouteService routeService;
 	private final AdminService adminService;
 
-	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, URL 인코딩된 경로 문자열), title(String, 제목)를 넣어 요청을 보내면 경로가 저장됩니다.")
+	@Operation(summary = "경로 저장", description = "경로 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, polyline encoded 경로 문자열), title(String, 제목)를 넣어 요청을 보내면 경로가 저장됩니다.")
 	@PostMapping("")
 	public ResponseEntity<RouteResponseDTO> routeAdd(@RequestBody RouteRequestDTO routeRequestDTO, @ApiIgnore Authentication authentication){
-		log.info("경로 저장 요청 : ", routeRequestDTO);
-
 		String userId = authentication.getName();
 		Route route = modelMapper.map(routeRequestDTO, Route.class);
 		Route result = routeService.addRoute(route, userId);

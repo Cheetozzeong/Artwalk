@@ -15,7 +15,6 @@ import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RouteService {
@@ -34,9 +33,8 @@ public class RouteService {
 		String geometry = route.getGeometry();
 		String geometryPath = fileService.saveFile(fileOption, geometry, userId);
 		route.setGeometry(geometryPath);
-		
+
 		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
-		log.info("썸네일 경로  : ", thumbPath);
 		route.setThumbnail(thumbPath);
 
 		result = routeRepository.save(route);
