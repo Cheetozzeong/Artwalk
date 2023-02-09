@@ -284,10 +284,10 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json" ,
-                    "token" : token
+                    "token" : token,
+                     "editLink": editLink
                 },
                 body: JSON.stringify({
-                    editLink: editLink,
                     polyLineWidth : lineWidth,
                     polyLineColor : lineColor,
                     minLon : minLon,
