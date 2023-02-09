@@ -71,7 +71,7 @@ public class SecurityConfig {
 					"/auth/login/*", "/auth/reg/*",
 					"/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
 					"/record/image/*",
-					"/sharing/*"
+					"/sharing/*", "/policy/privacy", "/policy/service"
 					);
 		};
 	}
