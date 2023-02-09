@@ -154,7 +154,7 @@ export default {
         }
       })
           .then((res) => {
-            this.searchedUsers = res.data.data
+            this.searchedUsers = res.data.users
           })
           .catch((err) => {
             console.log(err)
