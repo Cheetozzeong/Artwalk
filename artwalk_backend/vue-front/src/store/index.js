@@ -93,7 +93,7 @@ export default new Vuex.Store({
         }
       })
           .then((res) => {
-            context.commit('GET_RECORD', res.data.data)
+            context.commit('GET_RECORD', res.data.records)
           })
           .catch((err) => {
             console.log(err)
@@ -105,7 +105,7 @@ export default new Vuex.Store({
         url: '/user/list',
       })
           .then((res) => {
-            context.commit('GET_USER', res.data.data)
+            context.commit('GET_USER', res.data.users)
           })
           .catch((err) => {
             console.log(err)

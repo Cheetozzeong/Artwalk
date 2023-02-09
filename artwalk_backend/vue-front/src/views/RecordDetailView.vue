@@ -93,7 +93,7 @@ export default {
         url: `/record/${this.$route.params.recordId}`,
       })
           .then((res) => {
-            this.record = res.data.data
+            this.record = res.data.record
             this.formattedCreation = dayjs(this.record.creation).format('YYYY/MM/DD')
             this.formattedDistance = Math.round(this.record.distance).toLocaleString('ko-KR') + " M"
             this.getTimeStringSeconds(this.record.duration)

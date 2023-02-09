@@ -91,7 +91,7 @@ export default {
         }
       })
           .then((res) => {
-            this.searchedRecords = res.data.data
+            this.searchedRecords = res.data.records
           })
           .catch((err) => {
             console.log(err)
