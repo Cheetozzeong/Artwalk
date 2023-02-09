@@ -57,18 +57,18 @@ public class RecordService {
 		return result;
 	}
 
-	public int removeRecord(Record record) {
+	public long removeRecord(Record record) {
 		recordRepository.delete(record);
 		fileService.removeFile(fileOption, record.getGeometry(), record.getUserId());
 		fileService.removeFile(fileOption, record.getThumbnail(), record.getUserId());
 		fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
-		int result = recordRepository.countByRecordId(record.getRecordId());
+		long result = recordRepository.countByRecordId(record.getRecordId());
 		return result;
 	}
 
 	/** 저장된 기록의 개수를 반환합니다. */
-	public long getRecordCount() {
-		long count = recordRepository.count();
+	public long getRecordCount(String userId) {
+		long count = recordRepository.countByUserId(userId);
 		return count;
 	}
 

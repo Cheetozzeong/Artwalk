@@ -13,7 +13,9 @@ import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RouteService {
@@ -32,8 +34,9 @@ public class RouteService {
 		String geometry = route.getGeometry();
 		String geometryPath = fileService.saveFile(fileOption, geometry, userId);
 		route.setGeometry(geometryPath);
-
+		
 		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
+		log.info("썸네일 경로  : ", thumbPath);
 		route.setThumbnail(thumbPath);
 
 		result = routeRepository.save(route);
@@ -60,17 +63,17 @@ public class RouteService {
 		return result;
 	}
 
-	public int removeRoute(Route route) {
+	public long removeRoute(Route route) {
 		routeRepository.delete(route);
 		fileService.removeFile(fileOption, route.getGeometry(), route.getUserId());
 		fileService.removeFile(fileOption, route.getThumbnail(), route.getUserId());
-		int result = routeRepository.countByRouteId(route.getRouteId());
+		long result = routeRepository.countByRouteId(route.getRouteId());
 		return result;
 	}
 
 	/** 저장된 경로의 개수를 반환합니다. */
-	public long getRouteCount() {
-		long count = routeRepository.count();
+	public long getRouteCount(String userId) {
+		long count = routeRepository.countByUserId(userId);
 		return count;
 	}
 

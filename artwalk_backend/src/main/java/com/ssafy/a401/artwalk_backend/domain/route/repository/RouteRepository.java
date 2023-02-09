@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 
 public interface RouteRepository extends JpaRepository<Route, Integer> {
-	int countByRouteId(int routeId);
+	long countByRouteId(int routeId);
+
+	long countByUserId(String userId);
 
 	List<Route> findByUserId(String userId);
 
