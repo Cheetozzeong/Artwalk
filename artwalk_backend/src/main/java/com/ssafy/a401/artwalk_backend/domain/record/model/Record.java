@@ -30,7 +30,6 @@ import lombok.ToString;
 @Schema(description = "기록 Entity")
 public class Record {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
 	@Schema(description = "기록 ID", nullable = false, example = "17")
 	private int recordId;
