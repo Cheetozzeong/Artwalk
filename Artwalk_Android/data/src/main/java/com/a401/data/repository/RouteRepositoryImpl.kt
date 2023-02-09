@@ -9,6 +9,8 @@ import com.a401.domain.model.RouteForList
 import com.a401.domain.repository.RouteRepository
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -42,7 +44,15 @@ class RouteRepositoryImpl @Inject constructor(
         return routeRemoteDataSource.getRouteList(true)
     }
 
-    override suspend fun postRoute(route: RouteForDraw) {
-        return routeRemoteDataSource.postRoute(route)
+    override suspend fun postRoute(route: RouteForDraw): Flow<String> {
+        return flow {
+            routeRemoteDataSource.postRoute(route).collect() { response ->
+                if (response.isSuccessful) {
+                    emit("SUCCESS")
+                }else {
+                    emit("FAIL")
+                }
+            }
+        }
     }
 }
