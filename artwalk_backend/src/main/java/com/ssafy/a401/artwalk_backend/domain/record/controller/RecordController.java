@@ -48,12 +48,11 @@ public class RecordController {
 
 	@GetMapping("/{link}")
 	public String sharingRecordPage(Model model, @PathVariable("link") String link) {
-		try {
-			recordService.findByLink(link);
-			// ResponseEntity<Resource> response = recordService.getShareImage(record);
+		Record record = recordService.findByLink(link);
+		if (record != null) {
 			model.addAttribute("result", link);
 			return "share/sharing";
-		} catch (NullPointerException e) {
+		} else {
 			return "error/4xx";
 		}
 	}
