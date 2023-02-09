@@ -31,14 +31,10 @@ public class RouteService {
 		route.setMaker(userId); // TODO: 경로 사용자/최초생성자 관련 기능 추후 추가 예정
 
 		String geometry = route.getGeometry();
-		System.out.println("경로 : " + geometry);
 		String geometryPath = fileService.saveFile(fileOption, geometry, userId);
-		System.out.println("경로 위치 : " + geometryPath);
 		route.setGeometry(geometryPath);
 
-
 		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
-		System.out.println("썸네일 경로  : " + thumbPath);
 		route.setThumbnail(thumbPath);
 
 		result = routeRepository.save(route);
