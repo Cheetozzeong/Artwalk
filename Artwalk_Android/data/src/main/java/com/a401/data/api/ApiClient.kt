@@ -20,6 +20,8 @@ object ApiClient {
     fun getUserServerApiService(): UserApiService =
         getInstance(BuildConfig.LOGIN_BASE_URL).create(UserApiService::class.java)
 
+    fun getRecordServerApiService(): RecordApiService =
+        getInstance(BuildConfig.RECORD_BASE_URL).create(RecordApiService::class.java)
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
