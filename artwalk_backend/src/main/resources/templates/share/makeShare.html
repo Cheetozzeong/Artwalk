@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공유 이미지 생성</title>
+    <link rel="favicon" href="/favicon.ico">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1NFE5BDLZ4');
+    </script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            text-align: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .header {
+            height: 60px;
+            background-color: #07A794;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo {
+            width: 35px;
+            height: 35px;
+            margin-right: 12px;
+        }
+        .logo-letter {
+            color: white;
+            font-family: "Noto Sans KR",sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin-inline: auto;
+            margin-block: 20px;
+        }
+
+        #map {
+            width: 350px;
+            height: 350px;
+            margin: auto;
+        }
+
+        .input-form {
+            width: 100%;
+            padding-block: 30px;
+            margin: auto;
+        }
+
+        .input-form div {
+            margin-block: 20px;
+        }
+
+        label {
+            font-family: "Noto Sans KR",sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #292929;
+            margin-right: 5px;
+            margin-left: 15px;
+        }
+
+        input {
+            width: 50px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        input[type="color"] {
+            border: none;
+        }
+
+        input[type="number"] {
+            width: 40px;
+            padding: 2px 5px;
+            font-family: "Noto Sans KR",sans-serif;
+            font-size: 16px;
+            font-weight: bolder;
+            color: #292929;
+            border: 0.5px solid #5e5e5e;
+            border-radius: 15px;
+        }
+
+        button {
+            padding-top: 30px;
+            padding: 10px 30px 10px;
+            background: #07A794;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-family: "Noto Sans KR",sans-serif;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #ffffff;
+            border: #07A794;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="./img/logo.png" alt="logo" class="logo">
+        <h2 class="logo-letter">Artwalk</h2>
+    </div>
+    <div class="container">
+        <div id="map"></div>
+        <div class="input-form">
+            <label for="lineColor">색상</label>
+            <input type="color" id="lineColor" value="#0601bd">
+            <label for="lineWidth">굵기</label>
+            <input type="number" id="lineWidth" value="5">
+        </div>
+        <button id="btn-make-image">공유 이미지 생성하기</button>
+    </div>
+    <script th:inline="javascript">
+        mapboxgl.accessToken = "pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA";
+
+        var map = new mapboxgl.Map({
+            container: "map",
+            style: "mapbox://styles/mapbox/streets-v12",
+            center: [127.0397, 37.5013],
+            zoom: 8
+        });
+
+        var token;
+
+        window.onload = function(){
+            var geometry = [[${geometry}]];
+            token = [[${token}]];
+            makePolyline(geometry);
+        };
+
+        function makePolyline(encodedPolyline){
+            var coords = toGeoJSON(decodeURIComponent(encodedPolyline));
+            var lineColor = "rgba(6, 1, 189, 0.5)";
+            var lineWidth = document.querySelector("#lineWidth").value*1;
+
+            map.on("load", () => {
+                makeLayer(coords, lineColor, lineWidth);
+                const coordinates = coords;
+                
+                const bounds = new mapboxgl.LngLatBounds(
+                    coordinates[0],
+                    coordinates[0]
+                );
+                
+                for (const coord of coordinates) {
+                    bounds.extend(coord);
+                }
+
+                map.fitBounds(bounds, {
+                    padding: 20
+                });
+
+                document.addEventListener("input", function () {
+                    var lineColor = document.querySelector("#lineColor").value;
+                    var lineWidth = document.querySelector("#lineWidth").value*1;
+                    makeLayer(coords, lineColor, lineWidth);
+                });
+            });
+        };
+
+        function makeLayer(coords, lineColor, lineWidth){
+            if(map.getLayer("route")) {
+                map.removeLayer("route");
+            }
+            if(map.getSource("route")) {
+                map.removeSource("route");
+            }
+
+            map.addSource("route",{
+                "type": "geojson",
+                "data": {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": coords
+                    }
+                }
+            });
+
+            map.addLayer({
+                "id": "route",
+                "type": "line",
+                "source": "route",
+                "layout": {
+                    "line-join": "round",
+                    "line-cap": "round"
+                },
+                "paint": {
+                    "line-color": lineColor,
+                    "line-width": lineWidth
+                }
+            });
+        }
+
+        function decode(str, precision) {
+            var index = 0,
+            lat = 0,
+            lng = 0,
+            coordinates = [],
+            shift = 0,
+            result = 0,
+            byte = null,
+            latitude_change,
+            longitude_change,
+            factor = Math.pow(10, precision || 5);
+        
+            while (index < str.length) {
+            byte = null;
+            shift = 0;
+            result = 0;
+        
+            do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
+        
+            latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        
+            shift = result = 0;
+        
+            do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
+        
+            longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        
+            lat += latitude_change;
+            lng += longitude_change;
+        
+            coordinates.push([lat / factor, lng / factor]);
+            }
+        
+            return coordinates;
+        }
+        
+        function flipped(coords) {
+            var flipped = [];
+            for (var i = 0; i < coords.length; i++) {
+            flipped.push(coords[i].slice().reverse());
+            }
+            return flipped;
+        }
+
+        function toGeoJSON(str, precision) {
+            var coords = decode(str, precision);
+            return flipped(coords)
+        }
+
+        document.querySelector("#btn-make-image").addEventListener("click", function(){
+            var lineColor = document.querySelector("#lineColor").value;
+            var lineWidth = document.querySelector("#lineWidth").value*1;
+            
+            const bounds = map.getBounds().toArray();;
+            var minLon = bounds[0][0];
+            var minLat = bounds[0][1];
+            var maxLon = bounds[1][0];
+            var maxLat = bounds[1][1];
+
+            var pathName = window.location.pathname;
+            var editLink = pathName.split('/')[2];
+
+            let config = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json" ,
+                    "token" : token
+                },
+                body: JSON.stringify({
+                    editLink: editLink,
+                    polyLineWidth : lineWidth,
+                    polyLineColor : lineColor,
+                    minLon : minLon,
+                    minLat : minLat,
+                    maxLon : maxLon,
+                    maxLat : maxLat
+                }),
+            };
+            fetch(`/record/image`, config)
+                .then((response) => response.json())
+                .then((data) => {
+                    if(data.code == "Ok"){
+                        location.replace(`/sharing/`+data.message);
+                    }else{
+                        alert("공유 이미지 생성에 실패하였습니다.\n다시 시도해주세요.")
+                    }
+            });
+        });
+    </script>
+</body>
+</html>
