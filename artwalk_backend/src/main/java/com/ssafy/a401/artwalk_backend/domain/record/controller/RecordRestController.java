@@ -89,7 +89,7 @@ public class RecordRestController {
 	@DeleteMapping("/{recordId}")
 	public ResponseEntity<CountResponseDTO> recordRemove(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
-		int result = recordService.removeRecord(record);
+		long result = recordService.removeRecord(record);
 
 		if(result == 0) return ResponseEntity.ok().body(new CountResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
@@ -104,7 +104,7 @@ public class RecordRestController {
 		int result = adminService.checkPassword(adminDTO);
 
 		if (result == 0) {
-			int res = recordService.removeRecord(record);
+			long res = recordService.removeRecord(record);
 			if (res == 0) return ResponseEntity.ok().body(new CountResponseDTO(OK, result));
 			else return ResponseEntity.badRequest().body(new CountResponseDTO(FAIL, result));
 		}
@@ -156,10 +156,11 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordListResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "기록 개수 조회", description = "기록 개수 조회 메서드입니다.")
+	@Operation(summary = "기록 개수 조회", description = "AccessToken과 일치하는 사용자의 기록 개수를 반환합니다.")
 	@GetMapping("/count")
-	public ResponseEntity<CountResponseDTO> recordCount() {
-		long count = recordService.getRecordCount();
+	public ResponseEntity<CountResponseDTO> recordCount(@ApiIgnore Authentication authentication) {
+		String userId = authentication.getName();
+		long count = recordService.getRecordCount(userId);
 		return ResponseEntity.ok().body(new CountResponseDTO(OK, count));
 	}
 

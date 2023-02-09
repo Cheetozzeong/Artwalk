@@ -27,6 +27,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class FileService {
 	private static String FILE_PATH;
@@ -162,6 +165,7 @@ public class FileService {
 			.append(imageWidth).append("x")
 			.append(imageHeight).append("?access_token=")
 			.append(MAPBOX_API_KEY);
+		log.info("썸네일 요청 주소: ", imageURL.toString());
 
 		String filePathName = "";
 		try {
@@ -172,7 +176,9 @@ public class FileService {
 
 			BufferedImage image = ImageIO.read(imgURL);
 			File file = new File(makePathName(option, filePathName, userId));
+			log.info("생성된 파일 : ", file);
 			if(!file.exists()) {
+				log.info("파일이 존재하지 않음");
 				file.mkdirs();
 			}
 
