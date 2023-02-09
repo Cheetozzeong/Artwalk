@@ -1,5 +1,6 @@
 package com.a401.artwalk.view.record
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,6 +18,7 @@ import com.mapbox.maps.Style
 import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.utills.LocationPermissionHelper
+import com.a401.artwalk.view.route.draw.ROUTE_COLOR
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mapbox.android.gestures.MoveGestureDetector
@@ -40,6 +42,7 @@ import java.lang.Math.sin
 import java.net.URLEncoder
 import java.util.*
 import kotlin.concurrent.timer
+import kotlin.math.absoluteValue
 import kotlin.math.asin
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -49,6 +52,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
+    private lateinit var routeAnnotationManager: PolylineAnnotationManager
+    private lateinit var pointAnnotaionManager: PointAnnotationManager
     private var timerTaskforPolyLine : Timer? = null
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
@@ -78,9 +83,23 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     }
 
     private fun setRoute() {
-        arguments.routeArgument ?: return
-        Toast.makeText(context, arguments.routeArgument, Toast.LENGTH_SHORT).show()
-        // TODO: 받아온 geometry를 화면에 띄우기
+        arguments.routeArgument.let { route ->
+            if(route != null) {
+                val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
+                val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+                    .withPoints(encodedRoute)
+                    .withLineColor(ROUTE_COLOR)
+                    .withLineOpacity(0.498)
+                    .withLineWidth(7.0)
+
+                val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
+                    .withPoint(encodedRoute[0])
+                    .withPoint(encodedRoute[encodedRoute.lastIndex])
+
+                routeAnnotationManager.create(polylineAnnotationOptions)
+                pointAnnotaionManager.create(pointAnnotationOptions)
+            }
+        }
     }
 
     private fun setInitBinding(){
@@ -88,7 +107,9 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     }
 
     private fun setMapView() {
+        routeAnnotationManager = binding.mapViewRecord.annotations.createPolylineAnnotationManager()
         polylineAnnotationManager = binding.mapViewRecord.annotations.createPolylineAnnotationManager()
+        pointAnnotaionManager = binding.mapViewRecord.annotations.createPointAnnotationManager()
         mapView = binding.mapViewRecord
     }
 
