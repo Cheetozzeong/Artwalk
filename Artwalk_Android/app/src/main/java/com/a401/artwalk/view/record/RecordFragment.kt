@@ -1,5 +1,6 @@
 package com.a401.artwalk.view.record
 
+import android.icu.text.AlphabeticIndex.Record
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentRecordBinding
@@ -37,6 +39,7 @@ import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.utils.PolylineUtils
 import com.mapbox.maps.plugin.locationcomponent.location
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.net.URLEncoder
@@ -47,6 +50,7 @@ import kotlin.math.asin
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+@AndroidEntryPoint
 class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
     private val arguments by navArgs<RecordFragmentArgs>()
@@ -55,14 +59,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var routeAnnotationManager: PolylineAnnotationManager
     private lateinit var pointAnnotaionManager: PointAnnotationManager
     private var timerTaskforPolyLine : Timer? = null
-    private var timerTaskforTime: Timer? = null
-    private var timerTaskforDistance: Timer? = null
+
     private var curPoint : Point = Point.fromLngLat(0.0,0.0)
-    private var time = 0
-    private var distance = 0.0
-    private var flagForWalk = true
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setMapView()
@@ -80,6 +78,12 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         setDistanceText()
         setDurationText()
         setRoute()
+
+        recordViewModel.isSuccessSave.observe(viewLifecycleOwner) { isSuccessSave ->
+            if(isSuccessSave) {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     private fun setRoute() {
@@ -129,10 +133,10 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
     private fun addPolyLineToMap() {
         var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
-        timerTaskforPolyLine = timer(period = 2000){
-            setPolyline(curPoint,lastPoint)
-            distance += getDistance(curPoint,lastPoint)
-            lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
+        timerTaskforPolyLine = timer(period = 2000) {
+            setPolyline(curPoint, lastPoint)
+            recordViewModel.addDistance(getDistance(curPoint, lastPoint))
+            lastPoint = Point.fromLngLat(curPoint.longitude(), curPoint.latitude())
         }
     }
 
@@ -140,14 +144,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         recordViewModel.distance.observe(requireActivity()) { distance ->
             binding.distance = distance / 1000
         }
-    }
-
-    private fun getDistance(cur: Point, last:Point): Double {
-        val dLat = Math.toRadians(last.latitude() - cur.latitude())
-        val dLong = Math.toRadians(last.longitude() - cur.longitude())
-        val a = sin(dLat/2).pow(2.0) + sin(dLong/2).pow(2.0) * cos(Math.toRadians(cur.latitude()))
-        val c = 2 * asin(sqrt(a))
-        return (6372.8 * 1000 * c) // 상수 입니다..!
     }
 
     private fun setDurationText() {
@@ -176,7 +172,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         recordViewModel.startButtonEvent.observe(requireActivity()){
             with(binding.imagebuttonRecordStartbutton) {
                 changeStartButtonState()
-                startRun()
+                recordViewModel.startRun()
+                addPolyLineToMap()
             }
         }
 
@@ -186,41 +183,10 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         recordViewModel.stopButtonEvent.observe(requireActivity()){
             with(binding.imagebuttonRecordStopbutton){
                 changeStartButtonState()
-                stopRun()
+                recordViewModel.stopRun()
+                timerTaskforPolyLine?.cancel()
                 showSaveSheet()
             }
-        }
-    }
-
-    private fun startRun(){
-        if(flagForWalk){
-            addPolyLineToMap()
-            flagForWalk = false
-            timerTaskforTime = timer(period = 1000){
-                time++
-                val hour = time / 3600
-                val minute = (time % 3600) / 60
-                val sec = time % 60
-                requireActivity().runOnUiThread(){
-                    binding.second = sec
-                    binding.minute = minute
-                    binding.hour = hour
-                }
-            }
-            timerTaskforDistance = timer(period = 2000) {
-                requireActivity().runOnUiThread() {
-                    binding.distance = distance / 1000
-                }
-            }
-        }
-    }
-
-    private fun stopRun() {
-        if(!flagForWalk){
-            flagForWalk = true
-            timerTaskforTime?.cancel()
-            timerTaskforDistance?.cancel()
-            timerTaskforPolyLine?.cancel()
         }
     }
 
@@ -233,10 +199,14 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         val recordSaveButton = dialog.findViewById<TextView>(R.id.button_record_save)
         val recordQuitButton = dialog.findViewById<TextView>(R.id.button_record_quit)
         val recordImage = dialog.findViewById<ImageView>(R.id.imageview_record_save)
+        val recordDetail = dialog.findViewById<TextView>(R.id.edittext_record_detail)
         if (recordImage != null) {
             Glide.with(requireActivity()).load(recordUrl).into(recordImage)
         }
         recordSaveButton?.setOnClickListener {
+            val detail = recordDetail?.text.toString()
+            recordViewModel.setText(detail)
+            recordViewModel.saveRecord(polylineAnnotationManager.getTotalPolyline())
             Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
@@ -244,6 +214,15 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    fun getDistance(cur: Point, last: Point): Double {
+        val dLat = Math.toRadians(last.latitude() - cur.latitude())
+        val dLong = Math.toRadians(last.longitude() - cur.longitude())
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.sin(dLong / 2)
+            .pow(2.0) * Math.cos(Math.toRadians(cur.latitude()))
+        val c = 2 * asin(sqrt(a))
+        return (6372.8 * 1000 * c) // 상수 입니다..!
     }
 
     private fun PolylineAnnotationManager.getTotalPolyline(): String {
