@@ -207,6 +207,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             val detail = recordDetail?.text.toString()
             recordViewModel.setText(detail)
             recordViewModel.saveRecord(polylineAnnotationManager.getTotalPolyline())
+
             Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }

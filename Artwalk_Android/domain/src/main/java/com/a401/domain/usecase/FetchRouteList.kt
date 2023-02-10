@@ -9,6 +9,6 @@ class FetchRouteList @Inject constructor(
     private val routeRepository: RouteRepository
 ) {
     suspend operator fun invoke(): Flow<List<RouteForList>> {
-        return routeRepository.getRoutForList()
+        return routeRepository.getRouteForList()
     }
 }

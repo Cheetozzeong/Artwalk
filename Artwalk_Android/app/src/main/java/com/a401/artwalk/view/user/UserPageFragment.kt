@@ -1,8 +1,10 @@
 package com.a401.artwalk.view.user
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -11,6 +13,7 @@ import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentUserPageBinding
+import com.a401.artwalk.view.route.list.RouteListFragmentDirections
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -23,13 +26,31 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     // UserPageView 모델이라는 모델을 가지고 와서 변수로 설정
     private val userPageViewModel by viewModels<UserpageViewModel> { defaultViewModelProviderFactory }
 
-    // 뷰가 생성될 때 View
+    private val recordListAdapter = RecordListAdapter(
+        ThumbnailClickListener { recordId ->
+            val action = UserPageFragmentDirections.actionRecordListToRecordDetail(recordId)
+            findNavController().navigate(action) }
+    )
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        userPageViewModel.getRecords()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
         setToolBar()
-
         lifecycleScope.launch {
             setUser()
+        }
+        lifecycleScope.launch {
+            collectListItem()
+
         }
 
         binding.toolbarUserPage.menu.findItem(R.id.setting).setOnMenuItemClickListener {
@@ -40,19 +61,20 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     }
 
     private suspend fun setUser() {
-        userPageViewModel.userInfo.collect { user ->
-            binding.nickName = user.nickName
-            binding.numOfRecord = user.numOfRecord.toString()
-            binding.numOfRoute = user.numOfRoute.toString()
+            userPageViewModel.userInfo.collect { user ->
+                binding.nickName = user.nickName
+                binding.numOfRecord = user.numOfRecord.toString()
+                binding.numOfRoute = user.numOfRoute.toString()
 
-            Glide.with(binding.imageViewUserPageProfile)
-                .load(
-                    GlideUrl(
-                        BuildConfig.PROFILE_URL + "?userId=" + user.userId,
-                        LazyHeaders.Builder().addHeader("accessToken", "Bearer ${App.prefs.getString("accessToken", "")}").build()
+                Glide.with(binding.imageViewUserPageProfile)
+                    .load(
+                        GlideUrl(
+                            BuildConfig.PROFILE_URL + "?userId=" + user.userId,
+                            LazyHeaders.Builder().addHeader("accessToken", "Bearer ${App.prefs.getString("accessToken", "")}").build()
+                        )
                     )
-                )
-                .into(binding.imageViewUserPageProfile)
+                    .into(binding.imageViewUserPageProfile)
+
         }
     }
 
@@ -68,4 +90,13 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
         }
     }
 
+    private fun setupRecyclerView() = with(binding.recyclerViewRecordList) {
+        adapter = recordListAdapter
+    }
+
+    private suspend fun collectListItem() {
+        userPageViewModel.records.collect { recordForList ->
+            recordListAdapter.submitList(recordForList)
+        }
+    }
 }
