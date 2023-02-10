@@ -93,6 +93,11 @@ export default {
           label: 'Profile Image'
         },
         {
+          key: 'userType',
+          label: 'User Type',
+          sortable: true
+        },
+        {
           key: 'level',
           label: 'Level',
           sortable: true

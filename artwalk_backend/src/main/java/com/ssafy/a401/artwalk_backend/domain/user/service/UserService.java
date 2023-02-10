@@ -104,9 +104,11 @@ public class UserService {
 		String userId = user.getUserId();
 		String password = user.getPassword();
 		String nickname = user.getNickname();
+		String userType = "normal";
 
 		if (userRepository.existsById(userId)) return null;
-		return addUserToken(userId, password, "", nickname);
+		return addUserToken(userId, password, "", nickname, userType);
+
 	}
 
 	/** 사용자 소셜 로그인 가입 **/
@@ -131,8 +133,9 @@ public class UserService {
 				String userId = userResponseKakao.getSub();
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
+				String userType = "social";
 
-				return addUserToken(userId, "add_artwalk_salt" + userId, picture, nickname);
+				return addUserToken(userId, "add_artwalk_salt" + userId, picture, nickname, userType);
 
 			} catch (NullPointerException e) {
 				log.info("사용자의 idToken을 확인할 수 없습니다.");
@@ -271,7 +274,7 @@ public class UserService {
 	}
 
 	@Transactional
-	protected Token addUserToken(String userId, String password, String picture, String nickname) {
+	protected Token addUserToken(String userId, String password, String picture, String nickname, String userType) {
 		Authentication authentication = getAuthentication(userId, password, "ROLE_USER");
 		Token token = getToken(authentication);
 
@@ -293,6 +296,8 @@ public class UserService {
 				.password(password)
 				.profile(fileService.saveProfileImage(picture, userId))
 				.nickname(nickname)
+				.userType(userType)
+
 				.refreshToken(token.getRefreshToken())
 				.build();
 

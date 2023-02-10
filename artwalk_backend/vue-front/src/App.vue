@@ -1,6 +1,6 @@
 <template>
   <b-container fluid id="app" class="d-flex">
-    <div v-if="$store.state.isLogin">
+    <div v-if="$store.state.isLogin && !$store.state.isError">
       <b-button v-b-toggle.sidebar-no-header style="font-size: 2rem" variant="light" class="mt-3 justify-content-start">
         <b-icon icon="list" class="pb-2"></b-icon>
       </b-button>

@@ -1,10 +1,6 @@
 package com.ssafy.a401.artwalk_backend.domain.record.service;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +9,6 @@ import java.util.Random;
 import javax.transaction.Transactional;
 
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
