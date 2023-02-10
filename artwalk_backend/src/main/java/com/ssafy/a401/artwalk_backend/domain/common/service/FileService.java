@@ -38,9 +38,9 @@ public class FileService {
 
 	// TODO: 썸네일 세부 옵션 정하기 (임시 지정 상태)
 	private static int polyLineWidth = 5;
-	private static String polyLineColor = "ff0000";
+	private static String polyLineColor = "07a794";
 	private static int imageWidth = 400;
-	private static int imageHeight = 300;
+	private static int imageHeight = 400;
 
 	@Value("${file.path}")
 	private void setFilePath(String filePath) {
@@ -163,7 +163,7 @@ public class FileService {
 			.append(polyLineColor).append("(")
 			.append(URLEncoder.encode(geometry)).append(")/auto/")
 			.append(imageWidth).append("x")
-			.append(imageHeight).append("?access_token=")
+			.append(imageHeight).append("?padding=50%2C50%2C50%2C50&access_token=")
 			.append(MAPBOX_API_KEY);
 
 		String filePathName = "";
