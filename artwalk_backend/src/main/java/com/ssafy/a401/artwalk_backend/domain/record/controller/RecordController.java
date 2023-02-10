@@ -38,15 +38,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
+@Api(tags = {"기록 공유 API"}, description = "기록 공유 페이지 이동 API 입니다.")
 @Controller
 @RequestMapping("sharing")
 @RequiredArgsConstructor
 public class RecordController {
-	private static final String OK = "Ok";
-	private static final String FAIL = "Fail";
-	
 	private final RecordService recordService;
 
+	@Operation(summary = "편집 페이지 이동", description = "공유 이미지 편집 페이지 이동 메서드입니다.")
 	@GetMapping("/edit/{editLink}")
 	public String editShareImage(Model model, @PathVariable("editLink") String editLink, @RequestHeader String accessToken) {
 		Record record = recordService.findByEditLink(editLink);
@@ -60,6 +59,8 @@ public class RecordController {
 			return "error/4xx";
 		}
 	}
+
+	@Operation(summary = "공유페이지 이동", description = "공유페이지 이동 메서드입니다.")
 	@GetMapping("/{link}")
 	public String sharingRecordPage(Model model, @PathVariable("link") String link) {
 		Record record = recordService.findByLink(link);

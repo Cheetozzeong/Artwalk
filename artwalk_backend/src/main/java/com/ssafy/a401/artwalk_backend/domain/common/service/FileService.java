@@ -28,6 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.a401.artwalk_backend.domain.record.model.RecordImageRequestDTO;
+
 @Service
 public class FileService {
 	private static String FILE_PATH;
@@ -36,9 +38,9 @@ public class FileService {
 
 	// TODO: 썸네일 세부 옵션 정하기 (임시 지정 상태)
 	private static int polyLineWidth = 5;
-	private static String polyLineColor = "ff0000";
+	private static String polyLineColor = "07a794";
 	private static int imageWidth = 400;
-	private static int imageHeight = 300;
+	private static int imageHeight = 400;
 
 	@Value("${file.path}")
 	private void setFilePath(String filePath) {
@@ -161,7 +163,7 @@ public class FileService {
 			.append(polyLineColor).append("(")
 			.append(URLEncoder.encode(geometry)).append(")/auto/")
 			.append(imageWidth).append("x")
-			.append(imageHeight).append("?access_token=")
+			.append(imageHeight).append("?padding=50%2C50%2C50%2C50&access_token=")
 			.append(MAPBOX_API_KEY);
 
 		String filePathName = "";
@@ -208,19 +210,19 @@ public class FileService {
 	}
 
 	/** 인코딩된 기록(record)을 가지고 공유이미지를 생성하고 저장한 후 저장된 경로를 반환합니다. */
-	public static String saveShareImage(String option, String recordPath, String geometry, Map<String, Object> request, String userId) {
-		int polyLineWidth = (int)request.get("polyLineWidth"); // 기록 굵기
-		String polyLineColor = (String)request.get("polyLineColor"); // 기록 색상
-		double minLon = (double)request.get("minLon"); // 최소 경도
-		double minLat = (double)request.get("minLat"); // 최소 위도
-		double maxLon = (double)request.get("maxLon"); // 최대 경도
-		double maxLat = (double)request.get("maxLat"); // 최대 위도
+	public static String saveShareImage(String option, String recordPath, String geometry, RecordImageRequestDTO recordImageRequestDTO, String userId) {
+		int polyLineWidth = recordImageRequestDTO.getPolyLineWidth(); // 기록 굵기
+		String polyLineColor = recordImageRequestDTO.getPolyLineColor(); // 기록 색상
+		double minLon = recordImageRequestDTO.getMinLon(); // 최소 경도
+		double minLat = recordImageRequestDTO.getMinLat(); // 최소 위도
+		double maxLon = recordImageRequestDTO.getMaxLon(); // 최대 경도
+		double maxLat = recordImageRequestDTO.getMaxLat(); // 최대 위도
 
 		StringBuilder imageURL = new StringBuilder();
 		imageURL.append(MAPBOX_API_URL).append("path-")
 			.append(polyLineWidth).append("+")
 			.append(polyLineColor).append("(")
-			.append(geometry).append(")/[")
+			.append(URLEncoder.encode(geometry)).append(")/[")
 			.append(minLon).append(",")
 			.append(minLat).append(",")
 			.append(maxLon).append(",")
@@ -247,34 +249,6 @@ public class FileService {
 			e.printStackTrace();
 		}
 
-		return filePathName;
-	}
-	
-	// TODO: 공유이미지 임시 생성 메서드 -> 추후 수정 예정
-	public static String saveShareImageTemp(String option, String recordPath, String geometry, String userId) {
-		StringBuilder imageURL = new StringBuilder();
-		imageURL.append(MAPBOX_API_URL).append("path-")
-			.append(polyLineWidth).append("+")
-			.append(polyLineColor).append("(")
-			.append(geometry).append(")/auto/")
-			.append(imageWidth).append("x")
-			.append(imageHeight).append("?access_token=")
-			.append(MAPBOX_API_KEY);
-		String filePathName = "";
-		try {
-			URL imgURL = new URL(imageURL.toString());
-			String extension = "png";
-			StringTokenizer st = new StringTokenizer(recordPath, ".");
-			filePathName = st.nextToken() + "_share." + extension;
-			BufferedImage image = ImageIO.read(imgURL);
-			File file = new File(makePathName(option, filePathName, userId));
-			if(!file.exists()) {
-				file.mkdirs();
-			}
-			ImageIO.write(image, extension, file);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return filePathName;
 	}
 

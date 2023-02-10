@@ -268,7 +268,7 @@
         }
 
         document.querySelector("#btn-make-image").addEventListener("click", function(){
-            var lineColor = document.querySelector("#lineColor").value;
+            var lineColor = document.querySelector("#lineColor").value.replace('#', '');
             var lineWidth = document.querySelector("#lineWidth").value*1;
             
             const bounds = map.getBounds().toArray();;
@@ -284,8 +284,8 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json" ,
-                    "token" : token,
-                     "editLink": editLink
+                    "accessToken" : token,
+                    "editLink": editLink
                 },
                 body: JSON.stringify({
                     polyLineWidth : lineWidth,
@@ -302,7 +302,7 @@
                     if(data.code == "Ok"){
                         location.replace(`/sharing/`+data.message);
                     }else{
-                        alert("공유 이미지 생성에 실패하였습니다.\n다시 시도해주세요.")
+                        alert(data.message);
                     }
             });
         });

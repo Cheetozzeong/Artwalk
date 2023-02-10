@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import com.ssafy.a401.artwalk_backend.domain.admin.model.PasswordDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.CountResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.record.model.RecordImageRequestDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordListResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordRequestDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
@@ -170,7 +172,7 @@ public class RecordRestController {
 	@Operation(summary = "기록 썸네일 조회", description = "기록 썸네일 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
 	@GetMapping("/thumb/{recordId}")
-	public ResponseEntity<Resource> displayRecordThumbnail(@PathVariable("recordId") int recordId) {
+	public ResponseEntity<Resource> recordThumbnailDisplay(@PathVariable("recordId") int recordId) {
 		Record record = recordService.findByRecordId(recordId);
 		ResponseEntity<Resource> response = recordService.getThumbnailImage(record);
 		return response;
@@ -179,7 +181,7 @@ public class RecordRestController {
 	@Operation(summary = "공유페이지 생성", description = "공유페이지 생성 메서드입니다. 편집을 위한 주소를 반환합니다. Path에 편집하려는 기록 주소를 포함해 요청합니다.")
 	@ApiImplicitParam(name = "recordId", value = "조회할 기록 recordId", dataType = "int")
 	@GetMapping("/share/{recordId}")
-	public ResponseEntity<ResponseDTO> modifyRecordImage(@PathVariable("recordId") int recordId) {
+	public ResponseEntity<ResponseDTO> recordShareImagePageMake(@PathVariable("recordId") int recordId) {
 		// recordId로 기록을 찾아온다.
 		Record record = recordService.findByRecordId(recordId);
 		if (record != null) {
@@ -193,26 +195,42 @@ public class RecordRestController {
 	@Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "link", value = "조회할 기록 link", dataType = "String")
 	@GetMapping("/image/{link}")
-	public ResponseEntity<Resource> displayRecordImage(@PathVariable("link") String link) {
+	public ResponseEntity<Resource> recordShareImageDisplay(@PathVariable("link") String link) {
 		Record record = recordService.findByLink(link);
 		ResponseEntity<Resource> response = recordService.getShareImage(record);
 		return response;
 	}
 
-	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  Path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
-	@ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 ID", dataType = "int")
-	@PostMapping("/image/{recordId}")
-	public ResponseEntity<RecordResponseDTO> displayRecordImage(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
-		Record record = recordService.findByRecordId(recordId);
-		Record result = recordService.saveRecordImage(record, request);
-		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
-		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
+	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다. Request Header에 token과 editLink를 포함하고, Request Body에 지도 경계 위도 경도와 polyline 굵기와 색상을 포함하여 보냅니다.")
+	@PostMapping("/image")
+	public ResponseEntity<ResponseDTO> recordShareImageSave(@RequestHeader(value="editLink") String editLink, @RequestBody RecordImageRequestDTO recordImageRequestDTO, @ApiIgnore Authentication authentication) {
+		Record record = recordService.findByEditLink(editLink);
+
+		String userId = authentication.getName();
+		if(record != null && record.getUserId().equals(userId)){
+			Record result = recordService.saveRecordImage(record, recordImageRequestDTO);
+			if(result != null) {
+				String link = recordService.saveRandomLink(result);
+				return ResponseEntity.ok().body(new ResponseDTO(OK, link));
+			}
+		}
+		return ResponseEntity.badRequest().body(new ResponseDTO(FAIL, "공유 이미지 생성에 실패하였습니다.\n다시 시도해주세요."));
 	}
+
+	// @Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  Path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
+	// @ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 ID", dataType = "int")
+	// @PostMapping("/image/{recordId}")
+	// public ResponseEntity<RecordResponseDTO> recordShareImageSave(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
+	// 	Record record = recordService.findByRecordId(recordId);
+	// 	Record result = recordService.saveRecordImage(record, request);
+	// 	if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
+	// 	else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
+	// }
 
 	// @Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
 	// @ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
 	// @PostMapping("/download/{link}")
-	// public ResponseEntity<UrlResource> downloadImage(@PathVariable("link") String link) {
+	// public ResponseEntity<UrlResource> recordShareImageDownload(@PathVariable("link") String link) {
 	// 	recordService.
 	// 	return ResponseEntity.ok().body(null);
 	// }

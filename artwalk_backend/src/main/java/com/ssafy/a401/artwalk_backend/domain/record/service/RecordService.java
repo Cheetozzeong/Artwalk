@@ -1,6 +1,10 @@
 package com.ssafy.a401.artwalk_backend.domain.record.service;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,12 +13,14 @@ import java.util.Random;
 import javax.transaction.Transactional;
 
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.a401.artwalk_backend.domain.common.service.FileService;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
+import com.ssafy.a401.artwalk_backend.domain.record.model.RecordImageRequestDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.repository.RecordRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -39,10 +45,6 @@ public class RecordService {
 
 		String thumbPath = fileService.saveThumbnail(fileOption, geometryPath, geometry, userId);
 		record.setThumbnail(thumbPath);
-
-		// TODO: 공유이미지 임시 생성 메서드 -> 추후 수정 예정
-		String shareImagePath = fileService.saveShareImageTemp(fileOption, geometryPath, geometry, userId);
-		record.setRecentImage(shareImagePath);
 
 		result = recordRepository.save(record);
 
@@ -143,10 +145,10 @@ public class RecordService {
 	}
 
 	/** 공유이미지를 저장합니다. 만약 이미 저장되어 있는 이미지가 있는 경우 새로 만든 이미지로 교체합니다. */
-	public Record saveRecordImage(Record record, Map<String, Object> request) {
+	public Record saveRecordImage(Record record, RecordImageRequestDTO recordImageRequestDTO) {
 		Record result = null;
 
-		String imagePath = fileService.saveShareImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), request, record.getUserId());
+		String imagePath = fileService.saveShareImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), recordImageRequestDTO, record.getUserId());
 		if(record.getRecentImage() != null && !("").equals(record.getRecentImage())) {
 			fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		}
@@ -198,6 +200,15 @@ public class RecordService {
 	public String saveRandomEditLink(Record record) {
 		String randomLink = makeRandomLink();
 		record.setEditLink(randomLink);
+		return randomLink;
+	}
+
+	/** 새로운 공유 주소를 생성해 DB에 저장 후 반환합니다. */
+	@Transactional
+	public String saveRandomLink(Record record) {
+		String randomLink = makeRandomLink();
+		record.setEditLink(null);
+		record.setLink(randomLink);
 		return randomLink;
 	}
 
