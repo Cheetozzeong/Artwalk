@@ -34,8 +34,12 @@ export default new Vuex.Store({
       state.isLogin = true
     },
     LOG_OUT(state) {
-      state.isLogin = false
-      state.token = null
+      state.token = null,
+      state.route = [],
+      state.record = [],
+      state.user = [],
+      state.isLogin = false,
+      state.isError = false
     },
     GET_ROUTE(state, route) {
       state.route = route
@@ -70,6 +74,8 @@ export default new Vuex.Store({
     },
     logout(context) {
       context.commit('LOG_OUT')
+      alert('로그아웃되었습니다.')
+      router.push({ name: 'login' })
     },
     getRoute(context) {
       return Send({

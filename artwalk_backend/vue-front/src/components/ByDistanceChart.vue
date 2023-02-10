@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       data: {
-        labels: ['0 - 3km', '3 - 10km', '10 - 30km', '30 - 50km', '50 - 100km', '100 - 300km', '300km 이상'],
+        labels: Object.keys(this.recordDistance),
         datasets: [
           {
             label: 'Record',

@@ -23,7 +23,7 @@
                   <router-link :to="{ name: 'recordBoard' }" class="tdn menulist" style="font-size: 1.5rem">Record Board</router-link>
                 </b-nav-item>
                 <b-nav-item active @click="hide" class="my-3">
-                  <router-link :to="{ name: 'login' }" class="tdn logout" style="font-size: 1.5rem">Logout</router-link>
+                  <router-link @click.native.prevent="$store.dispatch('logout')" :to="{ name: 'main' }" class="tdn logout" style="font-size: 1.5rem">Logout</router-link>
                 </b-nav-item>
               </b-nav>
             </nav>

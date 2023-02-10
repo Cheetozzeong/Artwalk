@@ -104,7 +104,7 @@ public class UserService {
 		String userId = user.getUserId();
 		String password = user.getPassword();
 		String nickname = user.getNickname();
-		String userType = "normal";
+		Boolean userType = false; // false = 'normal'
 
 		if (userRepository.existsById(userId)) return null;
 		return addUserToken(userId, password, "", nickname, userType);
@@ -133,7 +133,7 @@ public class UserService {
 				String userId = userResponseKakao.getSub();
 				String picture = userResponseKakao.getPicture();
 				String nickname = userResponseKakao.getNickname();
-				String userType = "social";
+				Boolean userType = true; // true = 'social'
 
 				return addUserToken(userId, "add_artwalk_salt" + userId, picture, nickname, userType);
 
@@ -274,7 +274,7 @@ public class UserService {
 	}
 
 	@Transactional
-	protected Token addUserToken(String userId, String password, String picture, String nickname, String userType) {
+	protected Token addUserToken(String userId, String password, String picture, String nickname, Boolean userType) {
 		Authentication authentication = getAuthentication(userId, password, "ROLE_USER");
 		Token token = getToken(authentication);
 
