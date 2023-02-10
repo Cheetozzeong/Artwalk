@@ -67,9 +67,6 @@ export default {
       this.$store.dispatch('login', payload)
     },
   },
-  created() {
-    this.$store.dispatch('logout')
-  },
 }
 </script>
 

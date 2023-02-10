@@ -84,7 +84,8 @@ export default {
             this.userInfo = res.data.user
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     },
     getUserRoute() {
@@ -97,7 +98,8 @@ export default {
             this.userRoutes = res.data.routes
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     },
     getUserRecord() {
@@ -110,7 +112,8 @@ export default {
             this.userRecords = res.data.records
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     },
   },

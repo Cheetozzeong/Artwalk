@@ -7,9 +7,6 @@
 <script>
 export default {
   name: "UserItem.vue",
-  props: {
-    user: Object
-  }
 }
 </script>
 

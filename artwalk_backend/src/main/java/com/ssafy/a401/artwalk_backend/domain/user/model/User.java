@@ -63,6 +63,9 @@ public class User {
 	@Schema(description = "사용자 경험치", nullable = false, example = "151")
 	private int exp;
 
+	@Schema(description = "사용자 가입 타입", nullable = false, example = "true | flase")
+	private Boolean userType;
+
 	@JsonSerialize(using= LocalDateTimeSerializer.class)
 	@JsonDeserialize(using= LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss", timezone = "Asia/Seoul")

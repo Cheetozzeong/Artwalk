@@ -94,13 +94,14 @@ export default {
             this.searchedRecords = res.data.records
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           });
     },
     doReset() {
-      this.selectedDropdownItem = "not Selected",
-          this.searchKeyword = null,
-          this.searchedRecords = null
+      this.selectedDropdownItem = "not Selected"
+      this.searchKeyword = null
+      this.searchedRecords = null
     },
   },
   computed: {

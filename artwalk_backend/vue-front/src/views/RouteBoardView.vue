@@ -94,8 +94,9 @@ export default {
             this.searchedRoutes = res.data.routes
           })
           .catch((err) => {
-            console.log(err)
-          });
+            this.err = err
+            // console.log(err)
+          })
     },
     doReset() {
       this.selectedDropdownItem = "not Selected"

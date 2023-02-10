@@ -99,7 +99,9 @@ export default {
             this.getTimeStringSeconds(this.record.duration)
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
+            router.replace({name: 'error'})
           })
     },
     getRecordImage() {
@@ -160,7 +162,8 @@ export default {
           .catch((err) => {
             alert("잘못된 요청입니다.")
             this.pwState = 0
-            console.error(err)
+            this.err = err
+            // console.error(err)
           })
     },
   }

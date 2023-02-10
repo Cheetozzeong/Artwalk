@@ -20,7 +20,8 @@ export default new Vuex.Store({
     route: [],
     record: [],
     user: [],
-    isLogin: false
+    isLogin: false,
+    isError: false,
   },
   getters: {
   },
@@ -33,8 +34,12 @@ export default new Vuex.Store({
       state.isLogin = true
     },
     LOG_OUT(state) {
-      state.isLogin = false
-      state.token = null
+      state.token = null,
+      state.route = [],
+      state.record = [],
+      state.user = [],
+      state.isLogin = false,
+      state.isError = false
     },
     GET_ROUTE(state, route) {
       state.route = route
@@ -51,7 +56,7 @@ export default new Vuex.Store({
       axios({
         method: 'post',
         url: '/admin/login',
-        headers: {'Content-Type': 'multipart/form-data'},
+        headers: {'Content-Type': 'multipart/form-data', 'Access-Control-Allow-Origin': '*'},
         data: {
           userId: `${payload.userId}`,
           password: `${payload.password}`
@@ -62,12 +67,15 @@ export default new Vuex.Store({
             context.commit('SAVE_TOKEN', res.headers.accesstoken)
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
             alert('아이디 혹은 비밀번호를 확인해주세요.')
           })
     },
     logout(context) {
       context.commit('LOG_OUT')
+      alert('로그아웃되었습니다.')
+      router.push({ name: 'login' })
     },
     getRoute(context) {
       return Send({
@@ -81,7 +89,8 @@ export default new Vuex.Store({
             context.commit('GET_ROUTE', res.data.routes)
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     },
     getRecord(context) {
@@ -96,7 +105,8 @@ export default new Vuex.Store({
             context.commit('GET_RECORD', res.data.records)
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     },
     getUser(context) {
@@ -108,7 +118,8 @@ export default new Vuex.Store({
             context.commit('GET_USER', res.data.users)
           })
           .catch((err) => {
-            console.log(err)
+            this.err = err
+            // console.log(err)
           })
     }
   },
