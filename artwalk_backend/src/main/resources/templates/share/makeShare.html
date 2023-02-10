@@ -296,11 +296,11 @@
                     maxLat : maxLat
                 }),
             };
-            fetch(`/record/image`, config)
+            fetch("https://i8a401.p.ssafy.io/record/image", config)
                 .then((response) => response.json())
                 .then((data) => {
                     if(data.code == "Ok"){
-                        location.replace(`/sharing/`+data.message);
+                        location.replace("https://i8a401.p.ssafy.io/sharing/"+data.message);
                     }else{
                         alert(data.message);
                     }
