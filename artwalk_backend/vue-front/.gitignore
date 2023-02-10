@@ -2,9 +2,6 @@
 node_modules
 /dist
 
-# resources static
-src/main/resources/static
-
 # local env files
 .env.local
 .env.*.local
