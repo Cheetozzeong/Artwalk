@@ -1,14 +1,22 @@
 package com.a401.artwalk.view.record
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.icu.text.AlphabeticIndex.Record
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -20,6 +28,7 @@ import com.mapbox.maps.Style
 import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.utills.LocationPermissionHelper
+import com.a401.artwalk.view.SampleActivity
 import com.a401.artwalk.view.route.draw.ROUTE_COLOR
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -53,6 +62,10 @@ import kotlin.math.sqrt
 @AndroidEntryPoint
 class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
+    private val recordReceiver: RecordReceiver by lazy { RecordReceiver() }
+    lateinit var mainActivity: SampleActivity
+    private var isRunning = false
+
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
@@ -62,28 +75,66 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
     private var curPoint : Point = Point.fromLngLat(0.0,0.0)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as SampleActivity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!recordViewModel.isReceiverRegistered) {
+            context?.registerReceiver(recordReceiver, IntentFilter("RECORD_ACTION"))
+            recordViewModel.isReceiverRegistered = true
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (recordViewModel.isReceiverRegistered) {
+            context?.unregisterReceiver(recordReceiver)
+            recordViewModel.isReceiverRegistered = false
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setMapView()
         super.onViewCreated(view, savedInstanceState)
+        setViewModel()
+        setRoute()
 
         val onIndicatorPositionChangedListenerForDraw = OnIndicatorPositionChangedListener {
             curPoint = it
         }
         mapView.location.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListenerForDraw)
 
-        setInitBinding()
-        startButtonPressed()
-        stopButtonPressed()
-        changeCurButtonState()
-        setDistanceText()
-        setDurationText()
-        setRoute()
+        binding.imagebuttonRecordStartbutton.setOnClickListener {
+            startOrPause()
+        }
 
         recordViewModel.isSuccessSave.observe(viewLifecycleOwner) { isSuccessSave ->
             if(isSuccessSave) {
                 findNavController().popBackStack()
             }
         }
+    }
+
+    private fun startOrPause() {
+        isRunning = !isRunning
+        if (isRunning){
+            start()
+        }else{
+            pause()
+        }
+    }
+
+    private fun start() {
+        binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_stop_circle_100)
+        sendCommandToForegroundService(RecordState.START)
+    }
+
+    private fun pause() {
+        binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_start_circle_100)
+        sendCommandToForegroundService(RecordState.PAUSE)
     }
 
     private fun setRoute() {
@@ -106,7 +157,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
-    private fun setInitBinding(){
+    private fun setViewModel(){
         binding.vm = recordViewModel
     }
 
@@ -146,47 +197,9 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
-    private fun setDurationText() {
-        recordViewModel.totalDuration.observe(requireActivity()) { totalDuration ->
-            binding.hour = totalDuration/3600
-            binding.minute = (totalDuration % 3600) / 60
-            binding.second = totalDuration % 60
-        }
-    }
-
     private fun changeCurButtonState() {
         binding.imagebuttonChangeCameraView.setOnClickListener {
             onCameraTracking()
-        }
-    }
-
-    private fun changeStartButtonState(){
-        val startbutton = binding.imagebuttonRecordStartbutton
-        val stopbutton = binding.imagebuttonRecordStopbutton
-        startbutton.isEnabled = !startbutton.isEnabled
-        startbutton.isVisible = !startbutton.isVisible
-        stopbutton.isGone = !stopbutton.isGone
-    }
-
-    private fun startButtonPressed() {
-        recordViewModel.startButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordStartbutton) {
-                changeStartButtonState()
-                recordViewModel.startRun()
-                addPolyLineToMap()
-            }
-        }
-
-    }
-
-    private fun stopButtonPressed(){
-        recordViewModel.stopButtonEvent.observe(requireActivity()){
-            with(binding.imagebuttonRecordStopbutton){
-                changeStartButtonState()
-                recordViewModel.stopRun()
-                timerTaskforPolyLine?.cancel()
-                showSaveSheet()
-            }
         }
     }
 
@@ -226,6 +239,22 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         return (6372.8 * 1000 * c) // 상수 입니다..!
     }
 
+    private fun sendCommandToForegroundService(recordState: RecordState) {
+        ContextCompat.startForegroundService(mainActivity.applicationContext, getServiceIntent(recordState))
+        recordViewModel.isForegroundServiceRunning = recordState != RecordState.STOP
+    }
+
+    private fun getServiceIntent(command: RecordState) =
+        Intent(mainActivity.applicationContext, RecordService::class.java).apply {
+            putExtra(SERVICE_COMMAND, command as Parcelable)
+        }
+
+    private fun updateUi(elapsedTime: Int) {
+        binding.hour = elapsedTime/3600
+        binding.minute = (elapsedTime % 3600) / 60
+        binding.second = elapsedTime % 60
+    }
+
     private fun PolylineAnnotationManager.getTotalPolyline(): String {
         val pointList: ArrayList<Point> = ArrayList()
         annotations.forEach() { polylineAnnotation ->
@@ -234,5 +263,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             }
         }
         return PolylineUtils.encode(pointList, 5)
+    }
+
+    inner class RecordReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == "RECORD_ACTION") updateUi(intent.getIntExtra(NOTIFICATION_TEXT, 0))
+        }
     }
 }

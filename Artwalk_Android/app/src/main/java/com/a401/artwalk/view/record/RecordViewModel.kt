@@ -25,6 +25,9 @@ class RecordViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider){
 
+    var isForegroundServiceRunning: Boolean = false
+    var isReceiverRegistered: Boolean = false
+
     private var _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
     val totalDuration: LiveData<Int> = _totalDuration
 
@@ -79,8 +82,6 @@ class RecordViewModel @Inject constructor(
                     }
             }
         }
-
-
     }
 
     fun startRun() {
