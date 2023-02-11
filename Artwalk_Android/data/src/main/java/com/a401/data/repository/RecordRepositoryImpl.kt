@@ -1,6 +1,7 @@
 package com.a401.data.repository
 
 import com.a401.data.datasource.remote.RecordRemoteDataSource
+import com.a401.domain.model.RecordForList
 import com.a401.domain.model.RecordForSave
 import com.a401.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,5 +21,9 @@ class RecordRepositoryImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun getRecordForList(): Flow<List<RecordForList>> {
+        return recordRemoteDataSource.getRecordList(true)
     }
 }

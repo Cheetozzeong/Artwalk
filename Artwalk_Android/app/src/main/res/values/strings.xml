@@ -16,6 +16,7 @@
 
     <string name="toDrawButton_title">경로 그리기</string>
     <string name="routeThumb_description">경로이미지 썸네일</string>
+    <string name="recordThumb_description">기록이미지 썸네일</string>
 
     <string name="privacy_policy_title">개인정보처리방침</string>
     <string name="privacy_policy_content">

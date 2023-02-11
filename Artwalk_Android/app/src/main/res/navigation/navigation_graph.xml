@@ -20,7 +20,7 @@
             app:destination="@id/route_draw"/>
 
     </fragment>
-
+    
     <fragment
         android:id="@+id/record_main"
         android:name="com.a401.artwalk.view.record.RecordFragment"
@@ -53,6 +53,11 @@
         <action
             android:id="@+id/action_userPage_to_setting"
             app:destination="@id/setting" />
+
+        <!-- record detail로-->
+        <action
+            android:id="@+id/action_record_list_to_record_detail"
+            app:destination="@id/record_main"/>
     </fragment>
 
     <fragment

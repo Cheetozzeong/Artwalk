@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface RouteRepository {
     suspend fun getRouteForWalking(from: Marker, to: Marker): Result<RouteForDraw>
 
-    suspend fun getRoutForList(): Flow<List<RouteForList>>
+    suspend fun getRouteForList(): Flow<List<RouteForList>>
 
     suspend fun postRoute(route: RouteForDraw): Flow<String>
 }

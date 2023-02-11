@@ -1,5 +1,6 @@
 package com.a401.data.repository
 
+import com.a401.data.datasource.remote.RecordRemoteDataSource
 import com.a401.data.datasource.remote.RouteRemoteDataSource
 import com.a401.data.datasource.remote.UserRemoteDataSource
 import com.a401.data.mapper.userInfoFromUserAndRouteResponse
@@ -12,7 +13,9 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
-    private val routeRemoteDataSource: RouteRemoteDataSource
+    private val routeRemoteDataSource: RouteRemoteDataSource,
+    private val recordRemoteDataSource: RecordRemoteDataSource
+
 ): UserRepository {
 
     override suspend fun postIdToken(idToken: String, serviceType: String): Flow<String> {
@@ -30,9 +33,9 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun postRegist(user: User, password: String): Flow<String> {
         return flow {
             userRemoteDataSource.postRegist(user, password).collect { response ->
-                if(response.code == "Ok") {
+                if (response.code == "Ok") {
                     emit("SUCCESS")
-                }else {
+                } else {
                     emit("FAIL")
                 }
             }
@@ -43,13 +46,16 @@ class UserRepositoryImpl @Inject constructor(
         return flow {
             userRemoteDataSource.getUserInfo().collect() { resultUser ->
                 routeRemoteDataSource.getRouteCount().collect() { resultRoute ->
-                    if(resultUser.code == "Ok" && resultRoute.code == "Ok") {
-                        emit(
-                            userInfoFromUserAndRouteResponse(
-                                resultUser,
-                                resultRoute
+                    recordRemoteDataSource.getRecordCount().collect() { resultRecord ->
+                        if (resultUser.code == "Ok" && resultRoute.code == "Ok" && resultRecord.code == "Ok") {
+                            emit(
+                                userInfoFromUserAndRouteResponse(
+                                    resultUser,
+                                    resultRoute,
+                                    resultRecord
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
