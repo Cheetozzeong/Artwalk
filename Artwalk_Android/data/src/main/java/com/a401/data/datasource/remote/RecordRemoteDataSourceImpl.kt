@@ -3,8 +3,10 @@ package com.a401.data.datasource.remote
 import android.content.Context
 import android.content.SharedPreferences
 import com.a401.data.api.ApiClient
+import com.a401.data.mapper.recordForListsFromResponses
 import com.a401.data.mapper.recordRequestFromRecordForSave
-import com.a401.data.mapper.routeRequestFromRouteForDraw
+import com.a401.data.model.response.RecordListResponse
+import com.a401.domain.model.RecordForList
 import com.a401.domain.model.RecordForSave
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -23,5 +25,22 @@ class RecordRemoteDataSourceImpl @Inject constructor(
         return flow {
             emit( a401RecordApi.postRecord(accessToken, recordRequestFromRecordForSave(recordForSave)))
         }
+    }
+
+    override suspend fun getRecordList(user: Boolean): Flow<List<RecordForList>> {
+        return flow {
+            emit(
+                recordForListsFromResponses(
+                    a401RecordApi.getRecordList(
+                        accessToken,
+                        user
+                    )
+                )
+            )
+        }
+    }
+
+    override suspend fun getRecordCount(): Flow<RecordListResponse> {
+        return flow { emit(a401RecordApi.getRecordCount(accessToken)) }
     }
 }

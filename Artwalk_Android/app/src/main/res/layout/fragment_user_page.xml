@@ -8,19 +8,26 @@
         <variable name="nickName" type="String" />
         <variable name="numOfRoute" type="String" />
         <variable name="numOfRecord" type="String" />
-    </data>
 
-    <LinearLayout
+        <variable
+            name="item"
+            type="com.a401.artwalk.view.user.RecordListItem"/>
+
+        <variable
+            name="thumbnailButtonClickListener"
+            type="com.a401.artwalk.view.user.ThumbnailClickListener" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_marginTop="50dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_userPage"
             app:menu="@menu/fragment_user_page_menu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/textView_userPage_nickName"
@@ -33,9 +40,11 @@
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/userprofile_box"
             android:layout_marginVertical="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_userPage">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,7 +56,8 @@
                     android:id="@+id/imageView_userPage_profile"
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    tools:src="@tools:sample/avatars" />
+                    tools:src="@tools:sample/avatars"
+                    />
 
                 <LinearLayout
                     android:layout_width="250dp"
@@ -69,18 +79,18 @@
                             android:orientation="vertical">
 
                             <TextView
+                                style="@style/body_regular_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="기록수"
-                                style="@style/body_regular_text_font_style"/>
+                                android:text="기록수" />
 
                             <TextView
                                 android:id="@+id/textView_userPage_numOfRecord"
+                                style="@style/body_detail_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{numOfRecord}"
                                 android:includeFontPadding="false"
-                                style="@style/body_detail_font_style"/>
+                                android:text="@{numOfRecord}" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -91,27 +101,27 @@
                             android:orientation="vertical">
 
                             <TextView
+                                style="@style/body_regular_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="경로수"
-                                style="@style/body_regular_text_font_style"/>
+                                android:text="경로수" />
 
                             <TextView
                                 android:id="@+id/textView_userPage_numOfRoute"
+                                style="@style/body_detail_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{numOfRoute}"
                                 android:includeFontPadding="false"
-                                style="@style/body_detail_font_style"/>
+                                android:text="@{numOfRoute}" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/button_userPage_editProfile"
-                        android:layout_marginTop="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:text="프로필 편집하기" />
 
                 </LinearLayout>
@@ -120,6 +130,16 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginHorizontal="16dp"
+            android:id="@+id/recyclerView_recordList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userprofile_box"
+            app:spanCount="2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
