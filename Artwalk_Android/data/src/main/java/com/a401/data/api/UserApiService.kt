@@ -14,7 +14,7 @@ interface UserApiService {
         @Path("serviceType") serviceType: String,
     ): Response<Void>
 
-    @POST("connect")
+    @POST("auth/connect")
     suspend fun postLogin(
         @Header("accessToken") accessToken: String,
         @Header("refreshToken") refreshToken: String
