@@ -38,11 +38,12 @@ class RegistViewModel @Inject constructor(
             viewModelScope.launch {
                 postRegistArtWalk(
                     User(
-                        userId.value!!,
-                        userNickName.value!!,
-                        "",
-                        0,
-                        0
+                        userId = userId.value!!,
+                        nickName = userNickName.value!!,
+                        exp = 0,
+                        level = 0,
+                        numOfRoute = 0,
+                        numOfRecord = 0
                     ),
                     userPassword.value!!
                 )

@@ -23,6 +23,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
+            <EditText
+                android:id="@+id/edittext_record_detail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="@color/neutral01"
+                android:hint="메모를 입력해주세요"
+                android:textColorHint="#ffffff"
+                app:layout_constraintTop_toBottomOf="@+id/imageview_record_save"
+                />
+
             <Button
                     android:id="@+id/button_record_save"
                     android:layout_width="wrap_content"

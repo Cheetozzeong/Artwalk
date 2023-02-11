@@ -1,19 +1,17 @@
 package com.a401.data.api
 
 import com.a401.data.model.response.UserResponse
+import com.a401.data.model.request.LoginUserRequest
 import com.a401.data.model.request.ArtWalkRegistRequest
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserApiService {
 
-    @POST("login/{serviceType}")
+    @POST("auth/login/{serviceType}")
     suspend fun postIdToken(
         @Header("id-token") idToken: String,
-        @Path("serviceType") serviceType: String
+        @Path("serviceType") serviceType: String,
     ): Response<Void>
 
     @POST("connect")
@@ -22,8 +20,18 @@ interface UserApiService {
         @Header("refreshToken") refreshToken: String
     ): Response<UserResponse>
 
-    @POST("reg/artwalk")
+    @POST("auth/login/artwalk")
+    suspend fun postLoginInfo(
+        @Body() user: LoginUserRequest
+    ): Response<Void>
+
+    @POST("auth/reg/artwalk")
     suspend fun registArtWalk(
         @Body() user: ArtWalkRegistRequest
-    ): Response<Void>
+    ): UserResponse
+
+    @GET("user/info")
+    suspend fun getUserInfo(
+        @Header("accessToken") accessToken: String
+    ): UserResponse
 }

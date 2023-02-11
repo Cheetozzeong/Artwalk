@@ -10,6 +10,9 @@ import com.a401.domain.model.RouteForDraw
 import com.a401.domain.usecase.GetRouteForWalkingUseCase
 import com.a401.domain.usecase.PostRouteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -40,6 +43,9 @@ class RouteDrawViewModel @Inject constructor(
     private val _lastRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
     val lastRoute: LiveData<RouteForDraw> = _lastRoute
 
+    private val _isSuccessSave: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isSuccessSave: LiveData<Boolean> = _isSuccessSave
+
     fun onClickDrawButton() {
         // TODO: 그리기 토글 버튼 클릭시 event wrapper로 수정
         _drawButtonEvent.value = Unit
@@ -56,11 +62,20 @@ class RouteDrawViewModel @Inject constructor(
     fun saveDrawRoute(polyline: String) {
 
         viewModelScope.launch {
-            postRoute(RouteForDraw(
-                totalDuration.value ?: 0,
-                distance.value ?: 0.0,
-                polyline
-            ))
+            postRoute(
+                RouteForDraw(
+                    duration = totalDuration.value ?: 0,
+                    distance = distance.value ?: 0.0,
+                    polyline
+                )
+            )
+                .onStart {  }
+                .onCompletion {  }
+                .collect() { result ->
+                    if(result == "SUCCESS") {
+                        _isSuccessSave.value = true
+                    }
+                }
         }
     }
 

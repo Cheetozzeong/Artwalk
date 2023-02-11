@@ -24,6 +24,8 @@ class SampleActivity: BaseActivity<SampleViewBinding>(R.layout.sample_view) {
         val navController = navHostFragment.navController
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id) {
+                R.id.policy,
+                R.id.setting,
                 R.id.record_main,
                 R.id.route_draw -> binding.bottomNavigationView.visibility = View.GONE
                 else -> binding.bottomNavigationView.visibility = View.VISIBLE

@@ -1,7 +1,11 @@
 package com.a401.artwalk.view.route.list
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -34,6 +38,8 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
         lifecycleScope.launch {
             collectListItem()
         }
+
+        Log.d("LifeCycle", "onViewCreated")
     }
 
     private fun setMapView() {
@@ -55,6 +61,51 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
             val action = RouteListFragmentDirections.actionRouteListToRouteDraw()
             findNavController().navigate(action)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d("LifeCycle", "onCreateView")
+        routeListViewModel.getRoutes()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d("LifeCycle", "onAttach")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("LifeCycle", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("LifeCycle", "onPause")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("LifeCycle", "onPause")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("LifeCycle", "onDetach")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("LifeCycle", "onStart")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("LifeCycle", "onStart")
     }
 }
 

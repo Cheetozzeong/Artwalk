@@ -1,8 +1,8 @@
 package com.a401.data.utils
 
-import com.a401.data.model.response.responseCode
+import com.a401.data.model.response.UserResponse
 
-fun getErrorCode(response: responseCode): String {
+fun getErrorCode(response: UserResponse): String {
     when(response.code){
         // 토큰 위조 된 경우
         "T002" ->  return "FAIL: 잘못된 접근입니다"

@@ -50,6 +50,7 @@
                 android:inputType="textEmailAddress"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
+                android:text="@={vm.artWalkId}"
                 android:hint="sample123@gmail.com">
             </EditText>
 
@@ -67,6 +68,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/View_login_artWalkLoginBox"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
+                android:text="@={vm.artWalkPassword}"
                 android:hint="*******">
             </EditText>
 
@@ -74,7 +76,8 @@
                 android:id="@+id/button_login_artWalkLogin"
                 android:text="로그인"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> vm.sendArtWalkLoginRequest()}"/>
 
             <TextView
                 android:id="@+id/textView_login_toRegist"
