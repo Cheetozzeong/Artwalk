@@ -8,5 +8,6 @@ enum class RecordState : Parcelable {
     INITIALIZED,
     START,
     PAUSE,
-    STOP
+    STOP,
+    GET_STATUS
 }

@@ -62,9 +62,11 @@ import kotlin.math.sqrt
 @AndroidEntryPoint
 class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
-    private val recordReceiver: RecordReceiver by lazy { RecordReceiver() }
+    private lateinit var statusReceiver: BroadcastReceiver
+    private lateinit var durationReceiver: BroadcastReceiver
+
     lateinit var mainActivity: SampleActivity
-    private var isRunning = false
+    private var isRecordRunning = false
 
     private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
@@ -82,18 +84,37 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
     override fun onResume() {
         super.onResume()
-        if (!recordViewModel.isReceiverRegistered) {
-            context?.registerReceiver(recordReceiver, IntentFilter("RECORD_ACTION"))
-            recordViewModel.isReceiverRegistered = true
+
+        sendCommandToForegroundService(RecordState.GET_STATUS)
+
+        statusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                isRecordRunning = when(intent?.extras?.getSerializable(IS_RECORD_RUNNING) as RecordState){
+                    RecordState.START -> true
+                    else -> false
+                }
+                val timeElapsed = intent.getIntExtra(TIME_ELAPSED, 0)
+
+                updateLayout(isRecordRunning)
+                updateDurationValue(timeElapsed)
+            }
         }
+
+        durationReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val timeElapsed = intent?.getIntExtra(TIME_ELAPSED, 0)!!
+                updateDurationValue(timeElapsed)
+            }
+        }
+        mainActivity.registerReceiver(statusReceiver, IntentFilter(RECORD_STATUS))
+        mainActivity.registerReceiver(durationReceiver, IntentFilter(RECORD_TICK))
     }
 
     override fun onPause() {
         super.onPause()
-        if (recordViewModel.isReceiverRegistered) {
-            context?.unregisterReceiver(recordReceiver)
-            recordViewModel.isReceiverRegistered = false
-        }
+
+        mainActivity.unregisterReceiver(statusReceiver)
+        mainActivity.unregisterReceiver(durationReceiver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,22 +140,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     }
 
     private fun startOrPause() {
-        isRunning = !isRunning
-        if (isRunning){
-            start()
+        if (isRecordRunning){
+            sendCommandToForegroundService(RecordState.PAUSE)
         }else{
-            pause()
+            sendCommandToForegroundService(RecordState.START)
         }
-    }
-
-    private fun start() {
-        binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_stop_circle_100)
-        sendCommandToForegroundService(RecordState.START)
-    }
-
-    private fun pause() {
-        binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_start_circle_100)
-        sendCommandToForegroundService(RecordState.PAUSE)
     }
 
     private fun setRoute() {
@@ -239,22 +249,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         return (6372.8 * 1000 * c) // 상수 입니다..!
     }
 
-    private fun sendCommandToForegroundService(recordState: RecordState) {
-        ContextCompat.startForegroundService(mainActivity.applicationContext, getServiceIntent(recordState))
-        recordViewModel.isForegroundServiceRunning = recordState != RecordState.STOP
-    }
-
-    private fun getServiceIntent(command: RecordState) =
-        Intent(mainActivity.applicationContext, RecordService::class.java).apply {
-            putExtra(SERVICE_COMMAND, command as Parcelable)
-        }
-
-    private fun updateUi(elapsedTime: Int) {
-        binding.hour = elapsedTime/3600
-        binding.minute = (elapsedTime % 3600) / 60
-        binding.second = elapsedTime % 60
-    }
-
     private fun PolylineAnnotationManager.getTotalPolyline(): String {
         val pointList: ArrayList<Point> = ArrayList()
         annotations.forEach() { polylineAnnotation ->
@@ -265,9 +259,27 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         return PolylineUtils.encode(pointList, 5)
     }
 
-    inner class RecordReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "RECORD_ACTION") updateUi(intent.getIntExtra(NOTIFICATION_TEXT, 0))
+    private fun updateDurationValue(elapsedTime: Int) {
+        binding.hour = elapsedTime / 3600
+        binding.minute = (elapsedTime % 3600) / 60
+        binding.second = elapsedTime % 60
+    }
+
+    private fun updateLayout(isRecordRunning: Boolean) {
+        if(isRecordRunning) {
+            binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_stop_circle_100)
+        }else {
+            binding.imagebuttonRecordStartbutton.setImageResource(R.drawable.ic_start_circle_100)
         }
     }
+
+    private fun sendCommandToForegroundService(recordState: RecordState) {
+        ContextCompat.startForegroundService(mainActivity, getServiceIntent(recordState))
+    }
+
+    private fun getServiceIntent(command: RecordState) =
+        Intent(mainActivity.applicationContext, RecordService::class.java).apply {
+            putExtra(SERVICE_COMMAND, command as Parcelable)
+        }
+
 }

@@ -2,10 +2,7 @@ package com.a401.artwalk.view.record
 
 import android.app.Service
 import android.content.Intent
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,20 +11,25 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates
 
+const val RECORD_TICK = "RecordTick"
+const val RECORD_STATUS = "RecordStatus"
+
+const val IS_RECORD_RUNNING = "isRecordRunning"
+const val TIME_ELAPSED = "timeElapsed"
 const val SERVICE_COMMAND = "Command"
-const val NOTIFICATION_TEXT = "NotificationText"
 
 class RecordService : Service(), CoroutineScope {
 
-    var serviceState: RecordState = RecordState.INITIALIZED
+    private var serviceState: RecordState = RecordState.INITIALIZED
     private val helper by lazy { NotificationHelper(this) }
 
     private var currentTime by Delegates.notNull<Int>()
+
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable = object : Runnable {
         override fun run() {
             currentTime++
-            broadcastUpdate()
+            sendDuration()
             handler.postDelayed(this, 1000)
         }
     }
@@ -51,11 +53,14 @@ class RecordService : Service(), CoroutineScope {
                 RecordState.START -> startRecord()
                 RecordState.PAUSE -> pauseRecord()
                 RecordState.STOP -> endRecord()
-                else-> return START_NOT_STICKY
+                RecordState.GET_STATUS -> sendStatus()
+                else-> return START_STICKY
             }
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -63,44 +68,25 @@ class RecordService : Service(), CoroutineScope {
         job.cancel()
     }
 
-    private fun broadcastUpdate() {
-        when (serviceState) {
-            RecordState.START -> {
-                val elapsedTime = currentTime
-                sendBroadcast(
-                    Intent("RECORD_ACTION")
-                        .putExtra(NOTIFICATION_TEXT, elapsedTime)
-                )
-            }
-            RecordState.PAUSE -> {
-
-            }
-            else -> {
-                sendBroadcast(
-                    Intent("RECORD_ACTION")
-                        .putExtra(NOTIFICATION_TEXT, 0)
-                )
-            }
-        }
-    }
-
     private fun endRecord() {
         serviceState = RecordState.STOP
         handler.removeCallbacks(runnable)
-        broadcastUpdate()
+        sendStatus()
         stopService()
     }
 
     private fun pauseRecord() {
         serviceState = RecordState.PAUSE
         handler.removeCallbacks(runnable)
-        broadcastUpdate()
+        sendStatus()
     }
 
     private fun startRecord() {
         serviceState = RecordState.START
-        broadcastUpdate()
+
         startForeground(NotificationHelper.NOTIFICATION_ID, helper.getNotification())
+        sendStatus()
+
         startCoroutineTimer()
     }
 
@@ -116,5 +102,19 @@ class RecordService : Service(), CoroutineScope {
         launch(coroutineContext) {
             handler.post(runnable)
         }
+    }
+
+    private fun sendStatus() {
+        val statusIntent = Intent(RECORD_STATUS)
+            .putExtra(IS_RECORD_RUNNING, serviceState as Parcelable)
+            .putExtra(TIME_ELAPSED, currentTime)
+        sendBroadcast(statusIntent)
+    }
+
+    private fun sendDuration() {
+        val elapseTime = currentTime
+        val durationIntent = Intent(RECORD_TICK)
+            .putExtra(TIME_ELAPSED, elapseTime)
+        sendBroadcast(durationIntent)
     }
 }

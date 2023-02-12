@@ -45,10 +45,10 @@
         </activity>
         <activity
             android:name="com.a401.artwalk.view.SampleActivity"
-            tools:ignore="WrongManifestParent"></activity>
+            tools:ignore="WrongManifestParent" />
         <activity
             android:name=".view.login.LoginActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".view.MainActivity"
             android:exported="true"
