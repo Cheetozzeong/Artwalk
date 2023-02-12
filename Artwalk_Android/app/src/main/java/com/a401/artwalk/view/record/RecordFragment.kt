@@ -1,11 +1,14 @@
 package com.a401.artwalk.view.record
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.icu.text.AlphabeticIndex.Record
 import android.graphics.Bitmap
+import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -16,6 +19,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -53,6 +57,7 @@ import java.lang.Math.cos
 import java.lang.Math.sin
 import java.net.URLEncoder
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
 import kotlin.math.absoluteValue
 import kotlin.math.asin
@@ -62,8 +67,11 @@ import kotlin.math.sqrt
 @AndroidEntryPoint
 class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
 
+    private val REQUEST_CODE_LOCATION_PERMISSION = 1
+
     private lateinit var statusReceiver: BroadcastReceiver
     private lateinit var durationReceiver: BroadcastReceiver
+    private lateinit var locationReceiver: BroadcastReceiver
 
     lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
@@ -76,6 +84,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private var timerTaskforPolyLine : Timer? = null
 
     private var curPoint : Point = Point.fromLngLat(0.0,0.0)
+    private var lastLocation: Point? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -94,9 +103,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                     else -> false
                 }
                 val timeElapsed = intent.getIntExtra(TIME_ELAPSED, 0)
+                val totalLocation = intent.getSerializableExtra(TOTAL_LOCATION) as ArrayList<Location>
 
                 updateLayout(isRecordRunning)
                 updateDurationValue(timeElapsed)
+                updateTotalAnnotation(totalLocation)
             }
         }
 
@@ -106,8 +117,19 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                 updateDurationValue(timeElapsed)
             }
         }
+
+        locationReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val location = intent?.getParcelableExtra<Location>(LOCATION)
+                if (location != null) {
+                    updateRecord(location)
+                }
+            }
+        }
+
         mainActivity.registerReceiver(statusReceiver, IntentFilter(RECORD_STATUS))
         mainActivity.registerReceiver(durationReceiver, IntentFilter(RECORD_TICK))
+        mainActivity.registerReceiver(locationReceiver, IntentFilter(RECORD_LOCATION))
     }
 
     override fun onPause() {
@@ -139,11 +161,47 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
+    private fun updateTotalAnnotation (totalLocation: ArrayList<Location>) {
+
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(
+                totalLocation.map {  location ->
+                    Point.fromLngLat(location.longitude, location.latitude)
+                }
+            )
+            .withLineColor(R.color.main.toString())
+            .withLineWidth(7.0)
+
+        polylineAnnotationManager.create(polylineAnnotationOptions)
+    }
+
+    private fun updateRecord(location: Location) {
+
+        if(lastLocation == null) lastLocation = curPoint
+
+        setPolyline(lastLocation!!, location)
+//            polylineAnnotationManager.create(
+//                PolylineAnnotationOptions()
+//                    .withPoints(
+//                        listOf(lastLocation, Point.fromLngLat(location.longitude, location.latitude)) as List<Point>
+//                    )
+//                    .withLineColor(R.color.main.toString())
+//                    .withLineWidth(7.0)
+//            )
+        lastLocation = Point.fromLngLat(location.longitude, location.latitude)
+
+    }
+
     private fun startOrPause() {
         if (isRecordRunning){
             sendCommandToForegroundService(RecordState.PAUSE)
         }else{
-            sendCommandToForegroundService(RecordState.START)
+            if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(mainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION_PERMISSION);
+            } else {
+                sendCommandToForegroundService(RecordState.START)
+                lastLocation = curPoint
+            }
         }
     }
 
@@ -178,24 +236,23 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         mapView = binding.mapViewRecord
     }
 
-    private fun setPolyline(cur:Point, last:Point) {
+    private fun setPolyline(last: Point, cur: Location) {
         val points = listOf(
-            Point.fromLngLat(cur.longitude(), cur.latitude()),
-            Point.fromLngLat(last.longitude() ,last.latitude()),
+            last,
+            Point.fromLngLat(cur.longitude ,cur.latitude),
         )
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
             .withPoints(points)
             .withLineColor("#ee4e8b")
             .withLineWidth(7.0)
-        requireActivity().runOnUiThread() {
-            polylineAnnotationManager.create(polylineAnnotationOptions)
-        }
+
+        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
     private fun addPolyLineToMap() {
         var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
         timerTaskforPolyLine = timer(period = 2000) {
-            setPolyline(curPoint, lastPoint)
+//            setPolyline(curPoint, lastPoint)
             recordViewModel.addDistance(getDistance(curPoint, lastPoint))
             lastPoint = Point.fromLngLat(curPoint.longitude(), curPoint.latitude())
         }
@@ -282,4 +339,17 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             putExtra(SERVICE_COMMAND, command as Parcelable)
         }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                sendCommandToForegroundService(RecordState.START)
+            }else {
+                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

@@ -50,15 +50,6 @@ class RecordViewModel @Inject constructor(
     private var timerTaskforDistance: Timer? = null
     private var flagForWalk = true
 
-    fun onClickStartButton() {
-        _startButtonEvent.value = Unit
-
-    }
-
-    fun onClickStopButton() {
-        _stopButtonEvent.value = Unit
-    }
-
     fun saveRecord(polyline: String) {
 
         if(text.value == null) {
