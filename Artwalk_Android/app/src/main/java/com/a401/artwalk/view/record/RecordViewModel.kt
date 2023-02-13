@@ -21,6 +21,9 @@ class RecordViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider){
 
+    var isForegroundServiceRunning: Boolean = false
+    var isReceiverRegistered: Boolean = false
+
     private var _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
     val totalDuration: LiveData<Int> = _totalDuration
 
@@ -42,15 +45,6 @@ class RecordViewModel @Inject constructor(
     private var timerTaskforTime: Timer? = null
     private var timerTaskforDistance: Timer? = null
     private var flagForWalk = true
-
-    fun onClickStartButton() {
-        _startButtonEvent.value = Unit
-
-    }
-
-    fun onClickStopButton() {
-        _stopButtonEvent.value = Unit
-    }
 
     fun saveRecord(polyline: String) {
 
@@ -75,8 +69,6 @@ class RecordViewModel @Inject constructor(
                     }
             }
         }
-
-
     }
 
     fun startRun() {
