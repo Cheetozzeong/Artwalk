@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Artwalk</title>
+    <title>Artwalk 기록 공유</title>
     <link rel="favicon" href="/favicon.ico">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
@@ -15,6 +15,13 @@
         gtag('config', 'G-1NFE5BDLZ4');
     </script>
     <style>
+        @font-face {
+            font-family: 'GangwonEdu_OTFBoldA';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             margin: 0;
         }
@@ -35,13 +42,34 @@
             justify-content: center;
         }
         .logo {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
         }
         .logo-letter {
             color: white;
             font-family: "Noto Sans KR",sans-serif;
+        }
+        .content-text {
+            width: 300px;
+            margin: auto;
+            padding-bottom: 20px;
+        }
+        .title {
+            font-family: "GangwonEdu_OTFBoldA";
+            font-size: 24px;
+            font-weight: bolder;
+            text-align: left;
+            color: #383838;
+            margin: 10px;
+        }
+        .maker {
+            font-family: "GangwonEdu_OTFBoldA";
+            font-size: 18px;
+            font-weight: 500;
+            text-align: right;
+            color: #3d3d3d;
+            margin: 10px;
         }
         .img-download {
             padding: 10px 30px 10px;
@@ -71,7 +99,7 @@
         }
         .record {
             width: 300px;
-            margin: 5%;
+            margin: 5% 5% 30px 5%;
         }
         .btn {
             display: inline-block;
@@ -81,8 +109,8 @@
                 display: block;
             }
             .record {
-                width: 80%;
-                margin: 10%;
+                width: 90%;
+                margin-inline: 5%;
             }
             .img-download {
                 padding: 10px 20%;
@@ -100,6 +128,10 @@
             <h2 class="logo-letter">Artwalk</h2>
         </div>
         <img th:src="link" class="record" id="link1"/>
+        <div class="content-text">
+            <p class="title"></p>
+            <p class="maker"></p>
+        </div>
         <div>
             <div class="btn">
                 <a href="link" id="link2" download="artwalk_route.png"><button class="img-download">이미지 다운로드</button></a>
@@ -113,6 +145,12 @@
 <script th:inline="javascript">
     window.onload = function() {
         const imageURL = [[${link}]];
+        const title = [[${detail}]];
+        const nickname = [[${nickname}]];
+
+        document.querySelector(".title").innerHTML = `"${title}"`;
+        document.querySelector(".maker").innerHTML = `Paint by <strong>${nickname}</strong>`;
+
         fetch(`/record/image/${imageURL}`)
             .then(response => response.blob())
             .then(blob => {

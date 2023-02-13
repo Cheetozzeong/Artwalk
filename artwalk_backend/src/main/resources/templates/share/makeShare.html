@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공유 이미지 생성</title>
+    <title>공유 이미지 편집</title>
     <link rel="favicon" href="/favicon.ico">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
@@ -35,11 +35,23 @@
         .logo {
             width: 35px;
             height: 35px;
-            margin-right: 12px;
+            margin-right: 5px;
         }
         .logo-letter {
             color: white;
             font-family: "Noto Sans KR",sans-serif;
+        }
+
+        .info {
+            margin-block: 20px;
+        }
+
+        .info > p {
+            font-family: "Noto Sans KR",sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            line-height: 23px;
+            color: #303030;
         }
 
         .container {
@@ -116,6 +128,10 @@
     <div class="header">
         <img src="./img/logo.png" alt="logo" class="logo">
         <h2 class="logo-letter">Artwalk</h2>
+    </div>
+    <div class="info">
+        <p>지도를 움직여서 원하는 크기로 맞춰주고,
+            <br>색상과 굵기를 결정하여 공유 이미지를 생성하세요!</p>
     </div>
     <div class="container">
         <div id="map"></div>
@@ -270,12 +286,10 @@
         document.querySelector("#btn-make-image").addEventListener("click", function(){
             var lineColor = document.querySelector("#lineColor").value.replace('#', '');
             var lineWidth = document.querySelector("#lineWidth").value*1;
-            
-            const bounds = map.getBounds().toArray();;
-            var minLon = bounds[0][0];
-            var minLat = bounds[0][1];
-            var maxLon = bounds[1][0];
-            var maxLat = bounds[1][1];
+
+            var {lng, lat} = map.getCenter();
+            var zoom = map.getZoom();
+            var bearing = map.getBearing();
 
             var pathName = window.location.pathname;
             var editLink = pathName.split('/')[2];
@@ -290,12 +304,13 @@
                 body: JSON.stringify({
                     polyLineWidth : lineWidth,
                     polyLineColor : lineColor,
-                    minLon : minLon,
-                    minLat : minLat,
-                    maxLon : maxLon,
-                    maxLat : maxLat
+                    centerLon : lng,
+                    centerLat : lat,
+                    zoom : zoom,
+                    bearing : bearing
                 }),
             };
+
             fetch("https://i8a401.p.ssafy.io/record/image", config)
                 .then((response) => response.json())
                 .then((data) => {
