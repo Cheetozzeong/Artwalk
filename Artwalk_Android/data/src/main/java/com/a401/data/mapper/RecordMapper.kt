@@ -9,6 +9,8 @@ fun recordForListsFromResponses(response: RecordListResponse): List<RecordForLis
         with(records) {
             RecordForList(
                 thumbnail?:"",
+                duration?:0,
+                distance?:0.0,
                 creation?: Date(),
                 detail?:"",
                 geometry?:"",

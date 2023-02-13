@@ -28,8 +28,8 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     private val userPageViewModel by viewModels<UserpageViewModel> { defaultViewModelProviderFactory }
 
     private val recordListAdapter = RecordListAdapter(
-        ThumbnailClickListener { recordId ->
-            val action = UserPageFragmentDirections.actionRecordListToRecordDetail(recordId)
+        ThumbnailClickListener { recordForList ->
+            val action = UserPageFragmentDirections.actionRecordListToRecordDetail(recordForList)
             findNavController().navigate(action) }
     )
 

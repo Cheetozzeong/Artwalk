@@ -38,6 +38,6 @@ class RecordListAdapter(
     }
 }
 
-class ThumbnailClickListener(val clickListener: (recordId: String) -> Unit) {
-    fun onClick(recordForList: RecordForList) = clickListener(recordForList.recordId.toString())
+class ThumbnailClickListener(val clickListener: (recordForList: RecordForList) -> Unit) {
+    fun onClick(recordForList: RecordForList) = clickListener(recordForList)
 }
