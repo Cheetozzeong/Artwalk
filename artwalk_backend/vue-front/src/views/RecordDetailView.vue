@@ -21,7 +21,8 @@
       <b-col class="col-5 f-size">
         <div class="fw-bold my-3">{{ record.recordId }}&nbsp;</div>
         <div class="fw-bold my-3">{{ record.userId }}&nbsp;</div>
-        <div class="fw-bold my-3">{{ record.detail }}&nbsp;</div>
+        <div v-if="record.detail" class="fw-bold my-3">{{ record.detail }}&nbsp;</div>
+        <div v-else class="fw-bold my-3">No Title&nbsp;</div>
         <div class="fw-bold my-3">{{ formattedDuration }}&nbsp;</div>
         <div class="fw-bold my-3">{{ formattedDistance }}&nbsp;</div>
         <div class="fw-bold my-3">{{ formattedCreation }}&nbsp;</div>

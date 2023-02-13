@@ -2,6 +2,7 @@
   <b-container>
     <div class="d-flex justify-content-center align-content-center mt-5 mb-1">
       <h1>User Board</h1>
+      <p>{{allUsers}}</p>
     </div>
     <br>
     <div>
@@ -32,9 +33,9 @@
             {{ data.item.nickname }}
           </router-link>
         </template>
-        <template #cell(profile)="data">
-          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>
-        </template>
+<!--        <template #cell(profile)="data">-->
+<!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
+<!--        </template>-->
       </b-table>
 
       <!--   검색한 결과 경로가 1개 이상일 때   -->
@@ -44,9 +45,9 @@
             {{ data.item.nickname }}
           </router-link>
         </template>
-        <template #cell(profile)="data">
-          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>
-        </template>
+<!--        <template #cell(profile)="data">-->
+<!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
+<!--        </template>-->
       </b-table>
 
       <!--   검색한 결과 경로가 없을 때   -->
@@ -88,13 +89,16 @@ export default {
           key: 'nickname',
           label: 'Nickname',
         },
-        {
-          key: 'profile',
-          label: 'Profile Image'
-        },
+        // {
+        //   key: 'profile',
+        //   label: 'Profile Image',
+        // },
         {
           key: 'userType',
           label: 'User Type',
+          formatter: value => {
+            return (value ? 'Social':'App')
+          },
           sortable: true
         },
         {
@@ -164,7 +168,7 @@ export default {
           .catch((err) => {
             console.log(err)
           })
-    }
+    },
   }
 }
 </script>

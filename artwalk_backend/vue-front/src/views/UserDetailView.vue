@@ -116,11 +116,27 @@ export default {
             // console.log(err)
           })
     },
+    getProfileImage() {
+      return Send({
+        method: 'get',
+        url: '/user/info/profile',
+        params: {
+          userId: this.$route.params.userId
+        }
+      })
+          .then((res) => {
+            console.log(res)
+          })
+          .catch(err => {
+            this.err = err
+          })
+    }
   },
   created() {
     this.getUserDetail()
     this.getUserRoute()
     this.getUserRecord()
+    this.getProfileImage()
   }
 }
 </script>
