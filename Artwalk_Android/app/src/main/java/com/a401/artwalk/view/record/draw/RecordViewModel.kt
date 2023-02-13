@@ -7,7 +7,6 @@ import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
 import com.a401.domain.model.RecordForSave
 import com.a401.domain.usecase.PostRecordUseCase
-import com.mapbox.geojson.Point
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -15,9 +14,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.timer
-import kotlin.math.asin
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(

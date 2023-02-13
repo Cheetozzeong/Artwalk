@@ -109,11 +109,11 @@
                 android:src="@drawable/login_kakao"
                 android:padding="1dp" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/button_google_login"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"/>
+<!--            <com.google.android.gms.common.SignInButton-->
+<!--                android:id="@+id/button_google_login"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_marginTop="16dp"/>-->
 
         </LinearLayout>
 

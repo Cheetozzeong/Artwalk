@@ -1,7 +1,7 @@
 package com.a401.data.model.response
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
+import java.util.*
 
 data class UserResponse(
     @SerializedName("user") var user: User,

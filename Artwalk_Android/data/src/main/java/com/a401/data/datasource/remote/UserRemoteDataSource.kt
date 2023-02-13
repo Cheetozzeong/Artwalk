@@ -8,6 +8,7 @@ import retrofit2.Response
 
 
 interface UserRemoteDataSource {
+    suspend fun postLogin(accessToken: String, refreshToken: String): Flow<String>
 
     suspend fun postIdToken(idToken: String, serviceType: String): Flow<String>
 
