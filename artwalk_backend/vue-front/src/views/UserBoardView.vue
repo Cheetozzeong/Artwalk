@@ -2,7 +2,6 @@
   <b-container>
     <div class="d-flex justify-content-center align-content-center mt-5 mb-1">
       <h1>User Board</h1>
-      <p>{{allUsers}}</p>
     </div>
     <br>
     <div>
@@ -27,33 +26,43 @@
       <br>
 
       <!--  게시판 (기본) -->
-      <b-table v-if="searchedUsers == null" :fields="fields" :items="allUsers" sticky-header responsive no-sort-reset label-sort-asc="" label-sort-desc="">
+      <b-table v-if="searchedUsers == null" :fields="fields" :items="allUsers" responsive no-sort-reset label-sort-asc="" label-sort-desc="" :per-page="perPage" :current-page="currentPage">
         <template #cell(nickname)="data">
           <router-link :to="{ name: 'userDetail', params: { userId: data.item.userId } }" class="tdn maincolor">
             {{ data.item.nickname }}
           </router-link>
         </template>
-<!--        <template #cell(profile)="data">-->
-<!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
-<!--        </template>-->
+        <!--        <template #cell(profile)="data">-->
+        <!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
+        <!--        </template>-->
       </b-table>
 
       <!--   검색한 결과 경로가 1개 이상일 때   -->
-      <b-table v-else-if="searchedUsers.length >= 1" :fields="fields" :items="searchedUsers" sticky-header responsive no-sort-reset label-sort-asc="" label-sort-desc="">
+      <b-table v-else-if="searchedUsers.length >= 1" :fields="fields" :items="searchedUsers" responsive no-sort-reset label-sort-asc="" label-sort-desc="" :per-page="perPage" :current-page="currentPage">
         <template #cell(nickname)="data">
           <router-link :to="{ name: 'userDetail', params: { userId: data.item.userId } }" class="tdn maincolor">
             {{ data.item.nickname }}
           </router-link>
         </template>
-<!--        <template #cell(profile)="data">-->
-<!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
-<!--        </template>-->
+        <!--        <template #cell(profile)="data">-->
+        <!--          <b-img width="50vh" height="50vh" rounded thumbnail fluid :src="data.item.profile"></b-img>-->
+        <!--        </template>-->
       </b-table>
 
       <!--   검색한 결과 경로가 없을 때   -->
       <div v-else-if="searchedUsers.length < 1">
         <p> 검색 결과 없음 </p>
       </div>
+
+      <!--   페이지네이션   -->
+      <b-pagination
+          size="sm"
+          align="center"
+          :total-rows="rows"
+          v-model="currentPage"
+          :per-page="perPage"
+          class="custom-pagination"
+      />
 
     </div>
     <UserItem/>
@@ -73,9 +82,14 @@ export default {
     allUsers() {
       return this.$store.state.user
     },
+    rows() {
+      return this.allUsers.length
+    }
   },
   data() {
     return {
+      currentPage: 1,
+      perPage: 6,
       selectedDropdownItem: "not Selected",
       searchKeyword: null,
       searchedUsers: null,

@@ -10,7 +10,7 @@
     <b-row class="d-flex">
       <b-col class="col-5">
         <h3>Profile Image</h3>
-        <b-img width="250vh" height="250vh" rounded thumbnail fluid :src="userInfo.profile"></b-img>
+        <b-img width="250vh" height="250vh" rounded thumbnail fluid :src="imageUrl"></b-img>
       </b-col>
       <b-col class="col-2 f-size">
         <div class="my-3">User Id</div>
@@ -69,6 +69,7 @@ export default {
       userInfo: null,
       userRoutes: null,
       userRecords: null,
+      imageUrl: null,
     }
   },
   methods: {
@@ -117,20 +118,20 @@ export default {
           })
     },
     getProfileImage() {
-      return Send({
-        method: 'get',
-        url: '/user/info/profile',
-        params: {
-          userId: this.$route.params.userId
+      const url = `/user/info/profile/${this.$route.params.userId}`
+      const options = {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'accessToken': `Bearer ${this.$store.state.token}`
         }
-      })
-          .then((res) => {
-            console.log(res)
+      }
+
+      fetch(url, options)
+          .then(res => res.blob())
+          .then(blob => {
+            this.imageUrl = URL.createObjectURL(blob)
           })
-          .catch(err => {
-            this.err = err
-          })
-    }
+    },
   },
   created() {
     this.getUserDetail()
