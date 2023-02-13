@@ -62,14 +62,13 @@
 
     <fragment
         android:id="@+id/detail_record"
-        android:name="com.a401.artwalk.view.record.list.RecordListDetail"
+        android:name="com.a401.artwalk.view.record.list.RecordDetail"
         tools:layout="@layout/detail_record_list">
 
         <argument
             android:name="detailArgument"
-            app:argType="string"
-            app:nullable="false"
-            android:defaultValue="@null"/>
+            app:argType="com.a401.domain.model.RecordForList"
+            app:nullable="false" />
 
     </fragment>
     <fragment
