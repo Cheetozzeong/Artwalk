@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -78,7 +79,7 @@ public class RouteService {
 	/** 저장된 모든 경로를 반환합니다. */
 	public List<Route> findAllRoute() {
 		List<Route> routeList = new ArrayList<>();
-		List<Route> routes = routeRepository.findAll();
+		List<Route> routes = routeRepository.findAll(Sort.by(Sort.Direction.DESC, "routeId"));
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
 			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));
@@ -96,7 +97,7 @@ public class RouteService {
 	/** 저장된 경로 중 user_id가 일치하는 경로를 반환합니다. */
 	public List<Route> findByUserId(String userId) {
 		List<Route> routeList = new ArrayList<>();
-		List<Route> routes = routeRepository.findByUserId(userId);
+		List<Route> routes = routeRepository.findByUserIdOrderByRouteIdDesc(userId);
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
 			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), userId));
@@ -121,7 +122,7 @@ public class RouteService {
 
 	public List<Route> findByUserIdContaining(String userId) {
 		List<Route> routeList = new ArrayList<>();
-		List<Route> routes = routeRepository.findByUserIdContaining(userId);
+		List<Route> routes = routeRepository.findByUserIdContainingOrderByRouteIdDesc(userId);
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
 			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), userId));
@@ -132,7 +133,7 @@ public class RouteService {
 
 	public List<Route> findByMakerContaining(String maker) {
 		List<Route> routeList = new ArrayList<>();
-		List<Route> routes = routeRepository.findByMakerContaining(maker);
+		List<Route> routes = routeRepository.findByMakerContainingOrderByRouteIdDesc(maker);
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
 			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));
@@ -143,7 +144,7 @@ public class RouteService {
 
 	public List<Route> findByTitleContaining(String title) {
 		List<Route> routeList = new ArrayList<>();
-		List<Route> routes = routeRepository.findByTitleContaining(title);
+		List<Route> routes = routeRepository.findByTitleContainingOrderByRouteIdDesc(title);
 		for (Route route : routes) {
 			route.setThumbnail(makeThumbnailUrl(route.getRouteId()));
 			route.setGeometry(fileService.readFile(fileOption, route.getGeometry(), route.getUserId()));

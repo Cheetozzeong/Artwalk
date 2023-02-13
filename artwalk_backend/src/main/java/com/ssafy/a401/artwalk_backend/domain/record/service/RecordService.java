@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class RecordService {
 	/** 저장된 모든 기록을 반환합니다. */
 	public List<Record> findAllRecord() {
 		List<Record> recordList = new ArrayList<>();
-		List<Record> records = recordRepository.findAll();
+		List<Record> records = recordRepository.findAll(Sort.by(Sort.Direction.DESC, "recordId"));
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
@@ -109,7 +110,7 @@ public class RecordService {
 	/** 저장된 기록 중 user_id가 일치하는 기록을 반환합니다. */
 	public List<Record> findByUserId(String userId) {
 		List<Record> recordList = new ArrayList<>();
-		List<Record> records = recordRepository.findByUserId(userId);
+		List<Record> records = recordRepository.findByUserIdOrderByRecordIdDesc(userId);
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
@@ -161,7 +162,7 @@ public class RecordService {
 
 	public List<Record> findByUserIdContaining(String userId) {
 		List<Record> recordList = new ArrayList<>();
-		List<Record> records = recordRepository.findByUserIdContaining(userId);
+		List<Record> records = recordRepository.findByUserIdContainingOrderByRecordIdDesc(userId);
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
@@ -173,7 +174,7 @@ public class RecordService {
 
 	public List<Record> findByDetailContaining(String detail) {
 		List<Record> recordList = new ArrayList<>();
-		List<Record> records = recordRepository.findByDetailContaining(detail);
+		List<Record> records = recordRepository.findByDetailContainingOrderByRecordIdDesc(detail);
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));

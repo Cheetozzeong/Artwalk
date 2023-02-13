@@ -15,9 +15,9 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 
 	Record findByEditLink(String editLink);
 
-	List<Record> findByUserId(String userId);
+	List<Record> findByUserIdOrderByRecordIdDesc(String userId);
 
-	List<Record> findByUserIdContaining(String userId);
+	List<Record> findByUserIdContainingOrderByRecordIdDesc(String userId);
 
-	List<Record> findByDetailContaining(String detail);
+	List<Record> findByDetailContainingOrderByRecordIdDesc(String detail);
 }
