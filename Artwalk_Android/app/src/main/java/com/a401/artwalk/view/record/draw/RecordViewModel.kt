@@ -1,4 +1,4 @@
-package com.a401.artwalk.view.record
+package com.a401.artwalk.view.record.draw
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

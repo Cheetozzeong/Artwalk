@@ -1,4 +1,4 @@
-package com.a401.artwalk.view.user
+package com.a401.artwalk.view.record.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
