@@ -44,7 +44,7 @@ public class UserDataController {
 	@Operation(summary = "사용자 프로필 사진 조회", description = "사용자 프로필 사진 조회 메서드입니다.")
 	@ApiImplicitParam(name = "userId", value = "프로필 사진을 조회할 사용자 ID (예시. ssafy@ssafy.com)", dataType = "String")
 	@GetMapping("/info/profile")
-	public ResponseEntity<Resource> displayRouteThumbnail(@RequestParam(name = "userId") String userId) {
+	public ResponseEntity<Resource> displayProfileImage(@RequestParam(name = "userId") String userId) {
 		ResponseEntity<Resource> response = userService.getProfileImage(userId);
 		return response;
 	}

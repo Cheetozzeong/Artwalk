@@ -40,7 +40,7 @@ public class UserDTO {
 	@Schema(description = "경험치", nullable = false, example = "151")
 	private int exp;
 
-	@Schema(description = "가입 타입", nullable = false, example = "true(social) | false(normal)")
+	@Schema(description = "가입 타입", nullable = false, example = "true(social) | false(app)")
 	private Boolean userType;
 	
 	@Schema(description = "가입 날짜", nullable = false, example = "2023/02/06 17:23:45")

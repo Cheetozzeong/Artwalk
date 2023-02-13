@@ -86,8 +86,8 @@ export default {
         method: 'get',
         url: '/record/search/',
         params: {
-          type: this.selectedDropdownItem,
-          keyword: this.searchKeyword
+          searchType: this.selectedDropdownItem,
+          searchKeyword: this.searchKeyword
         }
       })
           .then((res) => {

@@ -8,8 +8,12 @@
         class="mb-2 m-click"
         @click="goDetail"
     >
-      <b-card-title>
+      <b-card-title v-if="record.detail">
         {{ record.detail }}
+      </b-card-title>
+
+      <b-card-title v-else>
+        No Title
       </b-card-title>
 
       <b-card-text>

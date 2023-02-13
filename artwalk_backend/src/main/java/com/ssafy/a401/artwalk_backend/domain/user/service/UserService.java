@@ -104,7 +104,7 @@ public class UserService {
 		String userId = user.getUserId();
 		String password = user.getPassword();
 		String nickname = user.getNickname();
-		Boolean userType = false; // false = 'normal'
+		Boolean userType = false; // false = 'app'
 
 		if (userRepository.existsById(userId)) return null;
 		return addUserToken(userId, password, "", nickname, userType);
