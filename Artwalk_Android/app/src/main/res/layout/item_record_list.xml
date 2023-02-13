@@ -5,11 +5,11 @@
     <data>
         <variable
             name="item"
-            type="com.a401.artwalk.view.user.RecordListItem"/>
+            type="com.a401.artwalk.view.record.list.RecordListItem"/>
 
         <variable
             name="thumbnailClickListener"
-            type="com.a401.artwalk.view.user.ThumbnailClickListener" />
+            type="com.a401.artwalk.view.record.list.ThumbnailClickListener" />
     </data>
 
     <LinearLayout

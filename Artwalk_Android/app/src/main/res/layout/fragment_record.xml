@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="com.a401.artwalk.view.record.RecordViewModel"/>
+            type="com.a401.artwalk.view.record.draw.RecordViewModel"/>
 
         <variable name="hour" type="Integer" />
         <variable name="minute" type="Integer" />

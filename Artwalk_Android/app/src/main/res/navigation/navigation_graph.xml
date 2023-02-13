@@ -23,7 +23,7 @@
     
     <fragment
         android:id="@+id/record_main"
-        android:name="com.a401.artwalk.view.record.RecordFragment"
+        android:name="com.a401.artwalk.view.record.draw.RecordFragment"
         android:label=""
         tools:layout="@layout/fragment_record">
 
@@ -48,18 +48,30 @@
     <fragment
         android:id="@+id/userPage"
         android:name="com.a401.artwalk.view.user.UserPageFragment"
+        android:label=""
         tools:layout="@layout/fragment_user_page">
 
         <action
             android:id="@+id/action_userPage_to_setting"
             app:destination="@id/setting" />
 
-        <!-- record detail로-->
         <action
             android:id="@+id/action_record_list_to_record_detail"
-            app:destination="@id/record_main"/>
+            app:destination="@id/detail_record"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/detail_record"
+        android:name="com.a401.artwalk.view.record.list.RecordListDetail"
+        tools:layout="@layout/detail_record_list">
+
+        <argument
+            android:name="detailArgument"
+            app:argType="string"
+            app:nullable="false"
+            android:defaultValue="@null"/>
+
+    </fragment>
     <fragment
         android:id="@id/setting"
         android:name="com.a401.artwalk.view.user.SettingFragment"
