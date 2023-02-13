@@ -6,63 +6,35 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.icu.text.AlphabeticIndex.Record
-import android.graphics.Bitmap
-import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.a401.artwalk.R
-import com.a401.artwalk.base.BaseFragment
-import com.a401.artwalk.databinding.FragmentRecordBinding
-import com.mapbox.maps.Style
 import androidx.navigation.fragment.navArgs
+import com.a401.artwalk.BuildConfig
+import com.a401.artwalk.R
 import com.a401.artwalk.base.UsingMapFragment
-import com.a401.artwalk.utills.LocationPermissionHelper
+import com.a401.artwalk.databinding.FragmentRecordBinding
 import com.a401.artwalk.view.SampleActivity
 import com.a401.artwalk.view.route.draw.ROUTE_COLOR
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.mapbox.android.gestures.MoveGestureDetector
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.plugin.LocationPuck2D
-import com.mapbox.maps.plugin.PuckBearingSource
-import com.mapbox.maps.plugin.annotation.annotations
-import com.mapbox.maps.plugin.annotation.generated.*
-import com.mapbox.maps.plugin.gestures.OnMoveListener
-import com.mapbox.maps.plugin.gestures.gestures
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
-import com.mapbox.maps.plugin.locationcomponent.location2
-import java.lang.ref.WeakReference
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.utils.PolylineUtils
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.*
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Math.cos
-import java.lang.Math.sin
 import java.net.URLEncoder
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.concurrent.timer
-import kotlin.math.absoluteValue
-import kotlin.math.asin
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 @AndroidEntryPoint
 class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment_record) {
@@ -81,10 +53,9 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var routeAnnotationManager: PolylineAnnotationManager
     private lateinit var pointAnnotaionManager: PointAnnotationManager
-    private var timerTaskforPolyLine : Timer? = null
+    private var totalLocation = ArrayList<DoubleArray>()
 
     private var curPoint : Point = Point.fromLngLat(0.0,0.0)
-    private var lastLocation: Point? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -95,19 +66,25 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         super.onResume()
 
         sendCommandToForegroundService(RecordState.GET_STATUS)
-
         statusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                isRecordRunning = when(intent?.extras?.getSerializable(IS_RECORD_RUNNING) as RecordState){
+                val state = intent?.extras?.getSerializable(IS_RECORD_RUNNING) as RecordState
+                isRecordRunning = when(state){
                     RecordState.START -> true
                     else -> false
                 }
                 val timeElapsed = intent.getIntExtra(TIME_ELAPSED, 0)
-                val totalLocation = intent.getSerializableExtra(TOTAL_LOCATION) as ArrayList<Location>
+                val distance = intent.getDoubleExtra(DISTANCE, 0.0)
+                totalLocation = intent.getSerializableExtra(TOTAL_LOCATION) as ArrayList<DoubleArray>
 
                 updateLayout(isRecordRunning)
                 updateDurationValue(timeElapsed)
+                updateDistanceValue(distance)
                 updateTotalAnnotation(totalLocation)
+
+                when(state) {
+                    RecordState.PAUSE -> showSaveSheet()
+                }
             }
         }
 
@@ -120,9 +97,12 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
         locationReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                val location = intent?.getParcelableExtra<Location>(LOCATION)
-                if (location != null) {
-                    updateRecord(location)
+                val lastLngLat = intent?.getDoubleArrayExtra(LAST_LOCATION)
+                val curLngLat = intent?.getDoubleArrayExtra(CURRENT_LOCATION)
+                val distance = intent?.getDoubleExtra(DISTANCE, 0.0)
+                if(lastLngLat != null && curLngLat != null && distance != null) {
+                    updateRecord(lastLngLat, curLngLat)
+                    updateDistanceValue(distance)
                 }
             }
         }
@@ -137,13 +117,16 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
         mainActivity.unregisterReceiver(statusReceiver)
         mainActivity.unregisterReceiver(durationReceiver)
+        mainActivity.unregisterReceiver(locationReceiver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.v("LIFECYCLE", "onViewCreated")
         setMapView()
         super.onViewCreated(view, savedInstanceState)
         setViewModel()
         setRoute()
+        setCameraStateButton()
 
         val onIndicatorPositionChangedListenerForDraw = OnIndicatorPositionChangedListener {
             curPoint = it
@@ -161,35 +144,24 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
-    private fun updateTotalAnnotation (totalLocation: ArrayList<Location>) {
+    private fun updateTotalAnnotation (totalLocation: ArrayList<DoubleArray>) {
 
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(
-                totalLocation.map {  location ->
-                    Point.fromLngLat(location.longitude, location.latitude)
-                }
-            )
-            .withLineColor(R.color.main.toString())
-            .withLineWidth(7.0)
+        if(totalLocation.isNotEmpty()) {
+            val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+                .withPoints(
+                    totalLocation.map {  location ->
+                        Point.fromLngLat(location[0], location[1])
+                    }
+                )
+                .withLineColor(R.color.main.toString())
+                .withLineWidth(7.0)
 
-        polylineAnnotationManager.create(polylineAnnotationOptions)
+            polylineAnnotationManager.create(polylineAnnotationOptions)
+        }
     }
 
-    private fun updateRecord(location: Location) {
-
-        if(lastLocation == null) lastLocation = curPoint
-
-        setPolyline(lastLocation!!, location)
-//            polylineAnnotationManager.create(
-//                PolylineAnnotationOptions()
-//                    .withPoints(
-//                        listOf(lastLocation, Point.fromLngLat(location.longitude, location.latitude)) as List<Point>
-//                    )
-//                    .withLineColor(R.color.main.toString())
-//                    .withLineWidth(7.0)
-//            )
-        lastLocation = Point.fromLngLat(location.longitude, location.latitude)
-
+    private fun updateRecord(lastLngLat: DoubleArray, curLngLat: DoubleArray) {
+        setPolyline(lastLngLat, curLngLat)
     }
 
     private fun startOrPause() {
@@ -200,7 +172,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                 ActivityCompat.requestPermissions(mainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION_PERMISSION);
             } else {
                 sendCommandToForegroundService(RecordState.START)
-                lastLocation = curPoint
             }
         }
     }
@@ -236,10 +207,10 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         mapView = binding.mapViewRecord
     }
 
-    private fun setPolyline(last: Point, cur: Location) {
+    private fun setPolyline(lastLngLat: DoubleArray, curLngLat: DoubleArray) {
         val points = listOf(
-            last,
-            Point.fromLngLat(cur.longitude ,cur.latitude),
+            Point.fromLngLat(lastLngLat[0], lastLngLat[1]),
+            Point.fromLngLat(curLngLat[0], curLngLat[1]),
         )
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
             .withPoints(points)
@@ -249,22 +220,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
-    private fun addPolyLineToMap() {
-        var lastPoint = Point.fromLngLat(curPoint.longitude(),curPoint.latitude())
-        timerTaskforPolyLine = timer(period = 2000) {
-//            setPolyline(curPoint, lastPoint)
-            recordViewModel.addDistance(getDistance(curPoint, lastPoint))
-            lastPoint = Point.fromLngLat(curPoint.longitude(), curPoint.latitude())
-        }
+    private fun updateDistanceValue(distance: Double) {
+         binding.distance = distance
     }
 
-    private fun setDistanceText() {
-        recordViewModel.distance.observe(requireActivity()) { distance ->
-            binding.distance = distance / 1000
-        }
-    }
-
-    private fun changeCurButtonState() {
+    private fun setCameraStateButton() {
         binding.imagebuttonChangeCameraView.setOnClickListener {
             onCameraTracking()
         }
@@ -272,9 +232,9 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
 
     private fun showSaveSheet(){
         val dialog = BottomSheetDialog(requireActivity())
-        val encodedUrl : String = URLEncoder.encode(polylineAnnotationManager.getTotalPolyline(),"EUC-KR")
+        val encodedUrl : String = URLEncoder.encode(getTotalPolyline(),"EUC-KR")
         val recordUrl =
-            "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-8+ff0000($encodedUrl)/auto/1280x1280?access_token=pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA"
+            "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-8+ff0000($encodedUrl)/auto/1280x1280?access_token=${BuildConfig.MAPBOX_PUBLIC_ACCESS_TOKEN}"
         dialog.setContentView(R.layout.fragment_record_dialog)
         val recordSaveButton = dialog.findViewById<TextView>(R.id.button_record_save)
         val recordQuitButton = dialog.findViewById<TextView>(R.id.button_record_quit)
@@ -286,34 +246,15 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         recordSaveButton?.setOnClickListener {
             val detail = recordDetail?.text.toString()
             recordViewModel.setText(detail)
-            recordViewModel.saveRecord(polylineAnnotationManager.getTotalPolyline())
-
+            recordViewModel.saveRecord(getTotalPolyline())
             Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
+            sendCommandToForegroundService(RecordState.STOP)
             dialog.dismiss()
         }
         recordQuitButton?.setOnClickListener {
             dialog.dismiss()
         }
         dialog.show()
-    }
-
-    fun getDistance(cur: Point, last: Point): Double {
-        val dLat = Math.toRadians(last.latitude() - cur.latitude())
-        val dLong = Math.toRadians(last.longitude() - cur.longitude())
-        val a = Math.sin(dLat / 2).pow(2.0) + Math.sin(dLong / 2)
-            .pow(2.0) * Math.cos(Math.toRadians(cur.latitude()))
-        val c = 2 * asin(sqrt(a))
-        return (6372.8 * 1000 * c) // 상수 입니다..!
-    }
-
-    private fun PolylineAnnotationManager.getTotalPolyline(): String {
-        val pointList: ArrayList<Point> = ArrayList()
-        annotations.forEach() { polylineAnnotation ->
-            polylineAnnotation.points.forEach() { point ->
-                pointList.add(point)
-            }
-        }
-        return PolylineUtils.encode(pointList, 5)
     }
 
     private fun updateDurationValue(elapsedTime: Int) {
@@ -351,5 +292,34 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                 Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun getTotalPolyline(): String {
+        val result = StringBuilder()
+        val factor = Math.pow(10.0, 5.0)
+        var lastLat: Long = 0
+        var lastLng: Long = 0
+
+        totalLocation.forEach() { lngLat ->
+            val lat = Math.round(lngLat[1] * factor)
+            val lng = Math.round(lngLat[0] * factor)
+            val varLat = lat - lastLat
+            val varLng = lng - lastLng
+            encode(varLat, result)
+            encode(varLng, result)
+            lastLat = lat
+            lastLng = lng
+        }
+        return result.toString()
+    }
+
+    private fun encode(variable: Long, result: StringBuilder) {
+        var variable = variable
+        variable = if (variable < 0) (variable shl 1).inv() else variable shl 1
+        while (variable >= 0x20) {
+            result.append(Character.toChars((0x20 or (variable and 0x1f).toInt()) + 63))
+            variable = variable shr 5
+        }
+        result.append(Character.toChars((variable + 63).toInt()))
     }
 }

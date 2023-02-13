@@ -5,13 +5,15 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.asin
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.properties.Delegates
 
 
@@ -20,9 +22,12 @@ const val RECORD_LOCATION = "RecordLocation"
 const val RECORD_STATUS = "RecordStatus"
 
 const val IS_RECORD_RUNNING = "isRecordRunning"
-const val TIME_ELAPSED = "timeElapsed"
-const val LOCATION = "location"
 const val TOTAL_LOCATION = "TotalLocation"
+const val LAST_LOCATION = "LAST_LOCATION"
+const val CURRENT_LOCATION = "CURRENT_LOCATION"
+const val DISTANCE = "DISTANCE"
+const val TIME_ELAPSED = "timeElapsed"
+
 const val SERVICE_COMMAND = "Command"
 
 class RecordService : Service(), CoroutineScope {
@@ -32,7 +37,8 @@ class RecordService : Service(), CoroutineScope {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private var currentTime by Delegates.notNull<Int>()
-    private val locationList = arrayListOf<Location>()
+    private var totalDistance by Delegates.notNull<Double>()
+    private val locationList = ArrayList<DoubleArray>()
 
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable = object : Runnable {
@@ -52,7 +58,9 @@ class RecordService : Service(), CoroutineScope {
     override fun onCreate() {
         super.onCreate()
         currentTime = 0
+        totalDistance = 0.0
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        startForeground(NotificationHelper.NOTIFICATION_ID, helper.getNotification())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -81,7 +89,6 @@ class RecordService : Service(), CoroutineScope {
     private fun endRecord() {
         serviceState = RecordState.STOP
         handler.removeCallbacks(runnable)
-        sendStatus()
         stopService()
     }
 
@@ -97,10 +104,7 @@ class RecordService : Service(), CoroutineScope {
 
     private fun startRecord() {
         serviceState = RecordState.START
-
-        startForeground(NotificationHelper.NOTIFICATION_ID, helper.getNotification())
         sendStatus()
-
         startCoroutineTimer()
         startGetLocation()
     }
@@ -124,7 +128,7 @@ class RecordService : Service(), CoroutineScope {
         val locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
             3000
-        ).setMinUpdateDistanceMeters(5f).build()
+        ).setMinUpdateDistanceMeters(4f).build()
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -136,7 +140,7 @@ class RecordService : Service(), CoroutineScope {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper());
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper())
     }
 
     private fun sendStatus() {
@@ -144,6 +148,7 @@ class RecordService : Service(), CoroutineScope {
             .putExtra(IS_RECORD_RUNNING, serviceState as Parcelable)
             .putExtra(TIME_ELAPSED, currentTime)
             .putExtra(TOTAL_LOCATION, locationList)
+            .putExtra(DISTANCE, totalDistance)
         sendBroadcast(statusIntent)
     }
 
@@ -157,14 +162,35 @@ class RecordService : Service(), CoroutineScope {
     private val mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
-            if (locationResult.lastLocation != null) {
-                val curLocation: Location = locationResult.lastLocation!!
-                Log.v("LOCATION_UPDATE", "${curLocation?.latitude}, ${curLocation?.longitude}")
-                sendBroadcast(
-                    Intent(RECORD_LOCATION)
-                        .putExtra(LOCATION, curLocation as Parcelable)
-                )
+            locationResult.lastLocation.let {  location ->
+                if(location != null) {
+                    val curLngLat = doubleArrayOf(location.longitude, location.latitude)
+                    Log.v("LOCATION_UPDATE", "${location?.latitude}, ${location?.longitude}")
+                    val lastLngLat = if (locationList.isEmpty()) {
+                        curLngLat
+                    }else {
+                        locationList.last()
+                    }
+                    locationList.add(curLngLat)
+                    totalDistance += getDistance(lastLngLat, curLngLat)
+
+                    sendBroadcast(
+                        Intent(RECORD_LOCATION)
+                            .putExtra(LAST_LOCATION, lastLngLat)
+                            .putExtra(CURRENT_LOCATION, curLngLat)
+                            .putExtra(DISTANCE, totalDistance)
+                    )
+                }
             }
         }
+    }
+
+    private fun getDistance(lastLngLat: DoubleArray, curLngLat: DoubleArray): Double {
+        val dLat = Math.toRadians(lastLngLat[1] - curLngLat[1])
+        val dLong = Math.toRadians(lastLngLat[0] - curLngLat[0])
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.sin(dLong / 2)
+            .pow(2.0) * Math.cos(Math.toRadians(curLngLat[1]))
+        val c = 2 * asin(sqrt(a))
+        return (6372.8 * 1000 * c) / 1000 // 상수 입니다..!
     }
 }
