@@ -11,11 +11,11 @@ public interface RouteRepository extends JpaRepository<Route, Integer> {
 
 	long countByUserId(String userId);
 
-	List<Route> findByUserId(String userId);
+	List<Route> findByUserIdOrderByRouteIdDesc(String userId);
 
-	List<Route> findByUserIdContaining(String userId);
+	List<Route> findByUserIdContainingOrderByRouteIdDesc(String userId);
 
-	List<Route> findByMakerContaining(String maker);
+	List<Route> findByMakerContainingOrderByRouteIdDesc(String maker);
 
-	List<Route> findByTitleContaining(String title);
+	List<Route> findByTitleContainingOrderByRouteIdDesc(String title);
 }

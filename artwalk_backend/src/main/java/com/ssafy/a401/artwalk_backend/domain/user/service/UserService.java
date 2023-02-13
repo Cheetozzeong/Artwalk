@@ -210,8 +210,8 @@ public class UserService {
 		List<User> users = userRepository.findAll();
 		for (User user : users) {
 			String userId = user.getUserId();
-			long userRouteCount = routeRepository.findByUserId(userId).size();
-			long userRecordCount = recordRepository.findByUserId(userId).size();
+			long userRouteCount = routeRepository.findByUserIdOrderByRouteIdDesc(userId).size();
+			long userRecordCount = recordRepository.findByUserIdOrderByRecordIdDesc(userId).size();
 			
 			// DATETIME 직렬화를 위한 모듈 설정
 			objectMapper.registerModule(new JavaTimeModule());
@@ -245,8 +245,8 @@ public class UserService {
 		List<User> users = userRepository.findByNicknameContaining(keyword);
 		for (User user : users) {
 			String userId = user.getUserId();
-			long userRouteCount = routeRepository.findByUserId(userId).size();
-			long userRecordCount = recordRepository.findByUserId(userId).size();
+			long userRouteCount = routeRepository.findByUserIdOrderByRouteIdDesc(userId).size();
+			long userRecordCount = recordRepository.findByUserIdOrderByRecordIdDesc(userId).size();
 			Map<String, Object>map = objectMapper.convertValue(user, Map.class);
 			map.put("userRouteCount", userRouteCount);
 			map.put("userRecordCount", userRecordCount);
@@ -263,8 +263,8 @@ public class UserService {
 		List<User> users = userRepository.findByUserIdContaining(keyword);
 		for (User user : users) {
 			String userId = user.getUserId();
-			long userRouteCount = routeRepository.findByUserId(userId).size();
-			long userRecordCount = recordRepository.findByUserId(userId).size();
+			long userRouteCount = routeRepository.findByUserIdOrderByRouteIdDesc(userId).size();
+			long userRecordCount = recordRepository.findByUserIdOrderByRecordIdDesc(userId).size();
 			Map<String, Object> map = objectMapper.convertValue(user, Map.class);
 			map.put("userRouteCount", userRouteCount);
 			map.put("userRecordCount", userRecordCount);
