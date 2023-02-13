@@ -1,5 +1,5 @@
 <template>
-  <b-col cols="3">
+  <b-col cols="3" class="my-2">
     <b-card
         img-top
         :img-src="thumbUrl"

@@ -27,18 +27,18 @@
       <!--   루트 리스트 카드 - RouteItem 으로 props   -->
       <b-row v-if="searchedRoutes == null">
         <RouteItem
-            v-for="allRoute in allRoutes"
-            :key="allRoute.routeId"
-            :route="allRoute"
+            v-for="route in paginatedData"
+            :key="route.routeId"
+            :route="route"
         />
       </b-row>
 
       <!--   검색한 결과 경로가 1개 이상일 때   -->
       <b-row v-else-if="searchedRoutes.length >= 1">
         <RouteItem
-            v-for="searchedRoute in searchedRoutes"
-            :key="searchedRoute.routeId"
-            :route="searchedRoute"
+            v-for="route in paginatedData"
+            :key="route.routeId"
+            :route="route"
         />
       </b-row>
 
@@ -46,6 +46,16 @@
       <div v-else-if="searchedRoutes.length < 1">
         <p> 검색 결과 없음 </p>
       </div>
+
+      <b-pagination
+          size="sm"
+          align="center"
+          v-if="totalRows > 0"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          v-model="pageNum"
+          class="custom-pagination"
+      />
 
     </div>
   </b-container>
@@ -67,6 +77,8 @@ export default {
       searchKeyword: null,
       searchedRoutes: null,
       options: ['userId', 'maker', 'title'],
+      perPage: 12,
+      pageNum: 1
     }
   },
   methods: {
@@ -91,6 +103,7 @@ export default {
         }
       })
           .then((res) => {
+            this.pageNum = 1
             this.searchedRoutes = res.data.routes
           })
           .catch((err) => {
@@ -102,11 +115,32 @@ export default {
       this.selectedDropdownItem = "not Selected"
       this.searchKeyword = null
       this.searchedRoutes = null
+      this.pageNum = 1
     },
   },
   computed: {
     allRoutes() {
       return this.$store.state.route
+    },
+    totalRows() {
+      if (this.searchedRoutes == null) {
+        return this.allRoutes.length;
+      } else if (this.searchedRoutes.length >= 1) {
+        return this.searchedRoutes.length;
+      } else {
+        return 0
+      }
+    },
+    paginatedData() {
+      const start = (this.pageNum-1) * this.perPage,
+          end = start + this.perPage;
+      if (this.searchedRoutes == null) {
+        return this.allRoutes.slice(start, end);
+      } else if (this.searchedRoutes.length >= 1) {
+        return this.searchedRoutes.slice(start, end);
+      } else {
+        return []
+      }
     },
   },
   created() {

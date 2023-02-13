@@ -118,11 +118,14 @@ export default {
           })
     },
     getProfileImage() {
-      const url = `/user/info/profile/${this.$route.params.userId}`
+      const url = `/user/info/profile`
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'accessToken': `Bearer ${this.$store.state.token}`
+        },
+        params: {
+          userId: this.$route.params.userId
         }
       }
 
