@@ -131,6 +131,7 @@
   display: flex;
   padding-left: 0;
   list-style: none;
+  margin-top: 2rem;
 }
 
 </style>

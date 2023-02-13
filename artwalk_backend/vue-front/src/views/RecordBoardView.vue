@@ -27,18 +27,18 @@
       <!--   레코드 리스트 카드 - RecordItem 으로 props   -->
       <b-row v-if="searchedRecords == null">
         <RecordItem
-            v-for="allRecord in allRecords"
-            :key="allRecord.recordId"
-            :record="allRecord"
+            v-for="record in paginatedData"
+            :key="record.recordId"
+            :record="record"
         />
       </b-row>
 
       <!--   검색한 결과 기록이 1개 이상일 때   -->
       <b-row v-else-if="searchedRecords.length >= 1">
         <RecordItem
-            v-for="searchedRecord in searchedRecords"
-            :key="searchedRecord.recordId"
-            :record="searchedRecord"
+            v-for="record in paginatedData"
+            :key="record.recordId"
+            :record="record"
         />
       </b-row>
 
@@ -46,6 +46,16 @@
       <div v-else-if="searchedRecords.length < 1">
         <p> 검색 결과 없음 </p>
       </div>
+
+      <b-pagination
+          size="sm"
+          align="center"
+          v-if="totalRows > 0"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          v-model="pageNum"
+          class="custom-pagination"
+      />
 
     </div>
   </b-container>
@@ -67,6 +77,8 @@ export default {
       searchKeyword: null,
       searchedRecords: null,
       options: ['userId', 'detail'],
+      perPage: 12,
+      pageNum: 1
     }
   },
   methods: {
@@ -91,6 +103,7 @@ export default {
         }
       })
           .then((res) => {
+            this.pageNum = 1
             this.searchedRecords = res.data.records
           })
           .catch((err) => {
@@ -102,11 +115,32 @@ export default {
       this.selectedDropdownItem = "not Selected"
       this.searchKeyword = null
       this.searchedRecords = null
+      this.pageNum = 1
     },
   },
   computed: {
     allRecords() {
       return this.$store.state.record
+    },
+    totalRows() {
+      if (this.searchedRecords == null) {
+        return this.allRecords.length;
+      } else if (this.searchedRecords.length >= 1) {
+        return this.searchedRecords.length;
+      } else {
+        return 0
+      }
+    },
+    paginatedData() {
+      const start = (this.pageNum-1) * this.perPage,
+          end = start + this.perPage;
+      if (this.searchedRecords == null) {
+        return this.allRecords.slice(start, end);
+      } else if (this.searchedRecords.length >= 1) {
+        return this.searchedRecords.slice(start, end);
+      } else {
+        return []
+      }
     },
   },
   created() {
