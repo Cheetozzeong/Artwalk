@@ -12,6 +12,9 @@ import com.a401.artwalk.databinding.ActivityMainBinding
 import com.a401.domain.usecase.PostLoginUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,26 +32,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         val prefs = applicationContext.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
         val accessToken = prefs.getString("accessToken", null)
         val refreshToken = prefs.getString("refreshToken", null)
-        val intent =
-            if(accessToken == null) {
-                Intent(this, LoginActivity::class.java)
-            }else {
-                lifecycleScope.launch {
-                    val accessTokenForLogin = "Bearer $accessToken"
-                    val refreshTokenForLogin = "Bearer $refreshToken"
-                    postLogin.invoke(
-                            accessToken = accessTokenForLogin,
-                            refreshToken = refreshTokenForLogin
-                        )
+        var intent: Intent = Intent()
+
+        lifecycleScope.launch {
+            val accessTokenForLogin = "Bearer $accessToken"
+            val refreshTokenForLogin = "Bearer $refreshToken"
+            postLogin(accessToken = accessTokenForLogin, refreshToken = refreshTokenForLogin).collectLatest { result ->
+                delay(1300)
+                intent =
+                    if(result == "FAIL") {
+                        Intent(this@MainActivity, LoginActivity::class.java)
+                    }else {
+                        Intent(this@MainActivity, SampleActivity::class.java)
                     }
-                Intent(this, SampleActivity::class.java)
-                // TODO: 자동 로그인 실패시 login page로 이동
             }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        startActivity(intent)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent)
+        }
+
     }
 
 }

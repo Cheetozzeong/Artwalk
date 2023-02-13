@@ -20,11 +20,19 @@ class UserRemoteDataSourceImpl @Inject constructor(
     private val prefs: SharedPreferences = context.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
     private val accessToken: String = "Bearer ${prefs.getString("accessToken", "")}"
 
-    override suspend fun postLogin(accessToken: String, refreshToken: String) {
-        val responseHeader = a401UserApi.postLogin(accessToken, refreshToken).headers()
-        val renewAccessToken = responseHeader["accessToken"]
-        prefs.edit().putString("accessToken", renewAccessToken).apply()
-        return
+    override suspend fun postLogin(accessToken: String, refreshToken: String): Flow<String> {
+        return flow{
+            a401UserApi.postLogin(accessToken,refreshToken).let{ response ->
+                if(response.isSuccessful) {
+                    val responseHeader = a401UserApi.postLogin(accessToken, refreshToken).headers()
+                    val renewAccessToken = responseHeader["accessToken"]
+                    prefs.edit().putString("accessToken", renewAccessToken).apply()
+                    emit("SUCCESS")
+                }else {
+                    emit("FAIL")
+                }
+            }
+        }
     }
 
     override suspend fun postIdToken(idToken: String, serviceType: String): Flow<String> {

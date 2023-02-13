@@ -9,7 +9,7 @@ interface UserRepository {
 
     suspend fun postLoginInfo(userId: String, password: String): Flow<String>
 
-    suspend fun postLogin(accessToken: String, refreshToken: String)
+    suspend fun postLogin(accessToken: String, refreshToken: String): Flow<String>
 
     suspend fun postRegist(user: User, password: String): Flow<String>
 
