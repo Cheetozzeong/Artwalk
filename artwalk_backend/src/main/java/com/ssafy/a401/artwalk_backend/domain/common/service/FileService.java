@@ -213,20 +213,20 @@ public class FileService {
 	public static String saveShareImage(String option, String recordPath, String geometry, RecordImageRequestDTO recordImageRequestDTO, String userId) {
 		int polyLineWidth = recordImageRequestDTO.getPolyLineWidth(); // 기록 굵기
 		String polyLineColor = recordImageRequestDTO.getPolyLineColor(); // 기록 색상
-		double minLon = recordImageRequestDTO.getMinLon(); // 최소 경도
-		double minLat = recordImageRequestDTO.getMinLat(); // 최소 위도
-		double maxLon = recordImageRequestDTO.getMaxLon(); // 최대 경도
-		double maxLat = recordImageRequestDTO.getMaxLat(); // 최대 위도
+		double centerLon = recordImageRequestDTO.getCenterLon(); // 중심 경도
+		double centerLat = recordImageRequestDTO.getCenterLat(); // 중심 위도
+		double zoom = recordImageRequestDTO.getZoom(); // 확대
+		double bearing = recordImageRequestDTO.getBearing(); // 회전
 
 		StringBuilder imageURL = new StringBuilder();
 		imageURL.append(MAPBOX_API_URL).append("path-")
 			.append(polyLineWidth).append("+")
 			.append(polyLineColor).append("(")
-			.append(URLEncoder.encode(geometry)).append(")/[")
-			.append(minLon).append(",")
-			.append(minLat).append(",")
-			.append(maxLon).append(",")
-			.append(maxLat).append("]/")
+			.append(URLEncoder.encode(geometry)).append(")/")
+			.append(centerLon).append(",")
+			.append(centerLat).append(",")
+			.append(zoom).append(",")
+			.append(bearing).append("/")
 			.append(imageWidth).append("x")
 			.append(imageHeight).append("?access_token=")
 			.append(MAPBOX_API_KEY);

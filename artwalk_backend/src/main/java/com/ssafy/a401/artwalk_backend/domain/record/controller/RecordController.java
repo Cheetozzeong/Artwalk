@@ -26,6 +26,8 @@ import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
+import com.ssafy.a401.artwalk_backend.domain.user.model.UserDTO;
+import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +46,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequiredArgsConstructor
 public class RecordController {
 	private final RecordService recordService;
+	private final UserService userService;
 
 	@Operation(summary = "편집 페이지 이동", description = "공유 이미지 편집 페이지 이동 메서드입니다.")
 	@GetMapping("/edit/{editLink}")
@@ -66,6 +69,16 @@ public class RecordController {
 		Record record = recordService.findByLink(link);
 		if (record != null) {
 			model.addAttribute("result", link);
+
+			UserDTO userDTO = userService.findUserDetail(record.getUserId());
+			String detail = record.getDetail();
+			String nickname = userDTO.getNickname();
+
+			if(detail.equals("")) detail = "나의 기록";
+			if(nickname.equals("")) nickname = "익명의 사용자";
+
+			model.addAttribute("detail", record.getDetail());
+			model.addAttribute("nickname", userDTO.getNickname());
 			return "share/sharing";
 		} else {
 			return "error/4xx";

@@ -20,16 +20,16 @@ public class RecordImageRequestDTO {
 	@Schema(description = "Polyline 색상", nullable = false, example = "#ff0000")
 	private String polyLineColor;
 
-	@Schema(description = "저장할 지도 경계 최소 경도", nullable = false, example = "126.9138")
-	private double minLon;
+	@Schema(description = "저장할 지도 중심 경도", nullable = false, example = "126.9138")
+	private double centerLon;
 
-	@Schema(description = "저장할 지도 경계 최소 위도", nullable = false, example = "37.4734")
-	private double minLat;
+	@Schema(description = "저장할 지도 중심 위도", nullable = false, example = "37.4734")
+	private double centerLat;
 
-	@Schema(description = "저장할 지도 경계 최대 경도", nullable = false, example = "127.0732")
-	private double maxLon;
+	@Schema(description = "저장할 지도 확대 정도", nullable = false, example = "12")
+	private double zoom;
 
-	@Schema(description = "저장할 지도 경계 최대 위도", nullable = false, example = "37.5577")
-	private double maxLat;
+	@Schema(description = "저장할 지도 회전 정도", nullable = false, example = "90")
+	private double bearing;
 
 }

@@ -201,7 +201,7 @@ public class RecordRestController {
 		return response;
 	}
 
-	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다. Request Header에 token과 editLink를 포함하고, Request Body에 지도 경계 위도 경도와 polyline 굵기와 색상을 포함하여 보냅니다.")
+	@Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다. Request Header에 token과 editLink를 포함하고, Request Body에 지도 중심 좌표와 확대, 회전 정도, polyline 굵기와 색상을 포함하여 보냅니다.")
 	@PostMapping("/image")
 	public ResponseEntity<ResponseDTO> recordShareImageSave(@RequestHeader(value="editLink") String editLink, @RequestBody RecordImageRequestDTO recordImageRequestDTO, @ApiIgnore Authentication authentication) {
 		Record record = recordService.findByEditLink(editLink);
