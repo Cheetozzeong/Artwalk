@@ -1,6 +1,5 @@
 package com.a401.data.datasource.remote
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.a401.data.api.ApiClient
 import com.a401.data.model.request.ArtWalkRegistRequest
@@ -10,8 +9,8 @@ import com.a401.data.model.request.LoginUserRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.Response
 import javax.inject.Inject
+import android.content.Context as Context
 
 class UserRemoteDataSourceImpl @Inject constructor(
     @ApplicationContext context: Context
@@ -20,6 +19,21 @@ class UserRemoteDataSourceImpl @Inject constructor(
     private val a401UserApi = ApiClient.getUserServerApiService()
     private val prefs: SharedPreferences = context.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
     private val accessToken: String = "Bearer ${prefs.getString("accessToken", "")}"
+
+    override suspend fun postLogin(accessToken: String, refreshToken: String): Flow<String> {
+        return flow{
+            a401UserApi.postLogin(accessToken,refreshToken).let{ response ->
+                if(response.isSuccessful) {
+                    val responseHeader = a401UserApi.postLogin(accessToken, refreshToken).headers()
+                    val renewAccessToken = responseHeader["accessToken"]
+                    prefs.edit().putString("accessToken", renewAccessToken).apply()
+                    emit("SUCCESS")
+                }else {
+                    emit("FAIL")
+                }
+            }
+        }
+    }
 
     override suspend fun postIdToken(idToken: String, serviceType: String): Flow<String> {
         return flow{

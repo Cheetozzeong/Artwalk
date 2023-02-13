@@ -26,6 +26,10 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteDataSource.postLoginInfo(LoginUserRequest(userId, password))
     }
 
+    override suspend fun postLogin(accessToken: String, refreshToken: String): Flow<String> {
+        return userRemoteDataSource.postLogin(accessToken, refreshToken)
+    }
+
     override suspend fun postRegist(user: User, password: String): Flow<String> {
         return flow {
             userRemoteDataSource.postRegist(user, password).collect { response ->
