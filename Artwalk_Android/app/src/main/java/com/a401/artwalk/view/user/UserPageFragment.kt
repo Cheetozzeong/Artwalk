@@ -58,7 +58,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
             findNavController().navigate(UserPageFragmentDirections.actionUserPageToSetting())
             true
         }
-        // TODO: 내 기록, 뱃지 등 가져오기
     }
 
     private suspend fun setUser() {

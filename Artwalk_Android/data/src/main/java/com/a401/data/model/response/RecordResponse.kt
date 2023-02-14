@@ -13,7 +13,7 @@ data class RecordListResponse(
 data class Records (
     @SerializedName("recordId") var recordId: Int?,
 
-    @SerializedName("duration") var duration: Int?,
+    @SerializedName("duration") var duration: Double?,
     @SerializedName("distance") var distance: Double?,
     @SerializedName("geometry") var geometry: String?,
 

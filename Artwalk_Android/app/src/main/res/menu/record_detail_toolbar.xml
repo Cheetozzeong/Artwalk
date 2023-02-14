@@ -12,8 +12,8 @@
     <item
         android:id="@+id/button_detail_delete"
         android:enabled="true"
-        android:icon="@drawable/ic_detail_delete_24"
         android:title="ic_detail_delete_24"
+        android:icon="@drawable/ic_detail_delete_24"
         app:showAsAction="always"/>
 
 </menu>

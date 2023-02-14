@@ -9,6 +9,5 @@ data class RecordForList(
     val distance: Double,
     val creation: Date,
     val detail: String,
-    val geometry: String,
     val recordId: Int
 ) : Serializable
