@@ -46,7 +46,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var durationReceiver: BroadcastReceiver
     private lateinit var locationReceiver: BroadcastReceiver
 
-    lateinit var mainActivity: SampleActivity
+    private lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
 
     private val arguments by navArgs<RecordFragmentArgs>()
@@ -66,7 +66,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     override fun onResume() {
         super.onResume()
 
-        sendCommandToForegroundService(RecordState.GET_STATUS)
+        mainActivity.startService(getServiceIntent(RecordState.GET_STATUS))
+
         statusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val state = intent?.extras?.getSerializable(IS_RECORD_RUNNING) as RecordState
@@ -128,6 +129,10 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         setViewModel()
         setRoute()
         setCameraStateButton()
+
+        recordViewModel.msg.observe(viewLifecycleOwner) { msg ->
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        }
 
         val onIndicatorPositionChangedListenerForDraw = OnIndicatorPositionChangedListener {
             curPoint = it
@@ -246,9 +251,13 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
         recordSaveButton?.setOnClickListener {
             val detail = recordDetail?.text.toString()
-            recordViewModel.setText(detail)
-            recordViewModel.saveRecord(getTotalPolyline())
-            Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
+            recordViewModel.setTitle(detail)
+            recordViewModel.saveRecord(
+                getTotalPolyline(),
+                (binding.hour ?: 0) * 3600 + (binding.minute ?: 0) * 60 + (binding.second ?: 0),
+                binding.distance ?: 0.0
+            )
+
             sendCommandToForegroundService(RecordState.STOP)
             dialog.dismiss()
         }
