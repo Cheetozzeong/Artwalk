@@ -214,16 +214,6 @@ public class RecordRestController {
 		return ResponseEntity.badRequest().body(new ResponseDTO(FAIL, "공유 이미지 생성에 실패하였습니다.\n다시 시도해주세요."));
 	}
 
-	// @Operation(summary = "공유이미지 저장/갱신", description = "공유이미지 저장/갱신 메서드입니다.  Path에 공유이미지를 생성/수정하려는 기록 ID를 포함하여 요청합니다.")
-	// @ApiImplicitParam(name = "recordId", value = "이미지를 생성/수정할 기록 ID", dataType = "int")
-	// @PostMapping("/image/{recordId}")
-	// public ResponseEntity<RecordResponseDTO> recordShareImageSave(@PathVariable("recordId") int recordId, @RequestBody Map<String, Object> request) {
-	// 	Record record = recordService.findByRecordId(recordId);
-	// 	Record result = recordService.saveRecordImage(record, request);
-	// 	if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
-	// 	else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
-	// }
-
 	// @Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
 	// @ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
 	// @PostMapping("/download/{link}")
