@@ -19,6 +19,7 @@ android {
         buildConfigField("String", "ROUTE_BASE_URL", ROUTE_BASE_URL)
         buildConfigField("String", "LOGIN_BASE_URL", LOGIN_BASE_URL)
         buildConfigField("String", "RECORD_BASE_URL", RECORD_BASE_URL)
+        buildConfigField("String", "SHARE_BASE_URL", SHARE_BASE_URL)
     }
 
     buildTypes {
