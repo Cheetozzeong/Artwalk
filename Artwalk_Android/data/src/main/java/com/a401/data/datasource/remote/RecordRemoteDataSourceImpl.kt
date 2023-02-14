@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.a401.data.api.ApiClient
 import com.a401.data.mapper.recordForListsFromResponses
 import com.a401.data.mapper.recordRequestFromRecordForSave
+import com.a401.data.model.response.DeleteResponse
 import com.a401.data.model.response.RecordListResponse
 import com.a401.data.model.response.RecordResponse
 import com.a401.domain.model.RecordForList
@@ -48,6 +49,12 @@ class RecordRemoteDataSourceImpl @Inject constructor(
     override suspend fun getEditLink(recordId: Int): Flow<RecordResponse> {
         return flow{
             emit(a401RecordApi.getEditLink(accessToken, recordId))
+        }
+    }
+
+    override suspend fun deleteRecord(recordId: Int): Flow<DeleteResponse> {
+        return flow{
+            emit(a401RecordApi.deleteRecord(accessToken, recordId))
         }
     }
 }

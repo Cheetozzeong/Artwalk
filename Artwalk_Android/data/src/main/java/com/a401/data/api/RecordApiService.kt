@@ -31,4 +31,11 @@ interface RecordApiService {
         @Header("accessToken") accessToken: String,
         @Path("recordId") recordId: Int
     ): RecordResponse
+
+    @DELETE("{recordId}")
+    suspend fun deleteRecord(
+        @Header("accessToken") accessToken: String,
+        @Path("recordId") recordId: Int
+    ): DeleteResponse
+
 }

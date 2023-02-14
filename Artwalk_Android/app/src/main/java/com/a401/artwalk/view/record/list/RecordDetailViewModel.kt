@@ -16,6 +16,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 class RecordDetailViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val getEditLink: GetEditLinkUseCase,
+    private val deleteRecord: DeleteRecordUseCase
 ) : BaseViewModel(dispatcherProvider) {
 
     private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
@@ -33,4 +34,9 @@ class RecordDetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteRecord(recordId: Int) {
+        viewModelScope.launch {
+            deleteRecord(recordId)
+        }
+    }
 }

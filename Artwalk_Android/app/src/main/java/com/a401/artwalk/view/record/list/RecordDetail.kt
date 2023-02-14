@@ -38,6 +38,7 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
             setDistance()
             setDetail()
             setShareButton()
+            setDeleteButton()
         }
     }
 
@@ -99,6 +100,15 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
                 intent.`package` = null
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun setDeleteButton() {
+        val deleteButton = view?.findViewById<ActionMenuItemView>(R.id.button_detail_delete)
+        deleteButton?.setOnClickListener {
+            Log.d("plz","plz")
+            recordDetailViewModel.deleteRecord(arguments.detailArgument.recordId)
+
         }
     }
 }

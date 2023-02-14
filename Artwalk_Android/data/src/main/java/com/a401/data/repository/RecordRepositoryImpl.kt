@@ -35,4 +35,12 @@ class RecordRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun deleteRecord(recordId: Int): Flow<DeleteRecord> {
+        return flow {
+            recordRemoteDataSource.deleteRecord(recordId).collect() { response ->
+                emit(DeleteRecord(response.code,response.count))
+            }
+        }
+    }
 }

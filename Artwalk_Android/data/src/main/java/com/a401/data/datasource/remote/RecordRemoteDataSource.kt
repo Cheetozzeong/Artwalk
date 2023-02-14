@@ -1,5 +1,6 @@
 package com.a401.data.datasource.remote
 
+import com.a401.data.model.response.DeleteResponse
 import com.a401.data.model.response.RecordListResponse
 import com.a401.data.model.response.RecordResponse
 import com.a401.domain.model.RecordForList
@@ -16,4 +17,6 @@ interface RecordRemoteDataSource {
     suspend fun getRecordCount(): Flow<RecordListResponse>
 
     suspend fun getEditLink(recordId: Int): Flow<RecordResponse>
+
+    suspend fun deleteRecord(recordId: Int): Flow<DeleteResponse>
 }
