@@ -57,6 +57,7 @@ public class RecordController {
 			UserDTO userDTO = userService.findUserDetail(record.getUserId());
 
 			model.addAttribute("geometry", geometry);
+			model.addAttribute("editLink", editLink);
 			model.addAttribute("token", userDTO.getRefreshToken());
 			return "share/makeShare";
 		} else {

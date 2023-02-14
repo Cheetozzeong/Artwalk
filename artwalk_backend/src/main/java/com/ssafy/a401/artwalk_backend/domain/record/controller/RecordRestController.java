@@ -203,13 +203,9 @@ public class RecordRestController {
 		Record record = recordService.findByEditLink(editLink);
 
 		String userId = authentication.getName();
-		System.out.println(record);
-		System.out.println(userId);
-		System.out.println(record.getUserId());
 
 		if(record != null && record.getUserId().equals(userId)){
 			Record result = recordService.saveRecordImage(record, recordImageRequestDTO);
-			System.out.println(result);
 			if(result != null) {
 				String link = recordService.saveRandomLink(result);
 				return ResponseEntity.ok().body(new ResponseDTO(OK, link));

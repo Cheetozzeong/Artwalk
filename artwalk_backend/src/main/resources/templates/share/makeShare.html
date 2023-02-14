@@ -154,9 +154,11 @@
         });
 
         var token = "Bearer ";
+        var editLink;
 
         window.onload = function(){
             var geometry = [[${geometry}]];
+            editLink = [[${editLink}]];
             token += [[${token}]];
             makePolyline(geometry);
         };
@@ -290,9 +292,6 @@
             var {lng, lat} = map.getCenter();
             var zoom = map.getZoom();
             var bearing = map.getBearing();
-
-            var pathName = window.location.pathname;
-            var editLink = pathName.split('/')[2];
 
             let config = {
                 method: "POST",
