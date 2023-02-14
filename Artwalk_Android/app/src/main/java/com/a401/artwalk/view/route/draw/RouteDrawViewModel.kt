@@ -35,13 +35,19 @@ class RouteDrawViewModel @Inject constructor(
 
     private val _markerStack: Stack<Marker> = Stack()
 
-    private val _lastPointId: MutableLiveData<Long> = MutableLiveData()
-    val lastPointId: LiveData<Long> = _lastPointId
+    private val _lastPoint: MutableLiveData<Marker> = MutableLiveData()
+    val lastPoint: LiveData<Marker> = _lastPoint
+
+    private val _startPoint: MutableLiveData<Marker> = MutableLiveData()
+    val startPoint: LiveData<Marker> = _startPoint
 
     private val _routeStack: Stack<RouteForDraw> = Stack()
 
     private val _lastRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
     val lastRoute: LiveData<RouteForDraw> = _lastRoute
+
+    private val _deleteRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
+    val deleteRoute: LiveData<RouteForDraw> = _deleteRoute
 
     private val _isSuccessSave: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSuccessSave: LiveData<Boolean> = _isSuccessSave
@@ -52,11 +58,25 @@ class RouteDrawViewModel @Inject constructor(
     }
 
     fun onClickUndoButton() {
-        postDeleteLastMarkerEvent()
-    }
-
-    private fun postDeleteLastMarkerEvent() {
-        _lastPointId.value = _markerStack.pop().markerId
+        when(_markerStack.size) {
+            0 -> {}
+            1 -> {
+                _markerStack.pop()
+                _startPoint.value = MarkerForDelete
+            }
+            else -> {
+                _markerStack.pop()
+                _lastPoint.value = _markerStack.peek()
+            }
+        }
+        when(_routeStack.size) {
+            0 -> {}
+            else -> {
+                _deleteRoute.value = _routeStack.pop()
+                _distance.value = deleteRoute.value?.distance?.let { _distance.value?.minus(it) }
+                _totalDuration.value = deleteRoute.value?.duration?.let { _totalDuration.value?.minus(it) }
+            }
+        }
     }
 
     fun saveDrawRoute(polyline: String) {
@@ -87,31 +107,20 @@ class RouteDrawViewModel @Inject constructor(
 
             when (_markerStack.size) {
                 0 -> {
-
-                }
-                1 -> {
-                    val route = getRouteForWalkingUseCase(_markerStack.peek(), newMarker).getOrThrow()
-                    _routeStack.push(
-                        route
-                    )
-                    _lastRoute.value = route
-                    _totalDuration.value = _totalDuration.value?.plus(route.duration)
-                    _distance.value = _distance.value?.plus(route.distance)
+                    _startPoint.value = newMarker
                 }
                 else -> {
                     val route = getRouteForWalkingUseCase(_markerStack.peek(), newMarker).getOrThrow()
-                    _routeStack.push(
-                        route
-                    )
+                    _lastPoint.value = newMarker
+
+                    _routeStack.push(route)
                     _lastRoute.value = route
+
                     _totalDuration.value = _totalDuration.value?.plus(route.duration)
                     _distance.value = _distance.value?.plus(route.distance)
-                    postDeleteLastMarkerEvent()
-
                 }
             }
             _markerStack.push(newMarker)
-
         }
     }
 }

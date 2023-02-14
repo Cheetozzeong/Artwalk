@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteDrawBinding
+import com.a401.domain.model.Marker
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.utils.PolylineUtils
@@ -27,6 +28,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 const val ROUTE_COLOR: String = "#0601bd"
+val MarkerForDelete = Marker(-10, 0.0, 0.0)
 
 @AndroidEntryPoint
 class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.fragment_route_draw) {
@@ -42,12 +44,17 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
 
         setInitBinding()
         changeDrawButtonState()
-        deleteLastMarker()
+        updateMarker()
+        clearMarker()
         setMapBoxView()
         addPolylineToMap()
         setDurationText()
         setDistanceText()
         setSaveButtonClickListener()
+
+        routeDrawViewModel.deleteRoute.observe(viewLifecycleOwner) {
+            polylineAnnotationManager.delete(polylineAnnotationManager.annotations.last())
+        }
 
         routeDrawViewModel.isSuccessSave.observe(viewLifecycleOwner) { isSuccessSave ->
             if(isSuccessSave) {
@@ -84,11 +91,22 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         }
     }
 
-    private fun deleteLastMarker() {
-        routeDrawViewModel.lastPointId.observe(requireActivity()) { lastId ->
+    private fun updateMarker() {
+        routeDrawViewModel.lastPoint.observe(requireActivity()) { lastPoint ->
             pointAnnotationManager.delete(pointAnnotationManager.annotations.filter{
-                it.id == lastId
+                it.id != lastPoint.markerId &&
+                it.id != routeDrawViewModel.startPoint.value?.markerId ?: -1
             })
+
+            addAnnotationToMap(Point.fromLngLat(lastPoint.longitude, lastPoint.latitude)){}
+        }
+    }
+
+    private fun clearMarker() {
+        routeDrawViewModel.startPoint.observe(requireActivity()) { startPoint ->
+            if(startPoint == MarkerForDelete) {
+                pointAnnotationManager.deleteAll()
+            }
         }
     }
 
@@ -100,7 +118,9 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         mapboxMap.addOnMapClickListener { point ->
 
             if(binding.textViewRouteDrawDrawButton.isSelected) {
-                addAnnotationToMap(point)
+                addAnnotationToMap(point) { id ->
+                    routeDrawViewModel.addPointEvent(id, point.latitude(), point.longitude())
+                }
 
             }
 
@@ -119,7 +139,7 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         }
     }
 
-    private fun addAnnotationToMap(point: Point) {
+    private fun addAnnotationToMap(point: Point, sendPointToViewModel: (markerId: Long) -> Unit) {
         bitmapFromDrawableRes(
             requireContext(),
             R.drawable.ic_route_draw_marker_16
@@ -131,7 +151,8 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
 
             val action = pointAnnotationManager.create(pointAnnotationOptions)
 
-            routeDrawViewModel.addPointEvent(action.id, point.latitude(), point.longitude())
+            sendPointToViewModel(action.id)
+
             action
         }
     }
@@ -174,44 +195,4 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         }
         return PolylineUtils.encode(pointList, 5)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Log.d("LifeCycle2", "onCreateView")
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.d("LifeCycle2", "onAttach")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("LifeCycle2", "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("LifeCycle2", "onPause")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("LifeCycle2", "onPause")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("LifeCycle2", "onDetach")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("LifeCycle2", "onStart")
-    }
-
 }
