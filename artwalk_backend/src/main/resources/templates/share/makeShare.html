@@ -153,11 +153,11 @@
             zoom: 8
         });
 
-        var token;
+        var token = "Bearer ";
 
         window.onload = function(){
             var geometry = [[${geometry}]];
-            token = [[${token}]];
+            token += [[${token}]];
             makePolyline(geometry);
         };
 
