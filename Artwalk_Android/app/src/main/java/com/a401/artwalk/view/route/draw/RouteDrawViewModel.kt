@@ -71,7 +71,11 @@ class RouteDrawViewModel @Inject constructor(
         }
         when(_routeStack.size) {
             0 -> {}
-            else -> _deleteRoute.value = _routeStack.pop()
+            else -> {
+                _deleteRoute.value = _routeStack.pop()
+                _distance.value = deleteRoute.value?.distance?.let { _distance.value?.minus(it) }
+                _totalDuration.value = deleteRoute.value?.duration?.let { _totalDuration.value?.minus(it) }
+            }
         }
     }
 
