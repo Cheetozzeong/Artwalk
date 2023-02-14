@@ -60,7 +60,6 @@ class RecordService : Service(), CoroutineScope {
         currentTime = 0
         totalDistance = 0.0
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        startForeground(NotificationHelper.NOTIFICATION_ID, helper.getNotification())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -89,6 +88,11 @@ class RecordService : Service(), CoroutineScope {
     private fun endRecord() {
         serviceState = RecordState.STOP
         handler.removeCallbacks(runnable)
+
+        currentTime = 0
+        totalDistance = 0.0
+        locationList.clear()
+
         stopService()
     }
 
@@ -103,6 +107,7 @@ class RecordService : Service(), CoroutineScope {
 
 
     private fun startRecord() {
+        startForeground(NotificationHelper.NOTIFICATION_ID, helper.getNotification())
         serviceState = RecordState.START
         sendStatus()
         startCoroutineTimer()
