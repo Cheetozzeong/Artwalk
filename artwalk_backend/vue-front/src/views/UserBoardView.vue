@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      perPage: 6,
+      perPage: 10,
       selectedDropdownItem: "not Selected",
       searchKeyword: null,
       searchedUsers: null,
@@ -97,11 +97,13 @@ export default {
       fields: [
         {
           key: 'userId',
-          label: 'User Id'
+          label: 'User Id',
+          tdClass: 'align-middle'
         },
         {
           key: 'nickname',
           label: 'Nickname',
+          tdClass: 'align-middle',
         },
         // {
         //   key: 'profile',
@@ -113,36 +115,43 @@ export default {
           formatter: value => {
             return (value ? 'Social':'App')
           },
+          tdClass: 'align-middle',
           sortable: true
         },
-        {
-          key: 'level',
-          label: 'Level',
-          sortable: true
-        },
-        {
-          key: 'exp',
-          label: 'Exp',
-          sortable: true
-        },
+        // {
+        //   key: 'level',
+        //   label: 'Level',
+        //   tdClass: 'align-middle',
+        //   sortable: true
+        // },
+        // {
+        //   key: 'exp',
+        //   label: 'Exp',
+        //   tdClass: 'align-middle',
+        //   sortable: true
+        // },
         {
           key: 'userRouteCount',
           label: "Routes",
+          tdClass: 'align-middle',
           sortable: true
         },
         {
           key: 'userRecordCount',
           label: "Records",
+          tdClass: 'align-middle',
           sortable: true
         },
         {
           key: 'regDate',
           label: "Registration Date",
+          tdClass: 'align-middle',
           sortable: true
         },
         {
           key: 'recentAccess',
           label: "Recent Connections",
+          tdClass: 'align-middle',
           sortable: true
         },
       ]
@@ -189,4 +198,9 @@ export default {
 
 <style scoped>
 
+.b-table /deep/ > thead > tr :nth-child(3),
+.b-table /deep/ > tbody > tr :nth-child(3),
+.b-table /deep/ > tfoot > tr :nth-child(3) {
+  border-left: 3px solid #000;
+}
 </style>

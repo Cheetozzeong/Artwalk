@@ -14,11 +14,13 @@
       </b-col>
       <b-col class="col-2 f-size">
         <div class="my-3">User Id</div>
+        <div class="my-3">User Type</div>
         <div class="my-3">Level</div>
         <div class="my-3">Exp</div>
       </b-col>
       <b-col class="col-5 f-size">
         <div class="fw-bold my-3">{{ userInfo.userId }}</div>
+        <div class="fw-bold my-3">{{ formattedUserType }}</div>
         <div class="fw-bold my-3">{{ userInfo.level }}</div>
         <div class="fw-bold my-3">{{ userInfo.exp }}</div>
       </b-col>
@@ -69,6 +71,7 @@ export default {
       userInfo: null,
       userRoutes: null,
       userRecords: null,
+      formattedUserType: null,
       imageUrl: null,
     }
   },
@@ -83,6 +86,7 @@ export default {
       })
           .then((res) => {
             this.userInfo = res.data.user
+            this.formattedUserType = this.userInfo ? 'Social':'App'
           })
           .catch((err) => {
             this.err = err
@@ -118,7 +122,7 @@ export default {
           })
     },
     getProfileImage() {
-      const url = `/user/info/profile`
+      const url = '/user/info/profile'
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',
