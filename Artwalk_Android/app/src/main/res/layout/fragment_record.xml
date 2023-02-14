@@ -30,6 +30,7 @@
             android:id="@+id/imagebutton_record_startbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/circle_button_bg_50"
             android:src="@drawable/ic_start_circle_100"
             app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
@@ -42,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/neutral01"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="150dp"/>
 
     <LinearLayout
         android:id="@+id/view_record_distanceBox"
@@ -50,7 +51,7 @@
         app:layout_constraintTop_toTopOf="@id/view_record_infoBox"
         app:layout_constraintBottom_toBottomOf="@id/view_record_infoBox"
         app:layout_constraintEnd_toStartOf="@id/view_record_durationBox"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center">
@@ -78,7 +79,7 @@
         app:layout_constraintTop_toTopOf="@id/view_record_infoBox"
         app:layout_constraintBottom_toBottomOf="@id/view_record_infoBox"
         app:layout_constraintStart_toEndOf="@id/view_record_distanceBox"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center">
@@ -106,7 +107,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/circle_ic_button_bg"
-            android:backgroundTint="@color/neutral05"
+            android:backgroundTint="@color/neutral04"
             android:src="@drawable/ic_record_my_location"
             app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"
             app:layout_constraintEnd_toEndOf="parent"/>
