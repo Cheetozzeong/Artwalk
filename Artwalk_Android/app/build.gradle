@@ -25,6 +25,7 @@ android {
         buildConfigField("String", "PROFILE_URL", PROFILE_URL)
         buildConfigField("String", "IMAGE_BASE_URL_RECORD", IMAGE_BASE_URL_RECORD)
         buildConfigField("String", "MAPBOX_PUBLIC_ACCESS_TOKEN", MAPBOX_PUBLIC_ACCESS_TOKEN)
+        buildConfigField("String", "SHARING_BASE_URL", SHARING_BASE_URL)
 
     }
 

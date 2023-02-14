@@ -9,11 +9,10 @@ fun recordForListsFromResponses(response: RecordListResponse): List<RecordForLis
         with(records) {
             RecordForList(
                 thumbnail?:"",
-                duration?:0,
+                (duration?:0.0).toInt(),
                 distance?:0.0,
                 creation?: Date(),
-                detail?:"",
-                geometry?:"",
+                title?:"",
                 recordId?:-1
             )
         }
