@@ -71,13 +71,13 @@ public class RecordController {
 			model.addAttribute("result", link);
 
 			UserDTO userDTO = userService.findUserDetail(record.getUserId());
-			String detail = record.getDetail();
+			String title = record.getTitle();
 			String nickname = userDTO.getNickname();
 
-			if(detail.equals("")) detail = "나의 기록";
+			if(title.equals("")) title = "나의 기록";
 			if(nickname.equals("")) nickname = "익명의 사용자";
 
-			model.addAttribute("detail", record.getDetail());
+			model.addAttribute("title", record.getTitle());
 			model.addAttribute("nickname", userDTO.getNickname());
 			return "share/sharing";
 		} else {
