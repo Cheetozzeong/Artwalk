@@ -9,8 +9,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Schema(description = "기록 요청 DTO")
 public class RecordRequestDTO {

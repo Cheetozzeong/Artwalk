@@ -49,7 +49,7 @@ public class RecordRestController {
 	private final RecordService recordService;
 	private final AdminService adminService;
 
-	@Operation(summary = "기록 저장", description = "기록 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, polyline encoded 기록 문자열), detail(String, 메모)를 넣어 요청을 보내면 기록이 저장됩니다.")
+	@Operation(summary = "기록 저장", description = "기록 저장 메서드입니다. Request Body 내에 Json 형식으로 duration(double, 시간), distance(double, 거리), geometry(String, polyline encoded 기록 문자열), title(String, 제목)를 넣어 요청을 보내면 기록이 저장됩니다.")
 	@PostMapping("")
 	public ResponseEntity<RecordResponseDTO> recordAdd(@RequestBody RecordRequestDTO recordRequestDTO, @ApiIgnore Authentication authentication) {
 		String userId = authentication.getName();
@@ -74,7 +74,7 @@ public class RecordRestController {
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
 	}
 
-	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다. Path에 수정할 기록 ID를, Request Body에는 수정할 detail(메모) 내용을 포함하여 요청합니다.")
+	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다. Path에 수정할 기록 ID를, Request Body에는 수정할 title(제목) 내용을 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "recordId", value = "수정할 기록 ID", dataType = "int")
 	@PutMapping("/{recordId}")
 	public ResponseEntity<RecordResponseDTO> recordModify(@PathVariable("recordId") int recordId, @RequestBody RecordRequestDTO recordRequestDTO) {
@@ -131,7 +131,7 @@ public class RecordRestController {
 
 	@Operation(summary = "기록 검색", description = "기록 검색 메서드입니다. query string에 type과 keyword를 포함하여 검색 옵션과 키워드에 해당하는 기록 목록을 반환합니다.")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "type", value = "기록 검색 옵션 - userId(사용자 아이디), detail(기록 메모 내용)", dataType = "String"),
+		@ApiImplicitParam(name = "type", value = "기록 검색 옵션 - userId(사용자 아이디), title(기록 제목)", dataType = "String"),
 		@ApiImplicitParam(name = "keyword", value = "기록 검색 키워드", dataType = "String")
 	})
 	@GetMapping("/search")
@@ -139,7 +139,7 @@ public class RecordRestController {
 		List<Record> records = null;
 
 		if(type.equals("userId")) records = recordService.findByUserIdContaining(keyword);
-		else if (type.equals("detail")) records = recordService.findByTitleContaining(keyword);
+		else if (type.equals("title")) records = recordService.findByTitleContaining(keyword);
 
 		if(records != null) return ResponseEntity.ok().body(new RecordListResponseDTO(OK, records));
 		else return ResponseEntity.badRequest().body(new RecordListResponseDTO(FAIL, null));
