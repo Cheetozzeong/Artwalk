@@ -50,13 +50,14 @@ public class RecordController {
 
 	@Operation(summary = "편집 페이지 이동", description = "공유 이미지 편집 페이지 이동 메서드입니다.")
 	@GetMapping("/edit/{editLink}")
-	public String editShareImage(Model model, @PathVariable("editLink") String editLink, @RequestHeader String accessToken) {
+	public String editShareImage(Model model, @PathVariable("editLink") String editLink) {
 		Record record = recordService.findByEditLink(editLink);
 		if (record != null) {
 			String geometry = recordService.readGeometryFile(record);
+			UserDTO userDTO = userService.findUserDetail(record.getUserId());
 
 			model.addAttribute("geometry", geometry);
-			model.addAttribute("token", accessToken);
+			model.addAttribute("token", userDTO.getRefreshToken());
 			return "share/makeShare";
 		} else {
 			return "error/4xx";
