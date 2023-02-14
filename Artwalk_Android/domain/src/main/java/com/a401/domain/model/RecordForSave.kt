@@ -3,7 +3,7 @@ package com.a401.domain.model
 data class RecordForSave(
     val duration: Int,
     val distance: Double,
-    val detail: String?,
+    val title: String?,
     val geometry: String
 ) {
     constructor() : this(
