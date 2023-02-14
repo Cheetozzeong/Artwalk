@@ -2,7 +2,6 @@ package com.a401.artwalk.view
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.a401.artwalk.R
@@ -15,7 +14,6 @@ class SampleActivity: BaseActivity<SampleViewBinding>(R.layout.sample_view) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setNavigation()
     }
 
@@ -27,6 +25,7 @@ class SampleActivity: BaseActivity<SampleViewBinding>(R.layout.sample_view) {
                 R.id.policy,
                 R.id.setting,
                 R.id.record_main,
+                R.id.detail_record,
                 R.id.route_draw -> binding.bottomNavigationView.visibility = View.GONE
                 else -> binding.bottomNavigationView.visibility = View.VISIBLE
             }

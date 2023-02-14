@@ -1,6 +1,5 @@
 package com.a401.artwalk.view.route.list
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
@@ -26,7 +25,6 @@ class RouteListViewModel @Inject constructor(
 
     init {
         getRoutes()
-        Log.d("LifeCycleVM", "init")
     }
 
     fun getRoutes() {

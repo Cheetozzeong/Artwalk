@@ -15,19 +15,16 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.R
-import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteDrawBinding
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.utils.PolylineUtils
 import com.mapbox.maps.MapboxMap
-import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.*
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.absoluteValue
 
 const val ROUTE_COLOR: String = "#0601bd"
 

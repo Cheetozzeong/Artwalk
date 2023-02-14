@@ -1,10 +1,9 @@
 package com.a401.artwalk.view.user
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
+import com.a401.artwalk.view.record.list.RecordListItem
 import com.a401.domain.model.RecordForList
 import com.a401.domain.model.User
 import com.a401.domain.usecase.FetchRecordList

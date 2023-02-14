@@ -1,4 +1,4 @@
-package com.a401.artwalk.view.user
+package com.a401.artwalk.view.record.list
 
 import androidx.recyclerview.widget.DiffUtil
 import com.a401.domain.model.RecordForList

@@ -13,7 +13,8 @@ import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.databinding.FragmentUserPageBinding
-import com.a401.artwalk.view.route.list.RouteListFragmentDirections
+import com.a401.artwalk.view.record.list.RecordListAdapter
+import com.a401.artwalk.view.record.list.ThumbnailClickListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -27,8 +28,8 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     private val userPageViewModel by viewModels<UserpageViewModel> { defaultViewModelProviderFactory }
 
     private val recordListAdapter = RecordListAdapter(
-        ThumbnailClickListener { recordId ->
-            val action = UserPageFragmentDirections.actionRecordListToRecordDetail(recordId)
+        ThumbnailClickListener { recordForList ->
+            val action = UserPageFragmentDirections.actionRecordListToRecordDetail(recordForList)
             findNavController().navigate(action) }
     )
 

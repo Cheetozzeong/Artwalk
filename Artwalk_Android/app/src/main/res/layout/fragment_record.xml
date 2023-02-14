@@ -5,12 +5,13 @@
     <data>
         <variable
             name="vm"
-            type="com.a401.artwalk.view.record.RecordViewModel"/>
+            type="com.a401.artwalk.view.record.draw.RecordViewModel"/>
 
         <variable name="hour" type="Integer" />
         <variable name="minute" type="Integer" />
         <variable name="second" type="Integer" />
         <variable name="distance" type="Double" />
+
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -108,7 +109,7 @@
             android:backgroundTint="@color/neutral05"
             android:src="@drawable/ic_record_my_location"
             app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"
-            app:layout_constraintStart_toEndOf="@id/view_record_durationBox"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </layout>
