@@ -52,6 +52,10 @@ class RouteDrawFragment : UsingMapFragment<FragmentRouteDrawBinding> (R.layout.f
         setDistanceText()
         setSaveButtonClickListener()
 
+        routeDrawViewModel.deleteRoute.observe(viewLifecycleOwner) {
+            polylineAnnotationManager.delete(polylineAnnotationManager.annotations.last())
+        }
+
         routeDrawViewModel.isSuccessSave.observe(viewLifecycleOwner) { isSuccessSave ->
             if(isSuccessSave) {
                 findNavController().popBackStack()

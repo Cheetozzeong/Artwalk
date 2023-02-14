@@ -46,6 +46,9 @@ class RouteDrawViewModel @Inject constructor(
     private val _lastRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
     val lastRoute: LiveData<RouteForDraw> = _lastRoute
 
+    private val _deleteRoute: MutableLiveData<RouteForDraw> = MutableLiveData()
+    val deleteRoute: LiveData<RouteForDraw> = _deleteRoute
+
     private val _isSuccessSave: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSuccessSave: LiveData<Boolean> = _isSuccessSave
 
@@ -65,6 +68,10 @@ class RouteDrawViewModel @Inject constructor(
                 _markerStack.pop()
                 _lastPoint.value = _markerStack.peek()
             }
+        }
+        when(_routeStack.size) {
+            0 -> {}
+            else -> _deleteRoute.value = _routeStack.pop()
         }
     }
 
