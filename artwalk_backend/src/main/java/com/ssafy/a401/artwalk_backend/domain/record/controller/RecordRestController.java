@@ -2,6 +2,7 @@ package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
 import java.util.List;
 
+import com.ssafy.a401.artwalk_backend.domain.record.model.*;
 import io.swagger.annotations.ApiImplicitParams;
 
 import org.modelmapper.ModelMapper;
@@ -24,12 +25,7 @@ import com.ssafy.a401.artwalk_backend.domain.admin.model.PasswordDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.CountResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
-import com.ssafy.a401.artwalk_backend.domain.record.model.RecordImageRequestDTO;
-import com.ssafy.a401.artwalk_backend.domain.record.model.RecordListResponseDTO;
-import com.ssafy.a401.artwalk_backend.domain.record.model.RecordRequestDTO;
-import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
-import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -77,9 +73,9 @@ public class RecordRestController {
 	@Operation(summary = "기록 수정", description = "기록 수정 메서드입니다. Path에 수정할 기록 ID를, Request Body에는 수정할 title(제목) 내용을 포함하여 요청합니다.")
 	@ApiImplicitParam(name = "recordId", value = "수정할 기록 ID", dataType = "int")
 	@PutMapping("/{recordId}")
-	public ResponseEntity<RecordResponseDTO> recordModify(@PathVariable("recordId") int recordId, @RequestBody RecordRequestDTO recordRequestDTO) {
+	public ResponseEntity<RecordResponseDTO> recordModify(@PathVariable("recordId") int recordId, @RequestBody RecordUpdateRequestDTO recordUpdateRequestDTO) {
 		Record originRecord  = recordService.findByRecordId(recordId);
-		Record result = recordService.modifyRecord(originRecord, recordRequestDTO.getTitle());
+		Record result = recordService.modifyRecord(originRecord, recordUpdateRequestDTO.getTitle());
 
 		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
