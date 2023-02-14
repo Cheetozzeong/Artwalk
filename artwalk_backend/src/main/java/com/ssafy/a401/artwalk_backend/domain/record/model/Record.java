@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -53,7 +51,6 @@ public class Record {
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
-	// @Schema(description = "작성 시간", nullable = false, example = "2023-01-25T04:44:46.761Z")
 	private Date creation;
 
 	@Column(length = 255, columnDefinition = "default NULL")
@@ -65,8 +62,8 @@ public class Record {
 	private String recentImage;
 
 	@Column(length = 40, columnDefinition = "default NULL")
-	@Schema(description = "기록 메모", example = "오운완~^^")
-	private String detail;
+	@Schema(description = "기록 제목", example = "오운완~^^")
+	private String title;
 
 	@Column(length = 10, columnDefinition = "default NULL")
 	@Schema(description = "공유 주소", example = "xxxxxxxx")

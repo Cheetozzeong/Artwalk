@@ -1,19 +1,13 @@
 package com.ssafy.a401.artwalk_backend.domain.record.service;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
 import javax.transaction.Transactional;
 
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +49,7 @@ public class RecordService {
 	public Record modifyRecord(Record originRecord, String detail) {
 		Record result = null;
 
-		originRecord.setDetail(detail);
+		originRecord.setTitle(detail);
 		result = recordRepository.save(originRecord);
 
 		return result;
@@ -172,9 +166,9 @@ public class RecordService {
 		return recordList;
 	}
 
-	public List<Record> findByDetailContaining(String detail) {
+	public List<Record> findByTitleContaining(String title) {
 		List<Record> recordList = new ArrayList<>();
-		List<Record> records = recordRepository.findByDetailContainingOrderByRecordIdDesc(detail);
+		List<Record> records = recordRepository.findByTitleContainingOrderByRecordIdDesc(title);
 		for (Record record : records) {
 			record.setThumbnail(makeThumbnailUrl(record.getRecordId()));
 			record.setRecentImage(makeImageUrl(record.getRecordId()));
@@ -183,18 +177,6 @@ public class RecordService {
 		}
 		return recordList;
 	}
-
-	// public ResponseEntity<UrlResource> downloadImage(String link) throws MalformedURLException {
-	// 	Optional<File> file = recordRepository.findByLink(link);
-	//
-	// }
-
-	// public String addRandomLink(int recordId) {
-	// 	Optional<Record> record = recordRepository.findById(recordId);
-	// 	String sharingLink = makeRandomLink();
-	// 	record.ifPresent(value -> value.setLink(sharingLink));
-	// 	return sharingLink;
-	// }
 
 	/** 새로운 편집 주소를 생성해 DB에 저장 후 반환합니다. */
 	@Transactional

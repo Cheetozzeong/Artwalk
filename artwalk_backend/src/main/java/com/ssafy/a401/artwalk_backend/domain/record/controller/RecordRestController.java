@@ -1,15 +1,11 @@
 package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
-import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import io.swagger.annotations.ApiImplicitParams;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -83,7 +79,7 @@ public class RecordRestController {
 	@PutMapping("/{recordId}")
 	public ResponseEntity<RecordResponseDTO> recordModify(@PathVariable("recordId") int recordId, @RequestBody RecordRequestDTO recordRequestDTO) {
 		Record originRecord  = recordService.findByRecordId(recordId);
-		Record result = recordService.modifyRecord(originRecord, recordRequestDTO.getDetail());
+		Record result = recordService.modifyRecord(originRecord, recordRequestDTO.getTitle());
 
 		if(result != null) return ResponseEntity.ok().body(new RecordResponseDTO(OK, result));
 		else return ResponseEntity.badRequest().body(new RecordResponseDTO(FAIL, null));
@@ -143,7 +139,7 @@ public class RecordRestController {
 		List<Record> records = null;
 
 		if(type.equals("userId")) records = recordService.findByUserIdContaining(keyword);
-		else if (type.equals("detail")) records = recordService.findByDetailContaining(keyword);
+		else if (type.equals("detail")) records = recordService.findByTitleContaining(keyword);
 
 		if(records != null) return ResponseEntity.ok().body(new RecordListResponseDTO(OK, records));
 		else return ResponseEntity.badRequest().body(new RecordListResponseDTO(FAIL, null));

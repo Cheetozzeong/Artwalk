@@ -24,6 +24,6 @@ public class RecordRequestDTO {
 	@Schema(description = "polyline 인코딩된 기록", example = "}e{cFemjfWaA}EdEgBh@yAw@yDlPeG??SF{@_EuAf@w@cEoC~@y@cEkAb@??oJnDIIe@oBcA^m@uC`@Q??`@MHQg@}BaA^e@kC]N@H_@NUKw@^Cn@P|@d@QnChM}FbCrAhGn@xByEfB??o@TvCnNdDmATdAjA[AW`AI??z@IZOFZvB{@dBhIh@Ow@mDd@O")
 	private String geometry;
 
-	@Schema(description = "기록 메모", example = "오운완~^^")
-	private String detail;
+	@Schema(description = "기록 제목", example = "오운완~^^")
+	private String title;
 }
