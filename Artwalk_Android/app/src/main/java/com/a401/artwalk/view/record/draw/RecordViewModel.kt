@@ -56,7 +56,7 @@ class RecordViewModel @Inject constructor(
                     RecordForSave(
                         duration = totalDuration.value ?: 0,
                         distance = distance.value ?: 0.0,
-                        detail = text.value,
+                        title = text.value,
                         polyline
                     )
                 )

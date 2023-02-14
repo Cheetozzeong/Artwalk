@@ -1,6 +1,7 @@
 package com.a401.data.repository
 
 import com.a401.data.datasource.remote.RecordRemoteDataSource
+import com.a401.domain.model.EditRecord
 import com.a401.domain.model.RecordForList
 import com.a401.domain.model.RecordForSave
 import com.a401.domain.repository.RecordRepository
@@ -25,5 +26,13 @@ class RecordRepositoryImpl @Inject constructor(
 
     override suspend fun getRecordForList(): Flow<List<RecordForList>> {
         return recordRemoteDataSource.getRecordList(true)
+    }
+
+    override suspend fun getEditLink(recordId: Int): Flow<EditRecord> {
+        return flow {
+            recordRemoteDataSource.getEditLink(recordId).collect() { response ->
+                    emit(EditRecord(response.code,response.message))
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.a401.data.api.ApiClient
 import com.a401.data.mapper.recordForListsFromResponses
 import com.a401.data.mapper.recordRequestFromRecordForSave
 import com.a401.data.model.response.RecordListResponse
+import com.a401.data.model.response.RecordResponse
 import com.a401.domain.model.RecordForList
 import com.a401.domain.model.RecordForSave
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -42,5 +43,11 @@ class RecordRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getRecordCount(): Flow<RecordListResponse> {
         return flow { emit(a401RecordApi.getRecordCount(accessToken)) }
+    }
+
+    override suspend fun getEditLink(recordId: Int): Flow<RecordResponse> {
+        return flow{
+            emit(a401RecordApi.getEditLink(accessToken, recordId))
+        }
     }
 }

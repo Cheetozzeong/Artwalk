@@ -1,8 +1,9 @@
 package com.a401.data.api
 
 import com.a401.data.model.request.RecordRequest
+import com.a401.data.model.response.DeleteResponse
 import com.a401.data.model.response.RecordListResponse
-import com.a401.data.model.response.RouteListResponse
+import com.a401.data.model.response.RecordResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -24,4 +25,10 @@ interface RecordApiService {
     suspend fun getRecordCount(
         @Header("accessToken") accessToken: String,
     ): RecordListResponse
+
+    @GET("share/{recordId}")
+    suspend fun getEditLink(
+        @Header("accessToken") accessToken: String,
+        @Path("recordId") recordId: Int
+    ): RecordResponse
 }

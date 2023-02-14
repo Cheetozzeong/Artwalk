@@ -8,6 +8,17 @@ data class RecordListResponse(
     @SerializedName("records") var records: ArrayList<Records> = arrayListOf(),
     @SerializedName("count") var count: Int?,
     @SerializedName("code") var code: String,
+    @SerializedName("message") var message: String
+)
+
+data class RecordResponse(
+    @SerializedName("code") var code: String,
+    @SerializedName("message") var message: String
+)
+
+data class DeleteResponse(
+    @SerializedName("code") var code: String,
+    @SerializedName("count") var count: Int
 )
 
 data class Records (
@@ -17,7 +28,7 @@ data class Records (
     @SerializedName("distance") var distance: Double?,
     @SerializedName("geometry") var geometry: String?,
 
-    @SerializedName("detail") var detail: String?,
+    @SerializedName("title") var title: String?,
     @SerializedName("creation") var creation: Date?,
     @SerializedName("thumbnail") var thumbnail: String?,
 )

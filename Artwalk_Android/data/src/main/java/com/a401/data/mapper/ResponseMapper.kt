@@ -8,7 +8,7 @@ fun recordRequestFromRecordForSave(recordForSave: RecordForSave): RecordRequest 
         RecordRequest(
             duration.toDouble(),
             distance,
-            detail,
+            title,
             geometry
         )
     }

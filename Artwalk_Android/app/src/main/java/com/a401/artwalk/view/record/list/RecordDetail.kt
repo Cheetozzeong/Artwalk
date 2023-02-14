@@ -1,9 +1,13 @@
 package com.a401.artwalk.view.record.list
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebView
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +37,7 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
             setDuration()
             setDistance()
             setDetail()
-            setToolBar()
+            setShareButton()
         }
     }
 
@@ -72,40 +76,29 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
     }
 
     private fun setDetail() {
-        arguments.detailArgument.detail.let {
+        arguments.detailArgument.title.let {
             binding.detail = it
         }
     }
 
-    private fun setToolBar() {
-        binding.recordDetailToolbar.setOnMenuItemClickListener { menuItem: MenuItem ->
-            when (menuItem.itemId) {
-                R.id.button_detail_share -> {
-                    initShareButton()
-                    true
-                }
-                R.id.button_detail_delete -> {
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
+    private fun setShareButton() {
+        val shareButton = view?.findViewById<ActionMenuItemView>(R.id.button_detail_share)
+        shareButton?.setOnClickListener {
+            openEditPage()
         }
     }
 
-    private fun initShareButton() {
-        val shareButton = view?.findViewById<ActionMenuItemView>(R.id.button_detail_share)
-        shareButton?.setOnClickListener {
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    "https://naver.com" // 전달하려는 Data(Value)
-                )
-                type = "text/plain"
+    private fun openEditPage(){
+        lifecycleScope.launch {
+            val url = recordDetailViewModel.getLink(arguments.detailArgument.recordId)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.`package` = "com.android.chrome"
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                intent.`package` = null
+                startActivity(intent)
             }
-            startActivity(Intent.createChooser(shareIntent, null))
         }
     }
 }

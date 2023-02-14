@@ -12,7 +12,7 @@ fun recordForListsFromResponses(response: RecordListResponse): List<RecordForLis
                 (duration?:0.0).toInt(),
                 distance?:0.0,
                 creation?: Date(),
-                detail?:"",
+                title?:"",
                 recordId?:-1
             )
         }
