@@ -2,7 +2,7 @@
   <b-container>
 
     <div class="d-flex justify-content-center align-content-center my-5">
-      <h2>{{ record.userId }}'s &nbsp; {{ record.detail }} </h2>
+      <h2>{{ record.userId }}'s &nbsp; {{ record.title }} </h2>
     </div>
 
     <!--  레코드 정보  -->
@@ -21,7 +21,7 @@
       <b-col class="col-5 f-size">
         <div class="fw-bold my-3">{{ record.recordId }}&nbsp;</div>
         <div class="fw-bold my-3">{{ record.userId }}&nbsp;</div>
-        <div v-if="record.detail" class="fw-bold my-3">{{ record.detail }}&nbsp;</div>
+        <div v-if="record.title" class="fw-bold my-3">{{ record.title }}&nbsp;</div>
         <div v-else class="fw-bold my-3">No Title&nbsp;</div>
         <div class="fw-bold my-3">{{ formattedDuration }}&nbsp;</div>
         <div class="fw-bold my-3">{{ formattedDistance }}&nbsp;</div>

@@ -122,14 +122,12 @@ export default {
           })
     },
     getProfileImage() {
-      const url = '/user/info/profile'
+      const url = `/user/info/profile?userId=${this.$route.params.userId}`
+
       const options = {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'accessToken': `Bearer ${this.$store.state.token}`
-        },
-        params: {
-          userId: this.$route.params.userId
         }
       }
 
