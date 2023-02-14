@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.timer
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(
@@ -21,34 +20,24 @@ class RecordViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider){
 
-    var isForegroundServiceRunning: Boolean = false
-    var isReceiverRegistered: Boolean = false
-
     private var _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
     val totalDuration: LiveData<Int> = _totalDuration
 
     private val _distance: MutableLiveData<Double> = MutableLiveData(0.0)
     val distance: LiveData<Double> = _distance
 
-    private val _text: MutableLiveData<String> = MutableLiveData("")
-    val text: LiveData<String> = _text
-
-    private val _startButtonEvent: MutableLiveData<Unit> = MutableLiveData()
-    val startButtonEvent: LiveData<Unit> = _startButtonEvent
-
-    private val _stopButtonEvent: MutableLiveData<Unit> = MutableLiveData()
-    val stopButtonEvent: LiveData<Unit> = _stopButtonEvent
+    private val _title: MutableLiveData<String> = MutableLiveData("")
+    val title: LiveData<String> = _title
 
     private val _isSuccessSave: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSuccessSave: LiveData<Boolean> = _isSuccessSave
 
-    private var timerTaskforTime: Timer? = null
-    private var timerTaskforDistance: Timer? = null
-    private var flagForWalk = true
+    private val _msg: MutableLiveData<String> = MutableLiveData()
+    val msg: LiveData<String> = _msg
 
     fun saveRecord(polyline: String) {
 
-        if(text.value == null) {
+        if(title.value == null) {
 
         }else {
             viewModelScope.launch {
@@ -56,7 +45,7 @@ class RecordViewModel @Inject constructor(
                     RecordForSave(
                         duration = totalDuration.value ?: 0,
                         distance = distance.value ?: 0.0,
-                        detail = text.value,
+                        detail = title.value,
                         polyline
                     )
                 )
@@ -65,35 +54,17 @@ class RecordViewModel @Inject constructor(
                     .collect() { result ->
                         if(result == "SUCCESS") {
                             _isSuccessSave.value = true
+                            _msg.value = "저장 성공!!"
+                        }else {
+                            _msg.value = "저장 실패!!"
                         }
                     }
             }
         }
     }
 
-    fun startRun() {
-        if(flagForWalk) {
-            flagForWalk = false
-            timerTaskforTime = timer(period = 1000) {
-               _totalDuration.postValue(_totalDuration.value?.plus(1))
-            }
-        }
-    }
-
-    fun stopRun() {
-        if(!flagForWalk){
-            flagForWalk = true
-            timerTaskforTime?.cancel()
-            timerTaskforDistance?.cancel()
-        }
-    }
-
-    fun setText(text: String) {
-        _text.value = text
-    }
-
-    fun addDistance(distance: Double) {
-        _distance.postValue(_distance.value?.plus(distance))
+    fun setTitle(title: String) {
+        _title.value = title
     }
 
 }

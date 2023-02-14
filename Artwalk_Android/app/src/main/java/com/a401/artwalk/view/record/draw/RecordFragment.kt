@@ -66,7 +66,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     override fun onResume() {
         super.onResume()
 
-        sendCommandToForegroundService(RecordState.GET_STATUS)
+        mainActivity.startService(getServiceIntent(RecordState.GET_STATUS))
+
         statusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val state = intent?.extras?.getSerializable(IS_RECORD_RUNNING) as RecordState
@@ -128,6 +129,10 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         setViewModel()
         setRoute()
         setCameraStateButton()
+
+        recordViewModel.msg.observe(viewLifecycleOwner) { msg ->
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        }
 
         val onIndicatorPositionChangedListenerForDraw = OnIndicatorPositionChangedListener {
             curPoint = it
@@ -246,9 +251,8 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
         recordSaveButton?.setOnClickListener {
             val detail = recordDetail?.text.toString()
-            recordViewModel.setText(detail)
+            recordViewModel.setTitle(detail)
             recordViewModel.saveRecord(getTotalPolyline())
-            Toast.makeText(context, "저장되었습니다!", Toast.LENGTH_SHORT).show()
             sendCommandToForegroundService(RecordState.STOP)
             dialog.dismiss()
         }
