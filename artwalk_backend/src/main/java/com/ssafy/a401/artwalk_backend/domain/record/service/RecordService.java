@@ -46,10 +46,10 @@ public class RecordService {
 		return result;
 	}
 
-	public Record modifyRecord(Record originRecord, String detail) {
+	public Record modifyRecord(Record originRecord, String title) {
 		Record result = null;
 
-		originRecord.setTitle(detail);
+		originRecord.setTitle(title);
 		result = recordRepository.save(originRecord);
 
 		return result;

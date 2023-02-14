@@ -148,9 +148,11 @@
         const title = [[${title}]];
         const nickname = [[${nickname}]];
 
+        var fileName = "Artwalk_" + convertFileName(title) + ".png";
+
         document.querySelector(".title").innerHTML = `"${title}"`;
         document.querySelector(".maker").innerHTML = `Paint by <strong>${nickname}</strong>`;
-        document.querySelector("#link2").download = `Artwalk_${convertFileName(title)}.png`;
+        document.querySelector("#link2").download = fileName;
 
         fetch(`/record/image/${imageURL}`)
             .then(response => response.blob())
@@ -167,12 +169,12 @@
 
     /** 파일명으로 사용 불가능한 특수문자 제거 */
     function convertFileName(fileName) {
-        var str = fileName.value;
         var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
 
-        if(special_pattern.test(str) == true){
-            fileName.value = str.replace(/[`~!@#$%^&*|\\\'\";:\/?]/gi, "");
+        if (special_pattern.test(fileName) == true) {
+            fileName = fileName.replace(/[`~!@#$%^&*|\\\'\";:\/?]/gi, "");
         }
+        return fileName;
     }
 </script>
 </html>
