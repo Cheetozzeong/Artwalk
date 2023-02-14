@@ -143,10 +143,10 @@ public class RecordService {
 	public Record saveRecordImage(Record record, RecordImageRequestDTO recordImageRequestDTO) {
 		Record result = null;
 
-		String imagePath = fileService.saveShareImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), recordImageRequestDTO, record.getUserId());
-		if(record.getRecentImage() != null && !("").equals(record.getRecentImage())) {
+		if(record.getRecentImage() != null) {
 			fileService.removeFile(fileOption, record.getRecentImage(), record.getUserId());
 		}
+		String imagePath = fileService.saveShareImage(fileOption, record.getThumbnail(), fileService.readFile(fileOption, record.getGeometry(), record.getUserId()), recordImageRequestDTO, record.getUserId());
 		record.setRecentImage(imagePath);
 		record.setLink(makeRandomLink());
 		result = recordRepository.save(record);
