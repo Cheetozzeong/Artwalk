@@ -1,10 +1,10 @@
 <template>
   <div class="d-flex container-fluid vh-100 justify-content-center">
     <div>
-      <div class="d-flex justify-content-center align-content-center mt-5 mb-1">
-        <h1>Art Walk</h1>
+      <div class="d-flex justify-content-center align-content-end mt-5 mb-1">
+        <img src="/img/logo.png" alt="로고 이미지" style="width: 50px; height: 50px;">
+        <h1 class="my-0 mb-2">귿 다</h1>
       </div>
-      <br>
       <b-form bg-variant="light" @submit.prevent="login" class="mt-5">
         <b-form-group
             id="group-userId"
