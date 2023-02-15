@@ -28,6 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/linearlayout_routeItem_contentBox"
             app:layout_constraintWidth_percent="0.3"
+            android:padding="5dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/routeThumb_description" />
@@ -70,9 +71,8 @@
                 android:includeFontPadding="false"
                 style="@style/body_detail_font_style"/>
 
-            <!--      가능하면 x분, x시간, x일전      -->
             <TextView
-                android:id="@+id/textView_routeItem_duraion"
+                android:id="@+id/textView_routeItem_duration"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@{item.routeForList.duration}"
@@ -80,26 +80,6 @@
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
                 style="@style/body_detail_font_style"/>
-
-            <!--            <LinearLayout-->
-            <!--                android:id="@+id/linearlayout_routeItem_buttonBox"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:orientation="horizontal">-->
-
-            <!--                <Button-->
-            <!--                    android:id="@+id/button_routeItem_edit"-->
-            <!--                    android:hint="편집"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="match_parent"/>-->
-
-            <!--                <Button-->
-            <!--                    android:id="@+id/button_routeItem_delete"-->
-            <!--                    android:hint="삭제"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="match_parent"/>-->
-
-            <!--            </LinearLayout>-->
 
         </LinearLayout>
 
