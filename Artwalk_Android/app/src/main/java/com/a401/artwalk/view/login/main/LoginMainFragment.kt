@@ -31,7 +31,7 @@ class LoginMainFragment: BaseFragment<FragmentLoginMainBinding>(R.layout.fragmen
 
         loginViewModel.isLoginSuccess.observe(viewLifecycleOwner) { isLoginSuccess ->
             if(isLoginSuccess) {
-                startActivity(Intent(context, SampleActivity::class.java))
+                startActivity(Intent(context, SampleActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK ))
             }
         }
     }

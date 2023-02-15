@@ -32,28 +32,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         val prefs = applicationContext.getSharedPreferences("a401Token", Context.MODE_PRIVATE)
         val accessToken = prefs.getString("accessToken", null)
         val refreshToken = prefs.getString("refreshToken", null)
-        var intent: Intent = Intent()
 
         lifecycleScope.launch {
             val accessTokenForLogin = "Bearer $accessToken"
             val refreshTokenForLogin = "Bearer $refreshToken"
             postLogin(accessToken = accessTokenForLogin, refreshToken = refreshTokenForLogin).collectLatest { result ->
                 delay(1300)
-                intent =
+                val intent =
                     if(result == "FAIL") {
                         Intent(this@MainActivity, LoginActivity::class.java)
-                    }else {
+                    } else {
                         Intent(this@MainActivity, SampleActivity::class.java)
                     }
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
-
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            startActivity(intent)
         }
-
     }
-
 }

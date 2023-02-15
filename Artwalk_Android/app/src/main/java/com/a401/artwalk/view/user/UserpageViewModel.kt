@@ -33,7 +33,7 @@ class UserpageViewModel @Inject constructor(
         getRecords()
     }
 
-    private fun setUserInfo() {
+    fun setUserInfo() {
         viewModelScope.launch {
             getUserInfo()
                 .onStart {}
