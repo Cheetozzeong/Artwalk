@@ -37,11 +37,9 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            setInitBinding()
-            setThumbnail()
-            setButtons()
-        }
+        setInitBinding()
+        setThumbnail()
+        setButtons()
         setRecordInfo()
     }
 
@@ -108,7 +106,7 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         }
 
         backButton?.setOnClickListener{
-            findNavController().navigate(RecordDetailDirections.actionDetailToList())
+            findNavController().popBackStack()
         }
 
         saveButton?.setOnClickListener{

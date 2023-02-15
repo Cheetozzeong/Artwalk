@@ -37,18 +37,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
             findNavController().navigate(action) }
     )
 
-    private val scope = CoroutineScope(Dispatchers.Main)
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        userPageViewModel.getRecords()
-        return super.onCreateView(inflater, container, savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
@@ -61,10 +49,12 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
 
     override fun onResume() {
         super.onResume()
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        userPageViewModel.getRecords()
+        userPageViewModel.setUserInfo()
+        viewLifecycleOwner.lifecycleScope.launch {
             setUser()
         }
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launch {
             collectListItem()
         }
     }
@@ -78,7 +68,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
             userPageViewModel.userInfo.collect { user ->
                 binding.nickName = user.nickName
                 binding.numOfRecord = user.numOfRecord.toString()
-                Log.d("resume","getright?")
                 binding.numOfRoute = user.numOfRoute.toString()
 
                 Glide.with(binding.imageViewUserPageProfile)
