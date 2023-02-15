@@ -5,15 +5,15 @@
     <item
         android:id="@+id/button_detail_share"
         android:enabled="true"
+        android:icon="@drawable/ic_baseline_share_24"
         android:title="detail_share"
-        android:icon="@drawable/ic_detail_share_24"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/button_detail_delete"
         android:enabled="true"
-        android:title="ic_detail_delete_24"
         android:icon="@drawable/ic_detail_delete_24"
-        app:showAsAction="always"/>
+        android:title="ic_detail_delete_24"
+        app:showAsAction="always" />
 
 </menu>
