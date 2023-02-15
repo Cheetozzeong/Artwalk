@@ -27,7 +27,8 @@
             app:menu="@menu/fragment_user_page_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/borderline_bottom">
 
             <TextView
                 android:id="@+id/textView_userPage_nickName"
@@ -43,26 +44,25 @@
             android:id="@+id/userprofile_box"
             android:layout_marginVertical="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             app:layout_constraintTop_toBottomOf="@id/toolbar_userPage">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:gravity="left"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp">
 
                 <ImageView
                     android:id="@+id/imageView_userPage_profile"
-                    android:layout_width="120dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    tools:src="@tools:sample/avatars"
-                    />
+                    tools:src="@tools:sample/avatars" />
 
                 <LinearLayout
-                    android:layout_width="250dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -72,21 +72,21 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="70dp"
+                            android:layout_width="30dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center|center_horizontal"
                             android:orientation="vertical">
 
                             <TextView
-                                style="@style/body_regular_text_font_style"
+                                style="@style/body_bold_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="기록수" />
 
                             <TextView
                                 android:id="@+id/textView_userPage_numOfRecord"
-                                style="@style/body_detail_font_style"
+                                style="@style/body_regular_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:includeFontPadding="false"
@@ -94,21 +94,21 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="70dp"
+                            android:layout_width="30dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center|center_horizontal"
                             android:orientation="vertical">
 
                             <TextView
-                                style="@style/body_regular_text_font_style"
+                                style="@style/body_bold_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="경로수" />
 
                             <TextView
                                 android:id="@+id/textView_userPage_numOfRoute"
-                                style="@style/body_detail_font_style"
+                                style="@style/body_regular_text_font_style"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:includeFontPadding="false"
@@ -117,28 +117,46 @@
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/button_userPage_editProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="프로필 편집하기" />
-
                 </LinearLayout>
 
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/record_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            app:layout_constraintTop_toBottomOf="@id/userprofile_box">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp">
+
+                <TextView
+                    style="@style/body_bold_text_font_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Records"/>
+
+                </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="10dp"
             android:layout_marginHorizontal="16dp"
             android:id="@+id/recyclerView_recordList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/userprofile_box"
-            app:spanCount="2" />
+            app:layout_constraintTop_toBottomOf="@+id/record_list_title"
+            app:spanCount="3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
