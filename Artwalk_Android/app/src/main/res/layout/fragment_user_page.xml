@@ -117,13 +117,6 @@
 
                     </LinearLayout>
 
-<!--                    <Button-->
-<!--                        android:id="@+id/button_userPage_editProfile"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:text="프로필 편집하기" />-->
-
                 </LinearLayout>
 
             </LinearLayout>
