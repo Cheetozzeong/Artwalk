@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Artwalk</string>
+    <string name="app_name">귿다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="record_distance_title">거리</string>
     <string name="record_duration_title">걸린시간</string>
