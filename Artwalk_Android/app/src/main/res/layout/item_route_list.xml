@@ -15,6 +15,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_routeItem_container"
         android:layout_marginVertical="5dp"
         android:layout_marginHorizontal="16dp"
         android:layout_width="match_parent"
