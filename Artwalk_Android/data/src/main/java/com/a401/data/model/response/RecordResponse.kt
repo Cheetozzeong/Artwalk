@@ -21,6 +21,10 @@ data class DeleteResponse(
     @SerializedName("count") var count: Int
 )
 
+data class EditTitleResponse(
+    @SerializedName("title") var title: String
+)
+
 data class Records (
     @SerializedName("recordId") var recordId: Int?,
 

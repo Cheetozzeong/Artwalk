@@ -1,9 +1,7 @@
 package com.a401.data.repository
 
 import com.a401.data.datasource.remote.RecordRemoteDataSource
-import com.a401.domain.model.EditRecord
-import com.a401.domain.model.RecordForList
-import com.a401.domain.model.RecordForSave
+import com.a401.domain.model.*
 import com.a401.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,6 +30,26 @@ class RecordRepositoryImpl @Inject constructor(
         return flow {
             recordRemoteDataSource.getEditLink(recordId).collect() { response ->
                     emit(EditRecord(response.code,response.message))
+            }
+        }
+    }
+
+    override suspend fun deleteRecord(recordId: Int): Flow<DeleteRecord> {
+        return flow {
+            recordRemoteDataSource.deleteRecord(recordId).collect() { response ->
+                emit(DeleteRecord(response.code,response.count))
+            }
+        }
+    }
+
+    override suspend fun putRecordTitle(recordForPut: RecordForPut): Flow<String> {
+        return flow {
+            recordRemoteDataSource.putRecordDetail(recordForPut).collect() { response ->
+                if (response.isSuccessful) {
+                    emit("SUCCESS")
+                } else {
+                    emit("FAIL")
+                }
             }
         }
     }

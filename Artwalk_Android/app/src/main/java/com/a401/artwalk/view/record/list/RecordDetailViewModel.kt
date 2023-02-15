@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.base.BaseViewModel
 import com.a401.artwalk.di.dispatcher.DispatcherProvider
+import com.a401.domain.model.RecordForPut
+import com.a401.domain.usecase.DeleteRecordUseCase
 import com.a401.domain.usecase.GetEditLinkUseCase
+import com.a401.domain.usecase.PutRecordTitle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -16,13 +19,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 class RecordDetailViewModel @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val getEditLink: GetEditLinkUseCase,
+    private val deleteRecord: DeleteRecordUseCase,
+    private val putRecordTitle: PutRecordTitle
 ) : BaseViewModel(dispatcherProvider) {
-
-    private val _totalDuration: MutableLiveData<Int> = MutableLiveData(0)
-
-    private val _distance: MutableLiveData<Double> = MutableLiveData(0.0)
-
-    private val _detail: MutableLiveData<String> = MutableLiveData("")
 
     suspend fun getLink(recordId: Int): String = suspendCancellableCoroutine { continuation ->
         viewModelScope.launch {
@@ -30,6 +29,18 @@ class RecordDetailViewModel @Inject constructor(
                 val editUrl = BuildConfig.SHARING_BASE_URL + it.message
                 continuation.resume(editUrl,null)
             }
+        }
+    }
+
+    fun recordDelete(recordId: Int) {
+        viewModelScope.launch {
+            deleteRecord(recordId).collectLatest {}
+        }
+    }
+
+    fun editTitle(recordForPut: RecordForPut){
+        viewModelScope.launch {
+            putRecordTitle(recordForPut).collectLatest {}
         }
     }
 
