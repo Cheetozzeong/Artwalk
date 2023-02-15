@@ -17,6 +17,18 @@
             android:layout_height="0dp"
             app:layout_constraintHeight_percent="0.4" />
 
+        <ImageButton
+            android:id="@+id/imagebutton_change_camera_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/neutral04"
+            android:src="@drawable/ic_record_my_location"
+            app:layout_constraintBottom_toTopOf="@id/button_routeList_toRouteDraw"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <View
             android:id="@+id/view_routeList_infoBox"
             app:layout_constraintTop_toBottomOf="@id/mapView_routeList"
@@ -27,12 +39,15 @@
 
         <TextView
             android:id="@+id/button_routeList_toRouteDraw"
-            app:layout_constraintEnd_toEndOf="@id/view_routeList_infoBox"
+            android:layout_width="360dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="@string/toDrawButton_title"
+            android:background="@drawable/rounded_corner"
             app:layout_constraintBottom_toBottomOf="@id/view_routeList_infoBox"
-            app:layout_constraintTop_toTopOf="@id/view_routeList_infoBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/toDrawButton_title"/>
+            app:layout_constraintEnd_toEndOf="@id/view_routeList_infoBox"
+            app:layout_constraintStart_toStartOf="@id/view_routeList_infoBox"
+            app:layout_constraintTop_toTopOf="@id/view_routeList_infoBox" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_routeList"

@@ -22,6 +22,13 @@
                 android:text="설정 및 이용약관"
                 style="@style/header_title_font_style"/>
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_button_bg_50"
+                android:src="@drawable/ic_detail_back_24"
+                />
+
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
@@ -31,27 +38,158 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView_setting_privacyPolicy"
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/linearLayout_setting_howToUseBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/privacy_policy_title"
-                style="@style/body_regular_text_font_style"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_marginLeft="6dp"
+                    android:id="@+id/textView_setting_howToUse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/how_to_use_title"
+                    style="@style/body_regular_text_font_style"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_setting_next_24"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/linearLayout_setting_privacyPolicyBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginLeft="6dp"
+                    android:id="@+id/textView_setting_privacyPolicy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privacy_policy_title"
+                    style="@style/body_regular_text_font_style"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_setting_next_24"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/linearLayout_setting_locationPolicyBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginLeft="6dp"
+                    android:id="@+id/textView_setting_locationPolicy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location_policy_title"
+                    style="@style/body_regular_text_font_style"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_setting_next_24"/>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginVertical="2dp"
+                android:layout_marginVertical="4dp"
                 android:background="@color/neutral02"/>
 
-
-            <TextView
-                android:id="@+id/textView_setting_locationPolicy"
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/linearLayout_setting_logoutBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/location_policy_title"
-                style="@style/body_regular_text_font_style"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginLeft="6dp"
+                    android:id="@+id/textView_setting_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout_title"
+                    style="@style/body_regular_text_font_style"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_setting_next_24"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/linearLayout_setting_withdrawBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginLeft="6dp"
+                    android:id="@+id/textView_setting_withdraw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/withdraw_title"
+                    android:textColor="@color/error01"
+                    style="@style/body_regular_text_font_style"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_setting_next_24"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
