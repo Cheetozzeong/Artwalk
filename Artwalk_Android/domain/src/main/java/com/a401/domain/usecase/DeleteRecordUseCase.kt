@@ -1,3 +1,5 @@
+package com.a401.domain.usecase
+
 import com.a401.domain.model.DeleteRecord
 import com.a401.domain.repository.RecordRepository
 import kotlinx.coroutines.flow.Flow

@@ -38,4 +38,10 @@ interface RecordApiService {
         @Path("recordId") recordId: Int
     ): DeleteResponse
 
+    @PUT("{recordId}")
+    suspend fun putRecordTitle(
+        @Header("accessToken") accessToken: String,
+        @Path("recordId") recordId: Int,
+        @Body() title: String?
+    ): RecordListResponse
 }
