@@ -29,7 +29,7 @@
             app:layout_constraintEnd_toStartOf="@id/linearlayout_routeItem_contentBox"
             app:layout_constraintWidth_percent="0.3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:contentDescription="@string/routeThumb_description" />
 
         <LinearLayout
@@ -39,13 +39,16 @@
             app:layout_constraintStart_toEndOf="@id/imageView_routeItem_thumbnail"
             app:layout_constraintEnd_toStartOf="@id/button_routeItem_start"
             app:layout_constraintWidth_percent="0.5"
-            android:layout_width="wrap_content"
+            android:padding="8dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textView_routeItem_title"
                 android:text="@{item.routeForList.title}"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -53,7 +56,7 @@
 
             <TextView
                 android:id="@+id/textView_routeItem_creation"
-                android:text="@{item.routeForList.creation.toLocaleString()}"
+                android:text="@{item.routeForList.creation}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -61,7 +64,7 @@
 
             <TextView
                 android:id="@+id/textView_routeItem_distance"
-                android:text="3,200m"
+                android:text="@{@string/distance_format(item.routeForList.distance)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -70,7 +73,9 @@
             <!--      가능하면 x분, x시간, x일전      -->
             <TextView
                 android:id="@+id/textView_routeItem_duraion"
-                android:text="2월 15일 10시 19분"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@{item.routeForList.duration}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -100,7 +105,7 @@
 
         <Button
             android:id="@+id/button_routeItem_start"
-            android:layout_width="75dp"
+            android:layout_width="0dp"
             android:layout_height="75dp"
             android:background="@drawable/square_type_button"
             android:hint="시작"

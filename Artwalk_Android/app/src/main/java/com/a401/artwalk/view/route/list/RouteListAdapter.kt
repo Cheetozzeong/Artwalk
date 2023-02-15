@@ -1,5 +1,6 @@
 package com.a401.artwalk.view.route.list
 
+import android.view.RoundedCorner
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.a401.artwalk.App
@@ -12,6 +13,8 @@ import com.a401.domain.model.RouteForList
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class RouteListAdapter(
     private val startButtonClickListener: StartButtonClickListener,
@@ -36,6 +39,7 @@ class RouteListAdapter(
                         LazyHeaders.Builder().addHeader("accessToken", "Bearer ${App.prefs.getString("accessToken", "")}").build()
                     )
                 )
+                .transform(CenterCrop(), RoundedCorners(25))
                 .into(binding.imageViewRouteItemThumbnail)
           }
     }
