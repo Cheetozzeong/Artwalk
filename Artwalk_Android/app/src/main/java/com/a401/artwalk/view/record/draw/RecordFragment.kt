@@ -19,7 +19,6 @@ import com.a401.artwalk.R
 import com.a401.artwalk.databinding.FragmentRecordBinding
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.view.route.draw.ROUTE_COLOR
@@ -49,7 +48,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
 
-    private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var routeAnnotationManager: PolylineAnnotationManager
