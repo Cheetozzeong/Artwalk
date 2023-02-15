@@ -27,6 +27,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
+            android:id="@+id/ImageButton_detail_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_button_bg_50"
@@ -46,7 +47,7 @@
             android:id="@+id/view_detail_infoBox"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageview_detail_thumbnail"
-            app:layout_constraintBottom_toTopOf="@id/edittext_detail"
+            app:layout_constraintBottom_toTopOf="@id/edittext_edit_detail"
             android:layout_marginTop="15dp"
             android:background="@color/neutral01"
             android:layout_width="match_parent"
@@ -111,11 +112,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="메모"
-            app:layout_constraintBottom_toTopOf="@id/edittext_detail"
+            app:layout_constraintBottom_toTopOf="@id/edittext_edit_detail"
             app:layout_constraintStart_toStartOf="@+id/view_detail_distanceBox" />
 
         <EditText
-            android:id="@+id/edittext_detail"
+            android:id="@+id/edittext_edit_detail"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="50dp"
@@ -134,7 +135,7 @@
             android:layout_height="0dp"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@id/edittext_detail"
+            app:layout_constraintTop_toBottomOf="@id/edittext_edit_detail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
