@@ -31,12 +31,6 @@
             android:id="@+id/action_record_main_to_route_list"
             app:destination="@id/route_list"/>
 
-        <argument
-            android:name="routeArgument"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null"/>
-
     </fragment>
 
     <fragment

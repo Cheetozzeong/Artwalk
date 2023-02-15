@@ -19,7 +19,6 @@ import com.a401.artwalk.R
 import com.a401.artwalk.databinding.FragmentRecordBinding
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.navArgs
 import com.a401.artwalk.BuildConfig
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.view.route.draw.ROUTE_COLOR
@@ -45,11 +44,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var statusReceiver: BroadcastReceiver
     private lateinit var durationReceiver: BroadcastReceiver
     private lateinit var locationReceiver: BroadcastReceiver
+    private lateinit var routeReceiver: BroadcastReceiver
 
     private lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
 
-    private val arguments by navArgs<RecordFragmentArgs>()
     private val recordViewModel by viewModels<RecordViewModel>{defaultViewModelProviderFactory}
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var routeAnnotationManager: PolylineAnnotationManager
@@ -67,6 +66,14 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         super.onResume()
 
         mainActivity.startService(getServiceIntent(RecordState.GET_STATUS))
+        mainActivity.startService(getServiceIntent(RecordState.GET_ROUTE))
+
+        routeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val routePolyline = intent?.getStringExtra(ROUTE_POLYLINE)!!
+                setRoute(routePolyline)
+            }
+        }
 
         statusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -109,6 +116,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             }
         }
 
+        mainActivity.registerReceiver(routeReceiver, IntentFilter(RECORD_ROUTE))
         mainActivity.registerReceiver(statusReceiver, IntentFilter(RECORD_STATUS))
         mainActivity.registerReceiver(durationReceiver, IntentFilter(RECORD_TICK))
         mainActivity.registerReceiver(locationReceiver, IntentFilter(RECORD_LOCATION))
@@ -127,7 +135,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         setMapView()
         super.onViewCreated(view, savedInstanceState)
         setViewModel()
-        setRoute()
         setCameraStateButton()
 
         recordViewModel.msg.observe(viewLifecycleOwner) { msg ->
@@ -182,24 +189,23 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
-    private fun setRoute() {
-        arguments.routeArgument.let { route ->
-            if(route != null) {
-                val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
-                val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-                    .withPoints(encodedRoute)
-                    .withLineColor(ROUTE_COLOR)
-                    .withLineOpacity(0.498)
-                    .withLineWidth(7.0)
+    private fun setRoute(route: String) {
 
-                val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
-                    .withPoint(encodedRoute[0])
-                    .withPoint(encodedRoute[encodedRoute.lastIndex])
+        if(route == "") return
+        val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(encodedRoute)
+            .withLineColor(ROUTE_COLOR)
+            .withLineOpacity(0.498)
+            .withLineWidth(7.0)
 
-                routeAnnotationManager.create(polylineAnnotationOptions)
-                pointAnnotaionManager.create(pointAnnotationOptions)
-            }
-        }
+        val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
+            .withPoint(encodedRoute[0])
+            .withPoint(encodedRoute[encodedRoute.lastIndex])
+
+        routeAnnotationManager.create(polylineAnnotationOptions)
+        pointAnnotaionManager.create(pointAnnotationOptions)
+
     }
 
     private fun setViewModel(){

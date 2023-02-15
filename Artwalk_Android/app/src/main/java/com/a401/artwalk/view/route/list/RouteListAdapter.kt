@@ -15,6 +15,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 
 class RouteListAdapter(
     private val startButtonClickListener: StartButtonClickListener,
+    private val containerClickListener: (geometry: String) -> Unit,
 ) : ListAdapter<RouteListItem, BaseViewHolder<ItemRouteListBinding>>(RouteListItem.diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemRouteListBinding> = BaseViewHolder(parent, R.layout.item_route_list)
@@ -22,8 +23,10 @@ class RouteListAdapter(
     override fun onBindViewHolder(holder: BaseViewHolder<ItemRouteListBinding>, position: Int) {
         holder.binding.setVariable(BR.item, currentList[position])
         holder.binding.executePendingBindings()
+        holder.binding.constraintLayoutRouteItemContainer.setOnClickListener() {
+            containerClickListener(currentList[position].routeForList.geometry)
+        }
         holder.binding.startButtonClickListener = startButtonClickListener
-
         holder.apply {
             val routeId = currentList[position].routeForList.routeId
             Glide.with(holder.itemView)

@@ -41,6 +41,7 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         setThumbnail()
         setButtons()
         setRecordInfo()
+        changeDrawButtonState()
     }
 
     override fun onPause() {
@@ -95,7 +96,6 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         val shareButton = view?.findViewById<ActionMenuItemView>(R.id.button_detail_share)
         val deleteButton = view?.findViewById<ActionMenuItemView>(R.id.button_detail_delete)
         val backButton = view?.findViewById<ImageButton>(R.id.ImageButton_detail_back)
-        val saveButton = view?.findViewById<Button>(R.id.button_detail_save)
 
         shareButton?.setOnClickListener {
             openEditPage()
@@ -108,9 +108,12 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         backButton?.setOnClickListener{
             findNavController().popBackStack()
         }
+    }
 
-        saveButton?.setOnClickListener{
-            checkChangeTitle()
+    private fun changeDrawButtonState() {
+        binding.editButton.setOnClickListener {
+            it.isSelected = !it.isSelected
+            binding.editTextDetail.isEnabled = !binding.editTextDetail.isEnabled
         }
     }
 
