@@ -1,5 +1,6 @@
 package com.a401.artwalk.view.record.list
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.a401.artwalk.BuildConfig
@@ -21,6 +22,7 @@ class RecordDetailViewModel @Inject constructor(
     private val getEditLink: GetEditLinkUseCase,
     private val deleteRecord: DeleteRecordUseCase,
     private val putRecordTitle: PutRecordTitle
+
 ) : BaseViewModel(dispatcherProvider) {
 
     suspend fun getLink(recordId: Int): String = suspendCancellableCoroutine { continuation ->
