@@ -172,11 +172,12 @@
 
         var token = "Bearer ";
         var title;
+        var geometry;
         var editLink;
         var shareLink = "https://i8a401.p.ssafy.io/sharing/";
 
         window.onload = function(){
-            var geometry = [[${geometry}]];
+            geometry = [[${geometry}]];
             token += [[${token}]];
             title = [[${title}]];
             editLink = [[${editLink}]];
@@ -334,6 +335,7 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if(data.code == "Ok"){
+                        geometry = encodeURIComponent(geometry);
                         var imageUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-${lineWidth}+${lineColor}(${geometry})/${lng},${lat},${zoom},${bearing}/400x400?access_token=${mapboxgl.accessToken}`;
                         document.querySelector("#share-img").src = imageUrl;
                         document.querySelector("#edit-container").style.display = "none";
