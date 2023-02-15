@@ -57,7 +57,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
             findNavController().navigate(UserPageFragmentDirections.actionUserPageToSetting())
             true
         }
-        Log.d("resumePause","viewCreated")
     }
 
     override fun onResume() {
@@ -72,7 +71,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
 
     override fun onPause() {
         super.onPause()
-        Log.d("resumePause","pause")
         viewLifecycleOwner.lifecycleScope.cancel()
     }
 
