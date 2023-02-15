@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -63,7 +65,7 @@ public class User {
 	@Schema(description = "사용자 경험치", nullable = false, example = "151")
 	private int exp;
 
-	@Schema(description = "사용자 가입 타입", nullable = false, example = "true | flase")
+	@Schema(description = "사용자 가입 타입", nullable = false, example = "true | false")
 	private Boolean userType;
 
 	@JsonSerialize(using= LocalDateTimeSerializer.class)

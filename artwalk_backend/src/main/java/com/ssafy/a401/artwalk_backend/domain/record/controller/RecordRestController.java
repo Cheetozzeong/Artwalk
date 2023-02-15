@@ -25,6 +25,7 @@ import com.ssafy.a401.artwalk_backend.domain.admin.model.PasswordDTO;
 import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
 import com.ssafy.a401.artwalk_backend.domain.common.model.CountResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
+import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
 
 import io.swagger.annotations.Api;
