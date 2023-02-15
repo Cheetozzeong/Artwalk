@@ -78,11 +78,13 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                 val timeElapsed = intent.getIntExtra(TIME_ELAPSED, 0)
                 val distance = intent.getDoubleExtra(DISTANCE, 0.0)
                 totalLocation = intent.getSerializableExtra(TOTAL_LOCATION) as ArrayList<DoubleArray>
+                val routePolyline = intent.getStringExtra(ROUTE_POLYLINE)!!
 
                 updateLayout(isRecordRunning)
                 updateDurationValue(timeElapsed)
                 updateDistanceValue(distance)
                 updateTotalAnnotation(totalLocation)
+                setRoute(routePolyline)
 
                 when(state) {
                     RecordState.PAUSE -> showSaveSheet()
@@ -127,7 +129,6 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         setMapView()
         super.onViewCreated(view, savedInstanceState)
         setViewModel()
-        setRoute()
         setCameraStateButton()
 
         recordViewModel.msg.observe(viewLifecycleOwner) { msg ->
@@ -182,24 +183,23 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
     }
 
-    private fun setRoute() {
-        arguments.routeArgument.let { route ->
-            if(route != null) {
-                val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
-                val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-                    .withPoints(encodedRoute)
-                    .withLineColor(ROUTE_COLOR)
-                    .withLineOpacity(0.498)
-                    .withLineWidth(7.0)
+    private fun setRoute(route: String) {
 
-                val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
-                    .withPoint(encodedRoute[0])
-                    .withPoint(encodedRoute[encodedRoute.lastIndex])
+        if(route == "") return
+        val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(encodedRoute)
+            .withLineColor(ROUTE_COLOR)
+            .withLineOpacity(0.498)
+            .withLineWidth(7.0)
 
-                routeAnnotationManager.create(polylineAnnotationOptions)
-                pointAnnotaionManager.create(pointAnnotationOptions)
-            }
-        }
+        val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
+            .withPoint(encodedRoute[0])
+            .withPoint(encodedRoute[encodedRoute.lastIndex])
+
+        routeAnnotationManager.create(polylineAnnotationOptions)
+        pointAnnotaionManager.create(pointAnnotationOptions)
+
     }
 
     private fun setViewModel(){

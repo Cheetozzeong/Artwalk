@@ -22,6 +22,7 @@ const val RECORD_LOCATION = "RecordLocation"
 const val RECORD_STATUS = "RecordStatus"
 
 const val IS_RECORD_RUNNING = "isRecordRunning"
+const val ROUTE_POLYLINE = "ROUTE_POLYLINE"
 const val TOTAL_LOCATION = "TotalLocation"
 const val LAST_LOCATION = "LAST_LOCATION"
 const val CURRENT_LOCATION = "CURRENT_LOCATION"
@@ -39,6 +40,7 @@ class RecordService : Service(), CoroutineScope {
     private var currentTime by Delegates.notNull<Int>()
     private var totalDistance by Delegates.notNull<Double>()
     private val locationList = ArrayList<DoubleArray>()
+    private var routePolyline = ""
 
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable = object : Runnable {
@@ -71,12 +73,16 @@ class RecordService : Service(), CoroutineScope {
                 RecordState.PAUSE -> pauseRecord()
                 RecordState.STOP -> endRecord()
                 RecordState.GET_STATUS -> sendStatus()
+                RecordState.SET_ROUTE -> setRoute(getString(ROUTE_POLYLINE)!!)
                 else-> return START_STICKY
             }
         }
         return START_STICKY
     }
 
+    private fun setRoute(routePolyline: String) {
+        this.routePolyline = routePolyline
+    }
 
 
     override fun onDestroy() {
@@ -91,6 +97,7 @@ class RecordService : Service(), CoroutineScope {
 
         currentTime = 0
         totalDistance = 0.0
+        routePolyline = ""
         locationList.clear()
 
         stopService()
@@ -154,6 +161,7 @@ class RecordService : Service(), CoroutineScope {
             .putExtra(TIME_ELAPSED, currentTime)
             .putExtra(TOTAL_LOCATION, locationList)
             .putExtra(DISTANCE, totalDistance)
+            .putExtra(ROUTE_POLYLINE, routePolyline)
         sendBroadcast(statusIntent)
     }
 

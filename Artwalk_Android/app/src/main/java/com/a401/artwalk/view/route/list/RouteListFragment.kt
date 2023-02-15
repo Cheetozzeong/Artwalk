@@ -1,7 +1,9 @@
 package com.a401.artwalk.view.route.list
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,11 @@ import com.a401.artwalk.R
 import com.a401.artwalk.base.BaseFragment
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteListBinding
+import com.a401.artwalk.view.SampleActivity
+import com.a401.artwalk.view.record.ROUTE_POLYLINE
+import com.a401.artwalk.view.record.RecordService
+import com.a401.artwalk.view.record.RecordState
+import com.a401.artwalk.view.record.SERVICE_COMMAND
 import com.mapbox.maps.Style
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -20,13 +27,26 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fragment_route_list) {
 
+    private lateinit var mainActivity: SampleActivity
     private val routeListViewModel: RouteListViewModel by viewModels() { defaultViewModelProviderFactory }
 
     private val routeListAdapter = RouteListAdapter(
         StartButtonClickListener { geometry ->
-        val action = RouteListFragmentDirections.actionRouteListToRecordMain(geometry)
-        findNavController().navigate(action) }
+            val action = RouteListFragmentDirections.actionRouteListToRecordMain()
+            mainActivity.startService(
+                Intent(mainActivity.applicationContext, RecordService::class.java).apply {
+                    putExtra(SERVICE_COMMAND, RecordState.SET_ROUTE as Parcelable)
+                    putExtra(ROUTE_POLYLINE, geometry)
+                }
+            )
+            findNavController().navigate(action)
+        }
     )
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as SampleActivity
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setMapView()
