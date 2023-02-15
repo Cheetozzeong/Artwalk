@@ -28,8 +28,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-			.title("Artwalk API")
-			.description("Artwalk REST API Document")
+			.title("귿다 API")
+			.description("귿다 API Document")
 			.version("1.0")
 			.build();
 	}

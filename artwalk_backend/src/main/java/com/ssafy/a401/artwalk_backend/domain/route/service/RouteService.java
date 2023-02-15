@@ -3,7 +3,6 @@ package com.ssafy.a401.artwalk_backend.domain.route.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import com.ssafy.a401.artwalk_backend.domain.route.model.Route;
 import com.ssafy.a401.artwalk_backend.domain.route.repository.RouteRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

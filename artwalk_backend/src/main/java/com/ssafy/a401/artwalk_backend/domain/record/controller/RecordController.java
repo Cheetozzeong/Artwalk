@@ -1,44 +1,19 @@
 package com.ssafy.a401.artwalk_backend.domain.record.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.a401.artwalk_backend.domain.admin.service.AdminService;
-import com.ssafy.a401.artwalk_backend.domain.common.model.ResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.model.Record;
-import com.ssafy.a401.artwalk_backend.domain.record.model.RecordResponseDTO;
 import com.ssafy.a401.artwalk_backend.domain.record.service.RecordService;
 import com.ssafy.a401.artwalk_backend.domain.user.model.UserDTO;
 import com.ssafy.a401.artwalk_backend.domain.user.service.UserService;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags = {"기록 공유 API"}, description = "기록 공유 페이지 이동 API 입니다.")
 @Controller
@@ -56,6 +31,7 @@ public class RecordController {
 			String geometry = recordService.readGeometryFile(record);
 			UserDTO userDTO = userService.findUserDetail(record.getUserId());
 
+			model.addAttribute("title", record.getTitle());
 			model.addAttribute("geometry", geometry);
 			model.addAttribute("editLink", editLink);
 			model.addAttribute("token", userDTO.getRefreshToken());
