@@ -44,6 +44,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var statusReceiver: BroadcastReceiver
     private lateinit var durationReceiver: BroadcastReceiver
     private lateinit var locationReceiver: BroadcastReceiver
+    private lateinit var routeReceiver: BroadcastReceiver
 
     private lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
@@ -65,6 +66,14 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         super.onResume()
 
         mainActivity.startService(getServiceIntent(RecordState.GET_STATUS))
+        mainActivity.startService(getServiceIntent(RecordState.GET_ROUTE))
+
+        routeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val routePolyline = intent?.getStringExtra(ROUTE_POLYLINE)!!
+                setRoute(routePolyline)
+            }
+        }
 
         statusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -76,13 +85,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                 val timeElapsed = intent.getIntExtra(TIME_ELAPSED, 0)
                 val distance = intent.getDoubleExtra(DISTANCE, 0.0)
                 totalLocation = intent.getSerializableExtra(TOTAL_LOCATION) as ArrayList<DoubleArray>
-                val routePolyline = intent.getStringExtra(ROUTE_POLYLINE)!!
 
                 updateLayout(isRecordRunning)
                 updateDurationValue(timeElapsed)
                 updateDistanceValue(distance)
                 updateTotalAnnotation(totalLocation)
-                setRoute(routePolyline)
 
                 when(state) {
                     RecordState.PAUSE -> showSaveSheet()
@@ -109,6 +116,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
             }
         }
 
+        mainActivity.registerReceiver(routeReceiver, IntentFilter(RECORD_ROUTE))
         mainActivity.registerReceiver(statusReceiver, IntentFilter(RECORD_STATUS))
         mainActivity.registerReceiver(durationReceiver, IntentFilter(RECORD_TICK))
         mainActivity.registerReceiver(locationReceiver, IntentFilter(RECORD_LOCATION))

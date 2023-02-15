@@ -20,6 +20,7 @@ import kotlin.properties.Delegates
 const val RECORD_TICK = "RecordTick"
 const val RECORD_LOCATION = "RecordLocation"
 const val RECORD_STATUS = "RecordStatus"
+const val RECORD_ROUTE = "RECORD_ROUTE"
 
 const val IS_RECORD_RUNNING = "isRecordRunning"
 const val ROUTE_POLYLINE = "ROUTE_POLYLINE"
@@ -73,11 +74,18 @@ class RecordService : Service(), CoroutineScope {
                 RecordState.PAUSE -> pauseRecord()
                 RecordState.STOP -> endRecord()
                 RecordState.GET_STATUS -> sendStatus()
+                RecordState.GET_ROUTE -> sendRoute()
                 RecordState.SET_ROUTE -> setRoute(getString(ROUTE_POLYLINE)!!)
                 else-> return START_STICKY
             }
         }
         return START_STICKY
+    }
+
+    private fun sendRoute() {
+        val statusIntent = Intent(RECORD_ROUTE)
+            .putExtra(ROUTE_POLYLINE, routePolyline)
+        sendBroadcast(statusIntent)
     }
 
     private fun setRoute(routePolyline: String) {
