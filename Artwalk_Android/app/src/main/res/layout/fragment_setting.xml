@@ -22,6 +22,13 @@
                 android:text="설정 및 이용약관"
                 style="@style/header_title_font_style"/>
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_button_bg_50"
+                android:src="@drawable/ic_detail_back_24"
+                />
+
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
@@ -31,12 +38,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView_setting_privacyPolicy"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/privacy_policy_title"
-                style="@style/body_regular_text_font_style"/>
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView_setting_privacyPolicy"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privacy_policy_title"
+                    style="@style/body_regular_text_font_style"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_button_bg_50"
+                    android:src="@drawable/ic_detail_back_24"/>
+
+            </LinearLayout>
 
 
             <View
