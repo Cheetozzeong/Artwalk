@@ -83,18 +83,22 @@
 
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_routeItem_start"
             android:layout_width="0dp"
-            android:layout_height="75dp"
-            android:background="@drawable/square_type_button"
-            android:hint="시작"
+            android:layout_height="wrap_content"
+            android:paddingVertical="20dp"
             android:onClick="@{() -> startButtonClickListener.onClick(item.routeForList)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/linearlayout_routeItem_contentBox"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.2" />
+            app:layout_constraintWidth_percent="0.2"
+            android:background="@drawable/start_button"
+            android:text="@string/startButton_title"
+            android:textColor="@color/main"
+            android:includeFontPadding="false"
+            style="@style/body_bold_text_font_style"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
