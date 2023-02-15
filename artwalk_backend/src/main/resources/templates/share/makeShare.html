@@ -335,6 +335,7 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if(data.code == "Ok"){
+                        shareLink += data.message;
                         geometry = encodeURIComponent(geometry);
                         var imageUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-${lineWidth}+${lineColor}(${geometry})/${lng},${lat},${zoom},${bearing}/400x400?access_token=${mapboxgl.accessToken}`;
                         document.querySelector("#share-img").src = imageUrl;
