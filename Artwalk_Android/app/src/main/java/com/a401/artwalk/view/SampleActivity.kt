@@ -2,6 +2,7 @@ package com.a401.artwalk.view
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.a401.artwalk.R
@@ -15,6 +16,11 @@ class SampleActivity: BaseActivity<SampleViewBinding>(R.layout.sample_view) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setNavigation()
+
+        val window = window
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     private fun setNavigation() {
