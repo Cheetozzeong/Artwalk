@@ -4,9 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.a401.data.api.ApiClient
 import com.a401.data.mapper.recordForListsFromResponses
+import com.a401.data.mapper.recordRequestForPutTitle
 import com.a401.data.mapper.recordRequestFromRecordForSave
+import com.a401.data.model.response.DeleteResponse
 import com.a401.data.model.response.RecordListResponse
+import com.a401.data.model.response.RecordResponse
 import com.a401.domain.model.RecordForList
+import com.a401.domain.model.RecordForPut
 import com.a401.domain.model.RecordForSave
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -42,5 +46,23 @@ class RecordRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getRecordCount(): Flow<RecordListResponse> {
         return flow { emit(a401RecordApi.getRecordCount(accessToken)) }
+    }
+
+    override suspend fun getEditLink(recordId: Int): Flow<RecordResponse> {
+        return flow{
+            emit(a401RecordApi.getEditLink(accessToken, recordId))
+        }
+    }
+
+    override suspend fun deleteRecord(recordId: Int): Flow<DeleteResponse> {
+        return flow{
+            emit(a401RecordApi.deleteRecord(accessToken, recordId))
+        }
+    }
+
+    override suspend fun putRecordDetail(recordForPut: RecordForPut): Flow<Response<Void>> {
+        return flow {
+            a401RecordApi.putRecordTitle(accessToken, recordRequestForPutTitle(recordForPut).recordId, recordRequestForPutTitle(recordForPut).title)
+        }
     }
 }

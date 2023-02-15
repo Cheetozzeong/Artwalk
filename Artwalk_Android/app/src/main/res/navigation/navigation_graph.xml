@@ -70,7 +70,16 @@
             app:argType="com.a401.domain.model.RecordForList"
             app:nullable="false" />
 
+        <action
+            android:id="@+id/action_delete_record"
+            app:destination="@+id/userPage"/>
+
+        <action
+            android:id="@+id/action_detail_to_list"
+            app:destination="@+id/userPage"/>
+
     </fragment>
+
     <fragment
         android:id="@id/setting"
         android:name="com.a401.artwalk.view.user.SettingFragment"
