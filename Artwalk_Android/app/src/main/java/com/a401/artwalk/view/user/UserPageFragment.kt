@@ -1,6 +1,7 @@
 package com.a401.artwalk.view.user
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +20,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -33,6 +37,8 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
             findNavController().navigate(action) }
     )
 
+    private val scope = CoroutineScope(Dispatchers.Main)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,31 +46,39 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
     ): View? {
         userPageViewModel.getRecords()
         return super.onCreateView(inflater, container, savedInstanceState)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setToolBar()
-        lifecycleScope.launch {
-            setUser()
-        }
-        lifecycleScope.launch {
-            collectListItem()
-
-        }
-
         binding.toolbarUserPage.menu.findItem(R.id.setting).setOnMenuItemClickListener {
             findNavController().navigate(UserPageFragmentDirections.actionUserPageToSetting())
             true
         }
-        // TODO: 내 기록, 뱃지 등 가져오기
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            setUser()
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            collectListItem()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewLifecycleOwner.lifecycleScope.cancel()
     }
 
     private suspend fun setUser() {
             userPageViewModel.userInfo.collect { user ->
                 binding.nickName = user.nickName
                 binding.numOfRecord = user.numOfRecord.toString()
+                Log.d("resume","getright?")
                 binding.numOfRoute = user.numOfRoute.toString()
 
                 Glide.with(binding.imageViewUserPageProfile)
@@ -75,7 +89,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
                         )
                     )
                     .into(binding.imageViewUserPageProfile)
-
         }
     }
 
@@ -83,7 +96,6 @@ class UserPageFragment : BaseFragment<FragmentUserPageBinding> (R.layout.fragmen
         binding.toolbarUserPage.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.setting -> {
-                    // TODO: setting fragment
                     true
                 }
                 else -> false

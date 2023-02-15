@@ -46,7 +46,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     private lateinit var durationReceiver: BroadcastReceiver
     private lateinit var locationReceiver: BroadcastReceiver
 
-    lateinit var mainActivity: SampleActivity
+    private lateinit var mainActivity: SampleActivity
     private var isRecordRunning = false
 
     private val arguments by navArgs<RecordFragmentArgs>()
@@ -252,7 +252,12 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         recordSaveButton?.setOnClickListener {
             val detail = recordDetail?.text.toString()
             recordViewModel.setTitle(detail)
-            recordViewModel.saveRecord(getTotalPolyline())
+            recordViewModel.saveRecord(
+                getTotalPolyline(),
+                (binding.hour ?: 0) * 3600 + (binding.minute ?: 0) * 60 + (binding.second ?: 0),
+                binding.distance ?: 0.0
+            )
+
             sendCommandToForegroundService(RecordState.STOP)
             dialog.dismiss()
         }
