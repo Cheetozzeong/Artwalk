@@ -209,12 +209,4 @@ public class RecordRestController {
 		}
 		return ResponseEntity.badRequest().body(new ResponseDTO(FAIL, "공유 이미지 생성에 실패하였습니다.\n다시 시도해주세요."));
 	}
-
-	// @Operation(summary = "공유이미지 다운로드", description = "공유이미지 다운로드 메서드입니다.  Path에 다운받으려는 공유 이미지의 link를 포함해 요청합니다.")
-	// @ApiImplicitParam(name = "link", value = "공유 이미지에 접근할 링크", dataType = "String")
-	// @PostMapping("/download/{link}")
-	// public ResponseEntity<UrlResource> recordShareImageDownload(@PathVariable("link") String link) {
-	// 	recordService.
-	// 	return ResponseEntity.ok().body(null);
-	// }
 }

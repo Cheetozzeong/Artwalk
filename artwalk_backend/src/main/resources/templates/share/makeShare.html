@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공유 이미지 편집</title>
+    <title>귿다 - 공유 이미지 편집</title>
     <link rel="favicon" href="https://i8a401.p.ssafy.io/favicon.ico">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
@@ -17,6 +17,7 @@
     </script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
             text-align: center;
@@ -108,6 +109,7 @@
         }
 
         button {
+            width: 196px;
             padding-top: 30px;
             padding: 10px 30px 10px;
             background: #07A794;
@@ -122,6 +124,12 @@
             cursor: pointer;
             margin: 10px;
         }
+
+        #share-img {
+            width: 350px;
+            height: 350px;
+            margin: auto;
+        }
     </style>
 </head>
 <body>
@@ -129,11 +137,11 @@
         <img src="https://i8a401.p.ssafy.io/favicon.ico" alt="logo" class="logo">
         <h2 class="logo-letter">Artwalk</h2>
     </div>
-    <div class="info">
-        <p>지도를 움직여서 원하는 크기로 맞춰주고,
-            <br>색상과 굵기를 결정하여 공유 이미지를 생성하세요!</p>
-    </div>
-    <div class="container">
+    <div class="container" id="edit-container">
+        <div class="info">
+            <p>지도를 움직여서 원하는 크기로 맞춰주고,
+                <br>색상과 굵기를 결정하여 공유 이미지를 생성하세요!</p>
+        </div>
         <div id="map"></div>
         <div class="input-form">
             <label for="lineColor">색상</label>
@@ -142,6 +150,15 @@
             <input type="number" id="lineWidth" value="5">
         </div>
         <button id="btn-make-image">공유 이미지 생성하기</button>
+    </div>
+    <div class="container" id="result-container" style="display: none;">
+        <img id="share-img" src="" alt="공유이미지"/>
+        <div class="info">
+            <p>공유 이미지가 생성되었습니다!
+                <br>아래 버튼을 눌러 친구에게 공유해보아요
+            </p>
+        </div>
+        <button id="btn-share">공유하기</button>
     </div>
     <script th:inline="javascript">
         mapboxgl.accessToken = "pk.eyJ1IjoieWNoNTI2IiwiYSI6ImNsY3B2djAxNzI4dmIzd21tMjl4aXB4bDkifQ.HXaG-IdHhpXBsOByFTPVlA";
@@ -154,12 +171,15 @@
         });
 
         var token = "Bearer ";
+        var title;
         var editLink;
+        var shareLink = "https://i8a401.p.ssafy.io/sharing/";
 
         window.onload = function(){
             var geometry = [[${geometry}]];
-            editLink = [[${editLink}]];
             token += [[${token}]];
+            title = [[${title}]];
+            editLink = [[${editLink}]];
             makePolyline(geometry);
         };
 
@@ -314,10 +334,27 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if(data.code == "Ok"){
-                        location.replace("https://i8a401.p.ssafy.io/sharing/"+data.message);
+                        var imageUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/path-${lineWidth}+${lineColor}(${geometry})/${lng},${lat},${zoom},${bearing}/400x400?access_token=${mapboxgl.accessToken}`;
+                        document.querySelector("#share-img").src = imageUrl;
+                        document.querySelector("#edit-container").style.display = "none";
+                        document.querySelector("#result-container").style.display = "";
+                        document.querySelector("#result-container").classList.add("animate__animated", "animate__fadeIn", "animate__faster");
                     }else{
                         alert(data.message);
                     }
+            });
+
+            document.querySelector("#btn-share").addEventListener("click", async () => {
+                try {
+                    await navigator.share({
+                        title: "[귿다]",
+                        text: title,
+                        url: shareLink,
+                    });
+                    alert("공유되었습니다!");
+                } catch (e) {
+                    alert("공유 중 에러가 발생하였습니다.");
+                }
             });
         });
     </script>
