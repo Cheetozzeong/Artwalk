@@ -23,6 +23,7 @@
                 style="@style/header_title_font_style"/>
 
             <ImageButton
+                android:id="@+id/ImageButton_setting_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/circle_button_bg_50"
@@ -40,14 +41,13 @@
 
             <LinearLayout
                 android:layout_marginHorizontal="10dp"
-                android:id="@+id/linearLayout_setting_howToUseBox"
+                android:id="@+id/LinearLayout_setting_howToUse"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/textView_setting_howToUse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/how_to_use_title"
@@ -69,14 +69,13 @@
 
             <LinearLayout
                 android:layout_marginHorizontal="10dp"
-                android:id="@+id/linearLayout_setting_privacyPolicyBox"
+                android:id="@+id/linearLayout_setting_privacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/textView_setting_privacyPolicy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/privacy_policy_title"
@@ -98,14 +97,13 @@
 
             <LinearLayout
                 android:layout_marginHorizontal="10dp"
-                android:id="@+id/linearLayout_setting_locationPolicyBox"
+                android:id="@+id/linearLayout_setting_locationPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/textView_setting_locationPolicy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location_policy_title"
@@ -133,14 +131,13 @@
 
             <LinearLayout
                 android:layout_marginHorizontal="10dp"
-                android:id="@+id/linearLayout_setting_logoutBox"
+                android:id="@+id/linearLayout_setting_logout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/textView_setting_logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/logout_title"
@@ -162,14 +159,13 @@
 
             <LinearLayout
                 android:layout_marginHorizontal="10dp"
-                android:id="@+id/linearLayout_setting_withdrawBox"
+                android:id="@+id/linearLayout_setting_withdraw"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_marginLeft="6dp"
-                    android:id="@+id/textView_setting_withdraw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/withdraw_title"

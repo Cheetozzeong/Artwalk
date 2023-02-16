@@ -22,6 +22,13 @@
                 android:layout_gravity="center"
                 style="@style/header_title_font_style"/>
 
+            <ImageButton
+                android:id="@+id/ImageButton_policy_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_button_bg_50"
+                android:src="@drawable/ic_detail_back_24"
+                />
         </androidx.appcompat.widget.Toolbar>
 
 
