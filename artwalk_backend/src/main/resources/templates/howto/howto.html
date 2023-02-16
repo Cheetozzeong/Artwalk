@@ -43,10 +43,10 @@
 
         #wrap {
             position: relative;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
             height: 100%;
-            background: #fbfbfb;
+            background: rgba(94, 94, 94, 0.88);
             overflow: hidden;
         }
 
@@ -85,14 +85,11 @@
 
         .swiper-container {
             width: 100%;
-            height: 90vh;
+            height: 100%;
         }
 
         .swiper-slide {
             text-align: center;
-        }
-        .swiper-slide video {
-            height: 99%;
         }
         .swiper-slide img {
             height: 100%;
@@ -102,7 +99,6 @@
             width: 100%;
             z-index: 9999;
         }
-
         .popup .popup-background {
             position: fixed;
             top: 0;
@@ -113,7 +109,6 @@
             opacity: 0.9;
             z-index: 9999;
         }
-
         .popup .popup-box {
             position: absolute;
             top: 235px;
@@ -127,14 +122,12 @@
             z-index: 9999;
             text-align: center;
         }
-
         .popup-box > p {
             font-family: "GangwonEdu_OTFBoldA";
             font-size: 16px;
             line-height: 30px;
             margin-block: 5px;
         }
-
         .popup-box > button {
             margin-block: 10px;
             padding: 10px 30px 10px;
@@ -153,7 +146,7 @@
 </head>
 <body>
 <div id="wrap">
-    <div class="popup" style="display: none;">
+    <div class="popup">
         <div class="popup-background"></div>
         <div class="popup-box">
             <p>
@@ -164,19 +157,9 @@
             <button id="btn-popup-close">사용법 알아보기</button>
         </div>
     </div>
-    <div class="header">
-        <img src="/favicon.ico" alt="logo" class="logo">
-        <h2 class="logo-letter">ㄱㅡㄷㄷㅏ</h2>
-    </div>
     <div class="swiper-pagination"></div>
     <div class="swiper-container">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <video id="tutorial-video" autoplay="autoplay" loop="loop" muted="muted" playsinline>
-                    <source src="/img/how_to_draw_route.mp4" type="video/mp4">
-                    해당 브라우저는 video를 지원하지 않습니다.
-                </video>
-            </div>
             <div class="swiper-slide">
                 <img src="/img/tutorial_image_1.png" alt="tutorial image 1" />
             </div>
@@ -189,15 +172,16 @@
             <div class="swiper-slide">
                 <img src="/img/tutorial_image_4.png" alt="tutorial image 4" />
             </div>
-            <div class="swiper-slide">
-                <img src="/img/tutorial_image_5.png" alt="tutorial image 5" />
-            </div>
         </div>
     </div>
 </div>
 <script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
+    window.onload = function() {
+        document.querySelector("#tutorial-video").pause();
+    };
+
     const swiper = new Swiper(".swiper-container", {
         direction: "horizontal",
         loop: false,
@@ -210,13 +194,6 @@
 
     document.querySelector("#btn-popup-close").addEventListener("click", function () {
         document.querySelector(".popup").style.display = "none";
-    });
-
-    swiper.on('slideChange', function(){
-        if(swiper.activeIndex == 0){
-            document.querySelector("#tutorial-video").currentTime = 0;
-            document.querySelector("#tutorial-video").play();
-        }
     });
 </script>
 </body>
