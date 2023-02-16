@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.view.menu.ActionMenuItemView
@@ -111,9 +110,12 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
     }
 
     private fun changeDrawButtonState() {
-        binding.editButton.setOnClickListener {
+        val editSaveButton = view?.findViewById<ImageButton>(R.id.imageButton_detail_editSave)
+        editSaveButton?.setOnClickListener {
             it.isSelected = !it.isSelected
+            binding.editDetailBox.isSelected = !binding.editDetailBox.isSelected
             binding.editTextDetail.isEnabled = !binding.editTextDetail.isEnabled
+            changeTitle()
         }
     }
 
@@ -133,23 +135,10 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         dialog.show()
     }
 
-    private fun checkChangeTitle() {
-        val dialog = BottomSheetDialog(requireActivity())
-        dialog.setContentView(R.layout.fragment_record_save_dialog)
-        val saveOkButton = dialog.findViewById<TextView>(R.id.button_record_save_ok)
-        val saveQuitButton = dialog.findViewById<TextView>(R.id.button_record_save_quit)
-        val recordDetail = view?.findViewById<TextView>(R.id.edittext_edit_detail)
-
-        saveOkButton?.setOnClickListener {
-            val editDetail = recordDetail?.text.toString()
-            recordDetailViewModel.editTitle(RecordForPut(editDetail, arguments.detailArgument.recordId))
-            findNavController().navigate(RecordDetailDirections.actionDetailToList())
-            dialog.dismiss()
-        }
-        saveQuitButton?.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
+    private fun changeTitle() {
+        val recordDetail = view?.findViewById<TextView>(R.id.editText_detail)
+        val editDetail = recordDetail?.text.toString()
+        recordDetailViewModel.editTitle(RecordForPut(editDetail, arguments.detailArgument.recordId))
     }
 
     private fun openEditPage(){
