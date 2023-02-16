@@ -91,6 +91,9 @@
         .swiper-slide {
             text-align: center;
         }
+        .swiper-slide video {
+            height: 99%;
+        }
         .swiper-slide img {
             height: 100%;
         }
@@ -169,6 +172,12 @@
     <div class="swiper-container">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
+                <video id="tutorial-video" autoplay="autoplay" loop="loop" muted="muted" playsinline>
+                    <source src="/img/how_to_draw_route.mp4" type="video/mp4">
+                    해당 브라우저는 video를 지원하지 않습니다.
+                </video>
+            </div>
+            <div class="swiper-slide">
                 <img src="/img/tutorial_image_1.png" alt="tutorial image 1" />
             </div>
             <div class="swiper-slide">
@@ -199,11 +208,16 @@
         },
     });
 
-    document
-        .querySelector("#btn-popup-close")
-        .addEventListener("click", function () {
-            document.querySelector(".popup").style.display = "none";
-        });
+    document.querySelector("#btn-popup-close").addEventListener("click", function () {
+        document.querySelector(".popup").style.display = "none";
+    });
+
+    swiper.on('slideChange', function(){
+        if(swiper.activeIndex == 0){
+            document.querySelector("#tutorial-video").currentTime = 0;
+            document.querySelector("#tutorial-video").play();
+        }
+    });
 </script>
 </body>
 </html>
