@@ -62,18 +62,4 @@ public class RecordController {
 			return "error/4xx";
 		}
 	}
-
-	// @Operation(summary = "공유이미지 조회", description = "공유이미지 조회 메서드입니다. Path에 조회하려는 기록 ID를 포함하여 요청합니다.")
-	// @ApiImplicitParam(name = "recordId", value = "조회할 기록 ID", dataType = "int")
-	// @GetMapping("/image/{recordId}")
-	// public String displayRecordImage(Model model, @PathVariable("recordId") int recordId) {
-	// 	try {
-	// 		Record record = recordService.findByRecordId(recordId);
-	// 		ResponseEntity<Resource> response = recordService.getShareImage(record);
-	// 		model.addAttribute("result", response.getBody());
-	// 		return "share/sharing";
-	// 	} catch (NullPointerException e) {
-	// 		return "error/4xx";
-	// 	}
-	// }
 }
