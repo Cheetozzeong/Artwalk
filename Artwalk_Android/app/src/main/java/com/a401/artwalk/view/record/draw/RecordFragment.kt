@@ -338,4 +338,14 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         }
         result.append(Character.toChars((variable + 63).toInt()))
     }
+
+    override fun onCameraTracking() {
+        super.onCameraTracking()
+        binding.imagebuttonChangeCameraView.isSelected = true
+    }
+
+    override fun onCameraTrackingDismissed() {
+        super.onCameraTrackingDismissed()
+        binding.imagebuttonChangeCameraView.isSelected = false
+    }
 }
