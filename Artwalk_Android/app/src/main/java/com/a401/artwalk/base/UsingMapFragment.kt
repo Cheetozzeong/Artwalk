@@ -81,12 +81,8 @@ abstract class UsingMapFragment<T: ViewDataBinding>(layoutId: Int): BaseFragment
             this.locationPuck = LocationPuck2D(
                 topImage = AppCompatResources.getDrawable(
                     requireActivity(),
-                    R.drawable.ic_mylocation,
+                    R.drawable.logo_rotate
                 ),
-                shadowImage = AppCompatResources.getDrawable(
-                    requireActivity(),
-                    R.drawable.mylocation_bg,
-                )
             )
         }
         setupGesturesListener()
