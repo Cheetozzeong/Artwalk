@@ -1,13 +1,16 @@
 package com.a401.artwalk.view.user
 
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import android.widget.ImageButton
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.a401.artwalk.App.Companion.prefs
 import com.a401.artwalk.R
@@ -17,6 +20,7 @@ import com.a401.artwalk.view.SampleActivity
 import com.a401.artwalk.view.login.LoginActivity
 import com.google.android.material.dialog.MaterialDialogs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
@@ -25,6 +29,20 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.LinearLayoutSettingHowToUse.setOnClickListener {
+            lifecycleScope.launch {
+                val url = "https://i8a401.p.ssafy.io/howto"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.`package` = "com.android.chrome"
+                try {
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    intent.`package` = null
+                    startActivity(intent)
+                }
+            }
+        }
 
         binding.linearLayoutSettingPrivacyPolicy.setOnClickListener {
             val action = SettingFragmentDirections.actionSettingToPolicy(
@@ -42,7 +60,7 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
             findNavController().navigate(action)
         }
 
-        binding.linearLayoutSettingLogoutBox.setOnClickListener {
+        binding.linearLayoutSettingLogout.setOnClickListener {
             logout()
         }
 
@@ -55,7 +73,7 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
             }
         }
 
-        binding.linearLayoutSettingWithdrawBox.setOnClickListener {
+        binding.linearLayoutSettingWithdraw.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("회원 탈퇴")
                 .setMessage("정말정말.. 탈퇴하실 건가요..?   탈퇴하시면..정보는 사라집니다!")
@@ -70,7 +88,8 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
                     }
                 )
             builder.show()
-        setBackButton()
+            setBackButton()
+        }
     }
     
     private fun setBackButton(){
