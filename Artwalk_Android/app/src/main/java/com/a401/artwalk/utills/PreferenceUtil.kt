@@ -14,4 +14,8 @@ class PreferenceUtil(context: Context) {
     fun setString(key: String, str: String) {
         prefs.edit().putString(key, str).apply()
     }
+
+    fun clear() {
+        prefs.edit().clear().apply()
+    }
 }
