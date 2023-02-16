@@ -133,24 +133,24 @@ class RecordDetail : BaseFragment<DetailRecordListBinding>(R.layout.detail_recor
         dialog.show()
     }
 
-    private fun checkChangeTitle() {
-        val dialog = BottomSheetDialog(requireActivity())
-        dialog.setContentView(R.layout.fragment_record_save_dialog)
-        val saveOkButton = dialog.findViewById<TextView>(R.id.button_record_save_ok)
-        val saveQuitButton = dialog.findViewById<TextView>(R.id.button_record_save_quit)
-        val recordDetail = view?.findViewById<TextView>(R.id.edittext_edit_detail)
-
-        saveOkButton?.setOnClickListener {
-            val editDetail = recordDetail?.text.toString()
-            recordDetailViewModel.editTitle(RecordForPut(editDetail, arguments.detailArgument.recordId))
-            findNavController().navigate(RecordDetailDirections.actionDetailToList())
-            dialog.dismiss()
-        }
-        saveQuitButton?.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
+//    private fun checkChangeTitle() {
+//        val dialog = BottomSheetDialog(requireActivity())
+//        dialog.setContentView(R.layout.fragment_record_save_dialog)
+//        val saveOkButton = dialog.findViewById<TextView>(R.id.button_record_save_ok)
+//        val saveQuitButton = dialog.findViewById<TextView>(R.id.button_record_save_quit)
+//        val recordDetail = view?.findViewById<TextView>(R.id.edittext_edit_detail)
+//
+//        saveOkButton?.setOnClickListener {
+//            val editDetail = recordDetail?.text.toString()
+//            recordDetailViewModel.editTitle(RecordForPut(editDetail, arguments.detailArgument.recordId))
+//            findNavController().navigate(RecordDetailDirections.actionDetailToList())
+//            dialog.dismiss()
+//        }
+//        saveQuitButton?.setOnClickListener {
+//            dialog.dismiss()
+//        }
+//        dialog.show()
+//    }
 
     private fun openEditPage(){
         lifecycleScope.launch {
