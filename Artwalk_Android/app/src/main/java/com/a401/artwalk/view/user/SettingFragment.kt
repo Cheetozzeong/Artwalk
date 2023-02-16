@@ -42,20 +42,20 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
             findNavController().navigate(action)
         }
 
-        binding.linearLayoutSettingLogoutBox.setOnClickListener {
+        binding.linearLayoutSettingLogout.setOnClickListener {
             logout()
         }
 
         settingViewModel.isSuccessRemoveUser.observe(requireActivity()) { isSuccessRemoveUser ->
-            if(isSuccessRemoveUser) {
+            if (isSuccessRemoveUser) {
                 logout()
                 Toast.makeText(context, "회원 탈퇴 성공...", Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 Toast.makeText(context, "회원 탈퇴 실패...", Toast.LENGTH_SHORT).show()
             }
         }
 
-        binding.linearLayoutSettingWithdrawBox.setOnClickListener {
+        binding.linearLayoutSettingWithdraw.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("회원 탈퇴")
                 .setMessage("정말정말.. 탈퇴하실 건가요..?   탈퇴하시면..정보는 사라집니다!")
@@ -70,21 +70,23 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
                     }
                 )
             builder.show()
-        setBackButton()
-    }
-    
-    private fun setBackButton(){
-        val backButton = view?.findViewById<ImageButton>(R.id.ImageButton_setting_back)
-        backButton?.setOnClickListener{
-            findNavController().popBackStack()
+            setBackButton()
         }
     }
 
-    private fun logout() {
-        prefs.clear()
-        startActivity(
-            Intent(context, LoginActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK ))
+        private fun setBackButton() {
+            val backButton = view?.findViewById<ImageButton>(R.id.ImageButton_setting_back)
+            backButton?.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+
+        private fun logout() {
+            prefs.clear()
+            startActivity(
+                Intent(context, LoginActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
     }
-}
