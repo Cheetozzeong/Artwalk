@@ -4,9 +4,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
             android:background="#2B353E"
-            android:padding="24dp">
+            android:padding="30dp">
 
             <ImageView
                 android:id="@+id/imageview_record_save"
@@ -15,45 +15,62 @@
                 android:adjustViewBounds="true"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <View
-                android:id="@+id/button_box"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textView_record_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_marginTop="8dp"
+                android:text="제목"
+                android:textColor="@color/neutral01"
+                android:includeFontPadding="false"
+                app:layout_constraintTop_toBottomOf="@id/imageview_record_save"
+                style="@style/body_title_font_style"/>
 
             <EditText
                 android:id="@+id/edittext_record_detail"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="70dp"
                 android:textColor="@color/neutral01"
-                android:hint="메모를 입력해주세요"
-                android:textColorHint="#ffffff"
-                app:layout_constraintTop_toBottomOf="@+id/imageview_record_save"
+                android:hint="나의 기록"
+                android:textColorHint="@color/neutral03"
+                app:layout_constraintTop_toBottomOf="@+id/textView_record_title"
                 />
 
-            <Button
-                    android:id="@+id/button_record_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="저장"
-                    app:layout_constraintBottom_toTopOf="@id/button_record_quit"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+            <LinearLayout
+                android:id="@+id/linearLayout_record_buttonBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/edittext_record_detail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="0.5"
+                android:layout_marginVertical="12dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                >
 
                 <Button
                     android:id="@+id/button_record_quit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="취소" />
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/neutral04"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="취소"
+                    android:textColor="@color/neutral01"/>
 
+                <Button
+                    android:id="@+id/button_record_save"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:backgroundTint="@color/main"
+                    android:text="저장"
+                    android:textColor="@color/neutral01" />
 
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
