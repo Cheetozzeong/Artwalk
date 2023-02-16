@@ -18,16 +18,18 @@
             app:layout_constraintHeight_percent="0.4" />
 
         <ImageButton
-            android:id="@+id/imagebutton_change_camera_view"
+            android:id="@+id/imageButton_change_camera_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/circle_ic_button_bg"
-            android:backgroundTint="@color/neutral04"
+            android:backgroundTint="@color/toggle_button_bg_tint"
             android:src="@drawable/ic_record_my_location"
-            app:layout_constraintBottom_toTopOf="@id/button_routeList_toRouteDraw"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@id/view_routeList_infoBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="카메라를 현재위치로 이동하는 버튼"
+            app:tint="@color/toggle_button_fg_tint" />
 
         <View
             android:id="@+id/view_routeList_infoBox"

@@ -122,40 +122,24 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/record_list_title"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/userprofile_box">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="left"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="20dp">
-
-                <TextView
-                    style="@style/body_bold_text_font_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:includeFontPadding="false"
-                    android:text="Records"/>
-
-                </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView_userPage_recordTitle"
+            style="@style/body_bold_text_font_style"
+            app:layout_constraintStart_toStartOf="@id/recyclerView_recordList"
+            app:layout_constraintTop_toBottomOf="@id/userprofile_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Records"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="10dp"
             android:layout_marginHorizontal="16dp"
             android:id="@+id/recyclerView_recordList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/record_list_title"
+            app:layout_constraintTop_toBottomOf="@id/textView_userPage_recordTitle"
             app:spanCount="3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -98,13 +98,13 @@ abstract class UsingMapFragment<T: ViewDataBinding>(layoutId: Int): BaseFragment
         mapView.gestures.addOnMoveListener(onMoveListener)
     }
 
-    fun onCameraTrackingDismissed() {
+    open fun onCameraTrackingDismissed() {
         mapView.location2.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         mapView.location2.removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
-    fun onCameraTracking() {
+    open fun onCameraTracking() {
         mapView.location2.addOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         mapView.location2.addOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
         mapView.gestures.addOnMoveListener(onMoveListener)

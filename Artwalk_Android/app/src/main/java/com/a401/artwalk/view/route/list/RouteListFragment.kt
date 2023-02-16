@@ -7,9 +7,12 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.a401.artwalk.R
 import com.a401.artwalk.base.UsingMapFragment
 import com.a401.artwalk.databinding.FragmentRouteListBinding
@@ -54,22 +57,6 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
         }
     )
 
-    private fun setRoute(route: String) {
-        polylineAnnotationManager.deleteAll()
-        onCameraTrackingDismissed()
-
-        val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
-        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-            .withPoints(encodedRoute)
-            .withLineColor(ROUTE_COLOR)
-            .withLineOpacity(0.498)
-            .withLineWidth(7.0)
-
-        mapView.getMapboxMap().easeTo(CameraOptions.Builder().center(encodedRoute[0]).build(), MapAnimationOptions.mapAnimationOptions {
-            this.duration(1000)
-        })
-        polylineAnnotationManager.create(polylineAnnotationOptions)
-    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as SampleActivity
@@ -82,9 +69,41 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
         setupRecyclerView()
         setToDrawButtonClickListener()
 
+        binding.imageButtonChangeCameraView.setOnClickListener {
+            onCameraTracking()
+        }
+
         lifecycleScope.launch {
             collectListItem()
         }
+    }
+
+    override fun onCameraTracking() {
+        super.onCameraTracking()
+        binding.imageButtonChangeCameraView.isSelected = true
+    }
+
+    override fun onCameraTrackingDismissed() {
+        super.onCameraTrackingDismissed()
+        binding.imageButtonChangeCameraView.isSelected = false
+    }
+
+    private fun setRoute(route: String) {
+        polylineAnnotationManager.deleteAll()
+        onCameraTrackingDismissed()
+
+        val encodedRoute: List<Point> = PolylineUtils.decode(route, 5)
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(encodedRoute)
+            .withLineColor(ROUTE_COLOR)
+            .withLineOpacity(0.498)
+            .withLineWidth(7.0)
+
+        mapView.getMapboxMap().easeTo(CameraOptions.Builder().center(encodedRoute[0]).build(),
+            MapAnimationOptions.mapAnimationOptions {
+                this.duration(1000)
+            })
+        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
     private fun setMapView() {
@@ -93,6 +112,9 @@ class RouteListFragment : UsingMapFragment<FragmentRouteListBinding>(R.layout.fr
     }
 
     private fun setupRecyclerView() = with(binding.recyclerViewRouteList) {
+        val decoration = DividerItemDecoration(requireContext(), VERTICAL)
+        this.addItemDecoration(decoration)
+
         adapter = routeListAdapter
     }
 
