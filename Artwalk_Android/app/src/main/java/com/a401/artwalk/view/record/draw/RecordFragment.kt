@@ -166,7 +166,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
                         Point.fromLngLat(location[0], location[1])
                     }
                 )
-                .withLineColor(R.color.main.toString())
+                .withLineColor("#f08080")
                 .withLineWidth(7.0)
 
             polylineAnnotationManager.create(polylineAnnotationOptions)
@@ -226,7 +226,7 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         )
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
             .withPoints(points)
-            .withLineColor("#ee4e8b")
+            .withLineColor("#f08080")
             .withLineWidth(7.0)
 
         polylineAnnotationManager.create(polylineAnnotationOptions)
