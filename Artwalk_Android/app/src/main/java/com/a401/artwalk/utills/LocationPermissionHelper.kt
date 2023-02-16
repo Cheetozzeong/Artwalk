@@ -15,6 +15,7 @@ class LocationPermissionHelper(val activity: WeakReference<Activity>) {
         } else {
             permissionsManager = PermissionsManager(object : PermissionsListener {
                 override fun onExplanationNeeded(permissionsToExplain: List<String>) {
+
                     Toast.makeText(
                         activity.get(), "You need to accept location permissions.",
                         Toast.LENGTH_SHORT
