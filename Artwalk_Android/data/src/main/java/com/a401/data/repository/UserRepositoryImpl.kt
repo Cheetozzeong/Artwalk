@@ -8,6 +8,7 @@ import com.a401.data.model.request.LoginUserRequest
 import com.a401.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import com.a401.domain.model.User
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -57,6 +58,18 @@ class UserRepositoryImpl @Inject constructor(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+
+    override suspend fun removeUser(): Flow<String> {
+        return flow {
+            userRemoteDataSource.postRemoveUser().collect() { result ->
+                if(result.code == "Ok") {
+                    emit("SUCCESS")
+                }else {
+                    emit("FAIL")
                 }
             }
         }

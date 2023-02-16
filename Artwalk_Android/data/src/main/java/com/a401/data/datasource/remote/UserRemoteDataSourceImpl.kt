@@ -83,4 +83,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun getUserInfo(): Flow<UserResponse> {
         return flow { emit(a401UserApi.getUserInfo(accessToken)) }
     }
+
+    override suspend fun postRemoveUser(): Flow<UserResponse> {
+        return flow { emit(a401UserApi.postRemoveUser(accessToken)) }
+    }
 }

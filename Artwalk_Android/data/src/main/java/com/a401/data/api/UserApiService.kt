@@ -34,4 +34,9 @@ interface UserApiService {
     suspend fun getUserInfo(
         @Header("accessToken") accessToken: String
     ): UserResponse
+
+    @DELETE("auth/remove")
+    suspend fun postRemoveUser(
+        @Header("accessToken") accessToken: String
+    ): UserResponse
 }
