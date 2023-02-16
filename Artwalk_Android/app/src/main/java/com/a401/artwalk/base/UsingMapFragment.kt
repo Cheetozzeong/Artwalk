@@ -1,8 +1,15 @@
 package com.a401.artwalk.base
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import com.a401.artwalk.R
 import com.a401.artwalk.utills.LocationPermissionHelper
@@ -49,8 +56,21 @@ abstract class UsingMapFragment<T: ViewDataBinding>(layoutId: Int): BaseFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationPermissionHelper = LocationPermissionHelper((WeakReference(requireActivity())))
-        locationPermissionHelper.checkPermissions {
+        if (
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            ) != PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                0
+            )
+        } else {
             onMapReady()
         }
     }
@@ -109,6 +129,33 @@ abstract class UsingMapFragment<T: ViewDataBinding>(layoutId: Int): BaseFragment
     private fun headerTo() {
         mapView.location2.updateSettings2 {
             puckBearingSource = PuckBearingSource.HEADING
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            0 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onMapReady()
+                } else {
+                    val builder = AlertDialog.Builder(context)
+
+                    builder.setTitle("원활한 어플 사용을 위해서는 위치 권한 허용이 필요합니다")
+                        .setPositiveButton("확인",
+                            DialogInterface.OnClickListener { dialog, id ->
+                            }
+                        )
+                    builder.show()
+                }
+                return
+            }
+            else -> {
+                // 다른 권한 요청에 대한 결과 처리
+            }
         }
     }
 }

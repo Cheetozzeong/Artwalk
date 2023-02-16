@@ -131,12 +131,11 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.v("LIFECYCLE", "onViewCreated")
         setMapView()
         super.onViewCreated(view, savedInstanceState)
+
         setViewModel()
         setCameraStateButton()
-
         recordViewModel.msg.observe(viewLifecycleOwner) { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         }
@@ -181,8 +180,21 @@ class RecordFragment : UsingMapFragment<FragmentRecordBinding>(R.layout.fragment
         if (isRecordRunning){
             sendCommandToForegroundService(RecordState.PAUSE)
         }else{
-            if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(mainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION_PERMISSION);
+            if (
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                ) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // 권한이 없으면 권한 요청을 수행
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                    0
+                )
             } else {
                 sendCommandToForegroundService(RecordState.START)
             }
