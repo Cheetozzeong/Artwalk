@@ -6,9 +6,11 @@
     <corners android:radius="15dp" />
 
     <!-- This is the border color -->
-    <stroke android:color="@color/neutral02" />
+    <stroke
+        android:color="@color/neutral02"
+        android:width="5dp"/>
 
-    <!--- This is the background color -->
-    <solid android:color="@color/neutral02" />
+    <!-- This is the border color -->
+    <solid android:color="@color/neutral01" />
 
 </shape>
