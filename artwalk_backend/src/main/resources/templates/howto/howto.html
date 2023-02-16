@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi" />
+    <title>귿다 - 사용 설명</title>
+    <link rel="favicon" href="/favicon.ico">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1NFE5BDLZ4');
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css" />
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <style>
+        @font-face {
+            font-family: "GangwonEdu_OTFBoldA";
+            src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff")
+            format("woff");
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: "bitbit";
+            src: url("//cdn.df.nexon.com/img/common/font/DNFBitBit-Regular.woff"),
+            url("//cdn.df.nexon.com/img/common/font/DNFBitBit-Regular.woff2");
+        }
+
+        html,
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background: #fbfbfb;
+        }
+
+        #wrap {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+            height: 100%;
+            background: #fbfbfb;
+            overflow: hidden;
+        }
+
+        .header {
+            height: 60px;
+            background-color: #07a794;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo {
+            width: 35px;
+            height: 35px;
+            margin-right: 5px;
+        }
+        .logo-letter {
+            color: white;
+            font-family: "bitbit";
+            font-weight: 500;
+        }
+
+        .swiper-pagination {
+            left: 130px;
+            width: 100px;
+            height: 20px;
+            text-align: center;
+        }
+        .swiper-pagination span {
+            margin-left: 2%;
+            margin-right: 2%;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #07a794;
+        }
+
+        .swiper-container {
+            width: 100%;
+            height: 90vh;
+        }
+
+        .swiper-slide {
+            text-align: center;
+        }
+        .swiper-slide video {
+            height: 99%;
+        }
+        .swiper-slide img {
+            height: 100%;
+        }
+
+        .popup {
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .popup .popup-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #b9b9b9;
+            opacity: 0.9;
+            z-index: 9999;
+        }
+
+        .popup .popup-box {
+            position: absolute;
+            top: 235px;
+            left: 22px;
+            width: calc(100% - 104px);
+            height: 160px;
+            background: #ffffff;
+            box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+            padding: 29px 30px 22px;
+            z-index: 9999;
+            text-align: center;
+        }
+
+        .popup-box > p {
+            font-family: "GangwonEdu_OTFBoldA";
+            font-size: 16px;
+            line-height: 30px;
+            margin-block: 5px;
+        }
+
+        .popup-box > button {
+            margin-block: 10px;
+            padding: 10px 30px 10px;
+            background: #07a794;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #ffffff;
+            border: #07a794;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div class="popup" style="display: none;">
+        <div class="popup-background"></div>
+        <div class="popup-box">
+            <p>
+                "귿다"를 어떻게 사용하실지 모르시겠다고요?
+                <br />지금부터 귿다 사용법을 알아봅시다.
+                <br />(좌우로 넘기며 확인해 주세요!)
+            </p>
+            <button id="btn-popup-close">사용법 알아보기</button>
+        </div>
+    </div>
+    <div class="header">
+        <img src="/favicon.ico" alt="logo" class="logo">
+        <h2 class="logo-letter">ㄱㅡㄷㄷㅏ</h2>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <video id="tutorial-video" autoplay="autoplay" loop="loop" muted="muted" playsinline>
+                    <source src="/img/how_to_draw_route.mp4" type="video/mp4">
+                    해당 브라우저는 video를 지원하지 않습니다.
+                </video>
+            </div>
+            <div class="swiper-slide">
+                <img src="/img/tutorial_image_1.png" alt="tutorial image 1" />
+            </div>
+            <div class="swiper-slide">
+                <img src="/img/tutorial_image_2.png" alt="tutorial image 2" />
+            </div>
+            <div class="swiper-slide">
+                <img src="/img/tutorial_image_3.png" alt="tutorial image 3" />
+            </div>
+            <div class="swiper-slide">
+                <img src="/img/tutorial_image_4.png" alt="tutorial image 4" />
+            </div>
+            <div class="swiper-slide">
+                <img src="/img/tutorial_image_5.png" alt="tutorial image 5" />
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".swiper-container", {
+        direction: "horizontal",
+        loop: false,
+
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: "true",
+        },
+    });
+
+    document.querySelector("#btn-popup-close").addEventListener("click", function () {
+        document.querySelector(".popup").style.display = "none";
+    });
+
+    swiper.on('slideChange', function(){
+        if(swiper.activeIndex == 0){
+            document.querySelector("#tutorial-video").currentTime = 0;
+            document.querySelector("#tutorial-video").play();
+        }
+    });
+</script>
+</body>
+</html>
