@@ -18,7 +18,9 @@
 
 <p align="justify">
 
-/ TODO: 멋진 프로젝트 이미지
+<img src="./readme_assets/artwalk_main.png" alt="artwalk_main" />
+
+<br>
 
 **귿다**는 GPS 트래킹 기록을 이용해 멋진 지도 위 그림을 그릴 수 있는 안드로이드 어플리케이션입니다.
 
@@ -83,12 +85,6 @@
 
 <br>
 
-// TODO: 시연 영상 추가하기
-
-👉 [애플리케이션 시연 영상 보러가기](#https://play.google.com/store/apps/details?id=com.a401.artwalk&pli=1) 👈
-
-<br>
-
 <img src="./readme_assets/artwalk_service_screen_1.png" alt="artwalk_service_screen" />
 
 <img src="./readme_assets/artwalk_service_screen_2.png" alt="artwalk_service_screen" />
@@ -99,6 +95,72 @@
 
 <img src="./readme_assets/artwalk_service_screen_5.png" alt="artwalk_service_screen" />
 
+<br>
+
+👉 [애플리케이션 시연 영상 보러가기](#https://youtu.be/0vgKAfpSR84) 👈
+
+<br>
+
+# 관리자 페이지
+
+<br>
+
+## 로그인
+<img src="./readme_assets/admin_page_screen_1.png" alt="admin_page_screen" />
+
+<br>
+
+## 메인
+<img src="./readme_assets/admin_page_screen_2.png" alt="admin_page_screen" />
+
+<br>
+
+- 전체 유저, 기록, 경로 데이터를 이용하여 제작된 차트를 확인할 수 있다.
+
+<br>
+
+## 사이드바
+<img src="./readme_assets/admin_page_screen_3.png" alt="admin_page_screen" />
+
+<br>
+
+- 좌상단에 위치한 버튼을 클릭하여 사이드바를 열고 사이드바를 통해 메인, 회원게시판, 경로게시판, 기록게시판으로 이동할 수 있다.
+
+<br>
+
+## 유저
+<img src="./readme_assets/admin_page_screen_4.png" alt="admin_page_screen" />
+<img src="./readme_assets/admin_page_screen_5.png" alt="admin_page_screen" />
+
+<br>
+
+- 모든 회원의 아이디, 닉네임, 분류, 경로수, 기록수, 가입일, 최근 접속일을 확인 할 수 있다.
+- 아이디, 닉네임으로 특정 회원을 검색할 수 있다.
+- 상세페이지에서 각 회원의 프로필 이미지와 해당 회원이 작성한 경로, 기록을 추가로 조회하고 삭제할 수 있다.
+
+<br>
+
+## 경로
+<img src="./readme_assets/admin_page_screen_6.png" alt="admin_page_screen" />
+<img src="./readme_assets/admin_page_screen_7.png" alt="admin_page_screen" />
+
+<br>
+
+- 생성된 모든 경로의 썸네일, 타이틀, 경로아이디, 생성한 회원의 아이디, 생성일을 확인 할 수 있다.
+- 경로 타이틀, 생성한 회원 아이디로 특정 경로를 검색할 수 있다.
+- 상세페이지에서 각 경로의 썸네일, 예상시간, 거리를 추가로 조회하고 해당 경로를 삭제할 수 있다.
+
+<br>
+
+## 기록
+<img src="./readme_assets/admin_page_screen_8.png" alt="admin_page_screen" />
+<img src="./readme_assets/admin_page_screen_9.png" alt="admin_page_screen" />
+
+<br>
+
+- 생성된 모든 기록의 썸네일, 타이틀, 기록아이디, 생성한 회원의 아이디, 생성일을 확인 할 수 있다.
+- 기록 타이틀, 생성한 회원 아이디로 특정 기록을 검색할 수 있다.
+- 상세페이지에서 각 기록의 썸네일, 소요시간, 거리를 추가로 조회하고 해당 기록을 삭제할 수 있다.
 
 <br>
 
@@ -128,7 +190,7 @@
 <br>
 
 ### **Android**
-| <img src="" alt="chi" width="50px" height="50px" /> | <img src="" alt="go" width="50px" height="50px" /> |
+| <img src="./readme_assets/치헌.png" alt="chi" width="50px" height="50px" /> | <img src="./readme_assets/은빈.png" alt="go" width="50px" height="50px" /> |
 | :---: | :---: |
 | 이치헌 | 고은빈 |
 | 팀장 | 팀원 |
@@ -137,23 +199,23 @@
 
 ### **Web (Front-end & Back-end)**
 
-| <img src="" alt="gong" width="50px" height="50px" /> | <img src="" alt="moon" width="50px" height="50px" /> | <img src="" alt="chang" width="50px" height="50px" /> | <img src="" alt="jung" width="50px" height="50px" /> |
+| <img src="./readme_assets/예찬.png" alt="gong" width="50px" height="50px" /> | <img src="./readme_assets/수빈.png" alt="moon" width="50px" height="50px" /> | <img src="./readme_assets/창준.png" alt="chang" width="50px" height="50px" /> | <img src="./readme_assets/유정.png" alt="jung" width="50px" height="50px" /> |
 | :---: | :---: | :---: | :---: |
 | 공예찬 | 문수빈 | 이창준 | 정유정 |
 | 팀원 | 팀원 | 팀원 | 팀원 |
 
 <br>
 
-## 👏 프로젝트 기여
+<!-- ## 👏 프로젝트 기여
 
 | 이름 | 역할 |
 | :---: | :---: |
-| 이치헌 | - 담당한 역할 |
-| 고은빈 | - 담당한 역할 |
-| 공예찬 | - 담당한 역할 |
-| 문수빈 | - 담당한 역할 |
-| 이창준 | - 담당한 역할 |
-| 정유정 | - 담당한 역할 |
+| 이치헌 | -  |
+| 고은빈 | -  |
+| 공예찬 | -  |
+| 문수빈 | -  |
+| 이창준 | -  |
+| 정유정 | -  |
 
 <br>
 
@@ -161,9 +223,4 @@
 
 </p>
 
-<br>
-
-
-# 프로젝트 실행 방법
-
-/ TODO: 프로젝트 완성 후 실행 방법 정리
+<br> -->
