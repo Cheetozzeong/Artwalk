@@ -1,21 +1,20 @@
 <div align="center">
-    <img src="./readme_assets/artwalk_logo.png" width="80px" alt="artwalk_logo" style="margin: 30px;"/> <h1><b>귿다</b></h1>
+    <img src="./readme_assets/artwalk_logo.png" width="50px" alt="artwalk_logo"/> <h1><b>귿다</b></h1>
 </div>
 <br>
 
-## **목차**
+## 목차
+
+1. [**프로젝트 소개**](#1-프로젝트-소개)
+2. [**기술 스택**](#2-기술-스택)
+3. [**서비스 화면**](#3-서비스-화면)
+4. [**서비스 구성요소**](#4-서비스-구성요소)
+5. [**기능 소개**](#5-구현-기능)
+6. [**개발팀 소개**](#6-개발팀-소개)
 
 <br>
 
-1. [**프로젝트 소개**](#🏃‍♀️-프로젝트-소개)
-2. [**기술 스택**](#⚙-기술-스택)
-3. [**서비스 화면**](#🔍-서비스-화면)
-4. [**서비스 구성 요소**](#🧵 -서비스-구성-요소)
-5. [**개발팀 소개**](#🌟-개발팀-소개)
-
-<br>
-
-# 🏃‍♀️ **프로젝트 소개**
+# **프로젝트 소개**
 
 <p align="justify">
 
@@ -43,9 +42,9 @@
 
 ### **Android**
 
-| JAVA | Kotlin | Jetpack SDK |
-| :---: | :---: | :---: |
-| <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbWwcEv%2FbtrZcgCxHKb%2FyDsPPR4smbDskPg52phN80%2Fimg.png" alt="Java" width="50px" height="50px" /> | <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FRRygX%2FbtrZzauY4ir%2F316G5KGVxCWE9HECunTBpk%2Fimg.png" alt="Kotlin" width="40px" height="40px" /> | <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FAY3At%2FbtrYY8fAzBZ%2F3tUkFWwRO3OtbejIJJxrsK%2Fimg.png" alt="Jetpack" width="50px" height="50px" /> |
+| Kotlin | Jetpack SDK |
+| :---: | :---: |
+| <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FRRygX%2FbtrZzauY4ir%2F316G5KGVxCWE9HECunTBpk%2Fimg.png" alt="Kotlin" width="40px" height="40px" /> | <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FAY3At%2FbtrYY8fAzBZ%2F3tUkFWwRO3OtbejIJJxrsK%2Fimg.png" alt="Jetpack" width="50px" height="50px" /> |
 
 
 - Mapbox API
@@ -172,16 +171,19 @@
 
 <img src="./readme_assets/artwalk_architecture.png" alt="artwalk_architecture" />
 
+<br>
+
+<img src="./readme_assets/android_architecture.png" alt="android_architecture" />
 
 <br>
 
 ## ERD 구조
 
-<img src="./readme_assets/artwalk_erd_diagram.png" alt="artwalk_erd_diagram" />
+<img src="./readme_assets/artwalk_erd_diagram.jpg" alt="artwalk_erd_diagram" />
 
 <br>
 
-# 🌟 **개발 팀 소개**
+# **개발 팀 소개**
 
 <br>
 
