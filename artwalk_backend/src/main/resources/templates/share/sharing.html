@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>귿다 - 기록 공유</title>
+    <link rel="favicon" href="/favicon.ico">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFE5BDLZ4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1NFE5BDLZ4');
+    </script>
+    <style>
+        @font-face {
+            font-family: 'GangwonEdu_OTFBoldA';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+        }
+        h2 {
+            margin: 0;
+            vertical-align: center;
+        }
+        .content {
+            width: 100%;
+            text-align: center;
+        }
+        .header {
+            height: 60px;
+            background-color: #07A794;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+        }
+        .logo-letter {
+            color: white;
+            font-family: "Noto Sans KR",sans-serif;
+        }
+        .content-text {
+            width: 300px;
+            margin: auto;
+            padding-bottom: 10px;
+        }
+        .title {
+            font-family: "GangwonEdu_OTFBoldA";
+            font-size: 24px;
+            font-weight: bolder;
+            text-align: left;
+            color: #383838;
+            margin: 10px;
+        }
+        .maker {
+            font-family: "GangwonEdu_OTFBoldA";
+            font-size: 18px;
+            font-weight: 500;
+            text-align: right;
+            color: #3d3d3d;
+            margin: 10px;
+        }
+        .img-download {
+            padding: 10px 30px 10px;
+            background: #07A794;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #ffffff;
+            border: #07A794;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .app-download {
+            padding: 10px 30px 10px;
+            background: #ffffff;
+            box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            font-weight: bolder;
+            font-size: 14px;
+            line-height: 21px;
+            color: #000000;
+            border: #000000;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .record {
+            width: 300px;
+            margin: 5% 5% 20px 5%;
+        }
+        .btn {
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .btn {
+                display: block;
+            }
+            .record {
+                width: 90%;
+                margin-inline: 5%;
+            }
+            .img-download {
+                padding: 10px 20%;
+            }
+            .app-download {
+                padding: 10px 20%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <img src="/favicon.ico" alt="logo" class="logo">
+            <h2 class="logo-letter">Artwalk</h2>
+        </div>
+        <img th:src="link" class="record" id="link1"/>
+        <div class="content-text">
+            <p class="title"></p>
+            <p class="maker"></p>
+        </div>
+        <div>
+            <div class="btn">
+                <a href="link" id="link2" download="artwalk_route.png"><button class="img-download">이미지 다운로드</button></a>
+            </div>
+            <div class="btn">
+                <button class="app-download">앱에서 확인하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script th:inline="javascript">
+    window.onload = function() {
+        const imageURL = [[${link}]];
+        const title = [[${title}]];
+        const nickname = [[${nickname}]];
+
+        var fileName = "Artwalk_" + convertFileName(title) + ".png";
+
+        document.querySelector(".title").innerHTML = `"${title}"`;
+        document.querySelector(".maker").innerHTML = `Paint by <strong>${nickname}</strong>`;
+        document.querySelector("#link2").download = fileName;
+
+        fetch(`/record/image/${imageURL}`)
+            .then(response => response.blob())
+            .then(blob => {
+                let sharedURL = URL.createObjectURL(blob);
+                document.querySelector("#link1").src = sharedURL;
+                document.querySelector("#link2").href = sharedURL;
+            });
+    }
+
+    document.querySelector(".app-download").addEventListener("click", function (){
+       location.href = "https://play.google.com/store/apps/details?id=com.a401.artwalk";
+    });
+
+    /** 파일명으로 사용 불가능한 특수문자 제거 */
+    function convertFileName(fileName) {
+        var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+
+        if (special_pattern.test(fileName) == true) {
+            fileName = fileName.replace(/[`~!@#$%^&*|\\\'\";:\/?]/gi, "");
+        }
+        return fileName;
+    }
+</script>
+</html>
