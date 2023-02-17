@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="vm"
+            type="com.a401.artwalk.view.record.draw.RecordViewModel"/>
+
+        <variable name="hour" type="Integer" />
+        <variable name="minute" type="Integer" />
+        <variable name="second" type="Integer" />
+        <variable name="distance" type="Double" />
+
+
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraintlayout_record"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView_record"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
+        />
+
+        <ImageButton
+            android:id="@+id/imagebutton_record_startbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/circle_button_bg_50"
+            android:src="@drawable/ic_start_circle_100"
+            app:layout_constraintBottom_toTopOf="@id/view_record_infoBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/view_record_infoBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/neutral01"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"/>
+
+    <LinearLayout
+        android:id="@+id/view_record_distanceBox"
+        app:layout_constraintStart_toStartOf="@id/view_record_infoBox"
+        app:layout_constraintTop_toTopOf="@id/view_record_infoBox"
+        app:layout_constraintBottom_toBottomOf="@id/view_record_infoBox"
+        app:layout_constraintEnd_toStartOf="@id/view_record_durationBox"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!--거리-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_distance_title"
+            style="@style/body_title_font_style"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/distance_format(distance)}"
+            android:hint="4.14Km"
+            style="@style/body_regular_text_font_style"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_record_durationBox"
+        app:layout_constraintEnd_toEndOf="@id/view_record_infoBox"
+        app:layout_constraintTop_toTopOf="@id/view_record_infoBox"
+        app:layout_constraintBottom_toBottomOf="@id/view_record_infoBox"
+        app:layout_constraintStart_toEndOf="@id/view_record_distanceBox"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_duration_title"
+            style="@style/body_title_font_style"/>
+
+        <TextView
+            android:id="@+id/textView_durationBox_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/duration_format(hour, minute, second)}"
+            android:hint="1시간 8분 10초"
+            style="@style/body_regular_text_font_style"/>
+
+    </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imagebutton_change_camera_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/toggle_button_bg_tint"
+            android:src="@drawable/ic_record_my_location"
+            app:layout_constraintBottom_toBottomOf="@id/imagebutton_record_startbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:tint="@color/toggle_button_fg_tint"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </layout>

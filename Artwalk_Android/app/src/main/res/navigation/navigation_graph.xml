@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/route_list"
+    android:id="@+id/bottom_navigation_graph">
+
+    <fragment
+        android:id="@+id/route_list"
+        android:name="com.a401.artwalk.view.route.list.RouteListFragment"
+        android:label=""
+        tools:layout="@layout/fragment_route_list">
+
+        <action
+            android:id="@+id/action_route_list_to_record_main"
+            app:destination="@id/record_main"/>
+
+        <action
+            android:id="@+id/action_route_list_to_route_draw"
+            app:destination="@id/route_draw"/>
+
+    </fragment>
+    
+    <fragment
+        android:id="@+id/record_main"
+        android:name="com.a401.artwalk.view.record.draw.RecordFragment"
+        android:label=""
+        tools:layout="@layout/fragment_record">
+
+        <action
+            android:id="@+id/action_record_main_to_route_list"
+            app:destination="@id/route_list"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/route_draw"
+        android:name="com.a401.artwalk.view.route.draw.RouteDrawFragment"
+        tools:layout="@layout/fragment_route_draw">
+    </fragment>
+
+    <fragment
+        android:id="@+id/userPage"
+        android:name="com.a401.artwalk.view.user.UserPageFragment"
+        android:label=""
+        tools:layout="@layout/fragment_user_page">
+
+        <action
+            android:id="@+id/action_userPage_to_setting"
+            app:destination="@id/setting" />
+
+        <action
+            android:id="@+id/action_record_list_to_record_detail"
+            app:destination="@id/detail_record"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/detail_record"
+        android:name="com.a401.artwalk.view.record.list.RecordDetail"
+        tools:layout="@layout/detail_record_list">
+
+        <argument
+            android:name="detailArgument"
+            app:argType="com.a401.domain.model.RecordForList"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/action_delete_record"
+            app:destination="@+id/userPage"/>
+
+        <action
+            android:id="@+id/action_detail_to_list"
+            app:destination="@+id/userPage"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@id/setting"
+        android:name="com.a401.artwalk.view.user.SettingFragment"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_setting_to_policy"
+            app:destination="@id/policy" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/policy"
+        android:name="com.a401.artwalk.view.user.PolicyFragment"
+        tools:layout="@layout/fragment_policy">
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="false"
+            android:defaultValue=""/>
+
+        <argument
+            android:name="policyContent"
+            app:argType="string"
+            app:nullable="false"
+            android:defaultValue=""/>
+
+    </fragment>
+
+</navigation>

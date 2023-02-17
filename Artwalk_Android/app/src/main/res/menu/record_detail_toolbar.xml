@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/button_detail_share"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="detail_share"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/button_detail_delete"
+        android:enabled="true"
+        android:icon="@drawable/ic_detail_delete_24"
+        android:title="ic_detail_delete_24"
+        app:showAsAction="always" />
+
+</menu>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/login_main"
+    android:id="@+id/activity_login_navigation_graph">
+
+    <fragment
+        android:id="@+id/login_main"
+        android:name="com.a401.artwalk.view.login.main.LoginMainFragment"
+        android:label=""
+        tools:layout="@layout/fragment_login_main">
+
+        <action
+            android:id="@+id/action_login_main_to_login_regist"
+            app:destination="@id/login_regist" />
+        
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_regist"
+        android:name="com.a401.artwalk.view.login.regist.RegistFragment"
+        android:label=""
+        tools:layout="@layout/fragment_login_regist">
+    </fragment>
+
+</navigation>

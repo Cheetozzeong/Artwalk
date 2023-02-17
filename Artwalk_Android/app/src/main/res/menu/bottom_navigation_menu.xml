@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/route_list"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_route_24"
+        android:title="@string/bottomNav_menu_route_title" />
+
+    <item
+        android:id="@+id/record_main"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_record_24"
+        android:title="@string/bottomNav_menu_recordMain_title"
+        />
+
+    <item
+        android:id="@+id/userPage"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="마이페이지"/>
+
+</menu>
