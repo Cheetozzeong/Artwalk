@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.mapbox.maps.MapView
+            android:id="@+id/mapView_routeList"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.4" />
+
+        <ImageButton
+            android:id="@+id/imageButton_change_camera_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/circle_ic_button_bg"
+            android:backgroundTint="@color/toggle_button_bg_tint"
+            android:src="@drawable/ic_record_my_location"
+            app:layout_constraintBottom_toTopOf="@id/view_routeList_infoBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="카메라를 현재위치로 이동하는 버튼"
+            app:tint="@color/toggle_button_fg_tint" />
+
+        <View
+            android:id="@+id/view_routeList_infoBox"
+            app:layout_constraintTop_toBottomOf="@id/mapView_routeList"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView_routeList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.1" />
+
+        <TextView
+            android:id="@+id/button_routeList_toRouteDraw"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:text="@string/toDrawButton_title"
+            android:background="@drawable/rounded_corner"
+            app:layout_constraintBottom_toBottomOf="@id/view_routeList_infoBox"
+            app:layout_constraintEnd_toEndOf="@id/view_routeList_infoBox"
+            app:layout_constraintStart_toStartOf="@id/view_routeList_infoBox"
+            app:layout_constraintTop_toTopOf="@id/view_routeList_infoBox" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_routeList"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/view_routeList_infoBox"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.5"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

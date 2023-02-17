@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="item"
+            type="com.a401.artwalk.view.record.list.RecordListItem"/>
+
+        <variable
+            name="thumbnailClickListener"
+            type="com.a401.artwalk.view.record.list.ThumbnailClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:layout_margin="4dp">
+    <ImageView
+        android:id="@+id/imageView_recordItem_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:contentDescription="@string/routeThumb_description"
+        android:onClick="@{() -> thumbnailClickListener.onClick(item.recordForList)}" />
+
+    </LinearLayout>
+</layout>

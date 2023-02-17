@@ -1,0 +1,94 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-parcelize'
+}
+android {
+    namespace 'com.a401.artwalk'
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.a401.artwalk"
+        minSdk 21
+        targetSdk 32
+        versionCode 6
+        versionName "3.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["kakaoApiKey"] = KAKAO_API_KEY
+        buildConfigField("String", "KAKAO_NATIVE_KEY", KAKAO_NATIVE_KEY)
+        buildConfigField("String", "IMAGE_BASE_URL", IMAGE_BASE_URL)
+        buildConfigField("String", "PROFILE_URL", PROFILE_URL)
+        buildConfigField("String", "IMAGE_BASE_URL_RECORD", IMAGE_BASE_URL_RECORD)
+        buildConfigField("String", "MAPBOX_PUBLIC_ACCESS_TOKEN", MAPBOX_PUBLIC_ACCESS_TOKEN)
+        buildConfigField("String", "SHARING_BASE_URL", SHARING_BASE_URL)
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+
+    // navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    // test
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
+    // module
+    implementation project(":data")
+    implementation project(":domain")
+''
+    // hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+
+    // mapbox
+    implementation 'com.mapbox.maps:android:10.10.0'
+
+    // by viewModel
+    implementation 'androidx.fragment:fragment-ktx:1.5.5'
+
+    // android gps api library
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    //Kakao Login
+    implementation 'com.kakao.sdk:v2-user:2.10.0'
+    implementation 'com.kakao.sdk:usermgmt:1.27.0'
+
+    // glide (Image)
+    implementation 'com.github.bumptech.glide:glide:4.14.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.1'
+
+}
+
+kapt {
+    correctErrorTypes = true
+}
