@@ -190,7 +190,7 @@
 <br>
 
 ### **Android**
-| <img src="./readme_assets/치헌.png" alt="chi" width="50px" height="50px" /> | <img src="./readme_assets/은빈.png" alt="go" width="50px" height="50px" /> |
+| <img src="./readme_assets/chi.png" alt="chi" width="50px" height="50px" /> | <img src="./readme_assets/bean.png" alt="go" width="50px" height="50px" /> |
 | :---: | :---: |
 | 이치헌 | 고은빈 |
 | 팀장 | 팀원 |
@@ -199,7 +199,7 @@
 
 ### **Web (Front-end & Back-end)**
 
-| <img src="./readme_assets/예찬.png" alt="gong" width="50px" height="50px" /> | <img src="./readme_assets/수빈.png" alt="moon" width="50px" height="50px" /> | <img src="./readme_assets/창준.png" alt="chang" width="50px" height="50px" /> | <img src="./readme_assets/유정.png" alt="jung" width="50px" height="50px" /> |
+| <img src="./readme_assets/chan.png" alt="gong" width="50px" height="50px" /> | <img src="./readme_assets/soobin.png" alt="moon" width="50px" height="50px" /> | <img src="./readme_assets/phang.png" alt="chang" width="50px" height="50px" /> | <img src="./readme_assets/yu.png" alt="jung" width="50px" height="50px" /> |
 | :---: | :---: | :---: | :---: |
 | 공예찬 | 문수빈 | 이창준 | 정유정 |
 | 팀원 | 팀원 | 팀원 | 팀원 |
