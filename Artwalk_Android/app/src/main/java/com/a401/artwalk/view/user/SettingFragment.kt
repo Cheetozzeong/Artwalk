@@ -91,20 +91,13 @@ class SettingFragment: BaseFragment<FragmentSettingBinding>(R.layout.fragment_se
             setBackButton()
         }
     }
-    
-    private fun setBackButton(){
+
+    private fun setBackButton() {
         val backButton = view?.findViewById<ImageButton>(R.id.ImageButton_setting_back)
-        backButton?.setOnClickListener{
+        backButton?.setOnClickListener {
             findNavController().popBackStack()
         }
     }
-
-        private fun setBackButton() {
-            val backButton = view?.findViewById<ImageButton>(R.id.ImageButton_setting_back)
-            backButton?.setOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
 
         private fun logout() {
             prefs.clear()
